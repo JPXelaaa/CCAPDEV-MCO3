@@ -8,9 +8,8 @@ const ReviewSchema = new mongoose.Schema({
     unhelpful: { type: Number, default: 0 },
     photos: [{
         data: Buffer,
-        contentType: String,
-        originalName: String
-    }],
+        contentType: String
+      }],
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     establishment: { type: mongoose.Schema.Types.ObjectId, ref: 'Establishment', required: true },
     createdAt: { type: Date, default: Date.now },

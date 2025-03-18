@@ -7,8 +7,11 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
   const [reviewVotes, setReviewVotes] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [reviewToDelete, setReviewToDelete] = useState(null);
   const [editingReview, setEditingReview] = useState(null);
   const [editFormData, setEditFormData] = useState({
+    
     title: "",
     body: "",
     rating: 0
@@ -168,37 +171,69 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
   };
 
   // function to delete a review
-  const deleteReview = async (id) => {
+  const confirmDelete = (id) => {
+    setReviewToDelete(id);
+    setShowDeleteConfirmation(true);
+  };
+  
+  const deleteReview = async () => {
+    if (!reviewToDelete) return;
+    
     if (!user || !user._id) {
       setError('You must be logged in to delete a review');
       return;
     }
-
+  
     try {
       const token = localStorage.getItem('token');
       if (!token) {
         setError('Authentication required');
-        setShowLogin(true); // show login dialog if not authenticated
+        setShowLogin(true);
         return;
       }
-
-      const response = await fetch(`http://localhost:5000/api/reviews/${id}`, {
+  
+      const response = await fetch(`http://localhost:5000/api/reviews/${reviewToDelete}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': token
         }
       });
-
+  
       if (!response.ok) {
         throw new Error('Failed to delete review');
       }
-
-      // remove deleted reviews from state
-      setReviews(reviews.filter(review => review._id !== id));
+  
+      // Remove deleted review from state
+      setReviews(reviews.filter(review => review._id !== reviewToDelete));
+      setShowDeleteConfirmation(false);
+      setReviewToDelete(null);
     } catch (err) {
       console.error('Error deleting review:', err);
       setError('Failed to delete review. Please try again.');
     }
+  };
+  
+  // Add this function to cancel the delete operation
+  const cancelDelete = () => {
+    setShowDeleteConfirmation(false);
+    setReviewToDelete(null);
+  };
+  
+  // Add this to render the confirmation dialog
+  const renderDeleteConfirmation = () => {
+    if (!showDeleteConfirmation) return null;
+  
+    return (
+      <div className="delete-confirmation-modal">
+        <div className="delete-confirmation-content">
+          <p>Are you sure you want to delete this review?</p>
+          <div className="confirmation-buttons">
+            <button onClick={deleteReview} className="yes-btn">Yes</button>
+            <button onClick={cancelDelete} className="no-btn">No</button>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   // format date for display
@@ -316,7 +351,7 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
                     </button>
                     <button 
                       className="delete-review-btn" 
-                      onClick={() => deleteReview(review._id)}
+                      onClick={() => confirmDelete(review._id)}
                     >
                       Delete
                     </button>
@@ -384,6 +419,8 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
         </div>
       </div>
       
+      {renderEditForm()}
+      {renderDeleteConfirmation()}
       {renderEditForm()}
     </div>
   );

@@ -24,6 +24,7 @@ function ReviewForEstablishment({
   const [showReplies, setShowReplies] = useState({});
   const [replies, setReplies] = useState({});
   const [replyError, setReplyError] = useState(null);
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
 
   // This function will help debug the current user's state
   const debugUserState = () => {
@@ -110,6 +111,16 @@ function ReviewForEstablishment({
     }));
   };
 
+  // Handle opening photo modal
+  const openPhotoModal = (index) => {
+    setSelectedPhoto(index);
+  };
+
+  // Handle closing photo modal
+  const closePhotoModal = () => {
+    setSelectedPhoto(null);
+  };
+
   return (
     <div className="rec-review">
       {/* Review Header*/}
@@ -141,18 +152,56 @@ function ReviewForEstablishment({
         {type === "view" ? (reviewText.length > 100 ? reviewText.substring(0,100) + "..." : reviewText) : reviewText}
       </div>
 
-      {/* Review Photos */}
+      {/* Review Photos - Updated for binary data */}
       {photos && photos.length > 0 && (
         <div className="review-photo">
           {photos.slice(0, type === "view" ? 2 : photos.length).map((photo, index) => (
-            <div className="photo-entry" key={index}>
+            <div className="photo-entry" key={index} onClick={() => openPhotoModal(index)}>
               <img 
-                src={`http://localhost:5000/uploads/${photo}`} 
+                src={`http://localhost:5000/api/images/review/${reviewId}/photo/${index}`} 
                 className="actual-photo" 
                 alt={`Review Photo ${index + 1}`} 
               />
             </div>
           ))}
+        </div>
+      )}
+      
+      {/* Photo Modal */}
+      {selectedPhoto !== null && (
+        <div className="photo-modal-overlay" onClick={closePhotoModal}>
+          <div className="photo-modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="close-modal" onClick={closePhotoModal}>×</button>
+            <img 
+              src={`http://localhost:5000/api/images/review/${reviewId}/photo/${selectedPhoto}`} 
+              alt={`Review Photo ${selectedPhoto + 1}`}
+              className="modal-photo"
+            />
+            <div className="photo-navigation">
+              {selectedPhoto > 0 && (
+                <button 
+                  className="nav-button prev" 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedPhoto(selectedPhoto - 1);
+                  }}
+                >
+                  ‹
+                </button>
+              )}
+              {selectedPhoto < photos.length - 1 && (
+                <button 
+                  className="nav-button next" 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedPhoto(selectedPhoto + 1);
+                  }}
+                >
+                  ›
+                </button>
+              )}
+            </div>
+          </div>
         </div>
       )}
               

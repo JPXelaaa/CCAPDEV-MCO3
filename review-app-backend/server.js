@@ -15,7 +15,6 @@ const Establishment = require("./models/Establishment");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -28,10 +27,7 @@ mongoose.connect(process.env.MONGO_URI || "mongodb://localhost:27017/review-app"
 
 // Configure multer for memory storage instead of disk storage
 const storage = multer.memoryStorage();
-const upload = multer({ 
-  storage,
-  limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
-});
+const upload = multer({storage});
 
 // Create API endpoint to serve images from MongoDB
 app.get('/api/images/:type/:id/:field', async (req, res) => {
@@ -636,8 +632,7 @@ app.post('/api/reviews', verifyToken, upload.array('photos', 5), async (req, res
       establishment: establishmentId,
     });
     
-    await newReview.save();
-    
+    await newReview.save();   
     // Update establishment rating
     const establishment = await Establishment.findById(establishmentId);
     if (establishment) {
@@ -647,7 +642,6 @@ app.post('/api/reviews', verifyToken, upload.array('photos', 5), async (req, res
       establishment.reviewCount = allReviews.length;
       await establishment.save();
     }
-    
     // Populate user and establishment details
     const populatedReview = await Review.findById(newReview._id)
       .populate('user', 'username avatar')
@@ -655,7 +649,7 @@ app.post('/api/reviews', verifyToken, upload.array('photos', 5), async (req, res
     
     res.status(201).json(populatedReview);
   } catch (err) {
-    console.error('Error creating review:', err);
+    console.error('Error creating review!!!!:', err);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -686,11 +680,9 @@ app.get('/api/reviews', async (req, res) => {
       
       // Add photo URLs for review
       if (reviewObj.photos && reviewObj.photos.length > 0) {
-        reviewObj.photoUrls = Array.from(
-          { length: reviewObj.photos.length }, 
-          (_, i) => `/api/images/review/${reviewObj._id}/photo${i}`
+        reviewObj.photoUrls = reviewObj.photos.map((_, index) => 
+          `/api/images/review/${reviewObj._id}/photo/${index}`
         );
-        delete reviewObj.photos; // Remove binary data
       } else {
         reviewObj.photoUrls = [];
       }
@@ -702,6 +694,26 @@ app.get('/api/reviews', async (req, res) => {
   } catch (err) {
     console.error('Error fetching reviews:', err);
     res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Add this endpoint to serve review photos
+app.get('/api/images/review/:reviewId/photo/:index', async (req, res) => {
+  try {
+    const { reviewId, index } = req.params;
+    const review = await Review.findById(reviewId);
+    
+    if (!review || !review.photos || !review.photos[index]) {
+      return res.status(404).send('Photo not found');
+    }
+    
+    const photo = review.photos[index];
+    
+    res.set('Content-Type', photo.contentType);
+    res.send(photo.data);
+  } catch (err) {
+    console.error('Error serving review photo:', err);
+    res.status(500).send('Server error');
   }
 });
 
@@ -992,6 +1004,54 @@ app.get('/api/establishments/owner/:userId', verifyToken, async (req, res) => {
     res.json(transformedEstablishments);
   } catch (error) {
     console.error('Error fetching owner establishments:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Delete a review
+app.delete('/api/reviews/:id', verifyToken, async (req, res) => {
+  try {
+    const reviewId = req.params.id;
+    
+    // Find the review first to get the establishment ID for rating recalculation
+    const review = await Review.findById(reviewId);
+    
+    if (!review) {
+      return res.status(404).json({ message: 'Review not found' });
+    }
+    
+    // Check if the user is the owner of the review
+    if (review.user.toString() !== req.userId) {
+      return res.status(403).json({ message: 'Not authorized to delete this review' });
+    }
+    
+    // Store the establishment ID before deleting
+    const establishmentId = review.establishment;
+    
+    // Delete the review
+    await Review.findByIdAndDelete(reviewId);
+    
+    // Update establishment rating
+    const establishment = await Establishment.findById(establishmentId);
+    if (establishment) {
+      const allReviews = await Review.find({ establishment: establishmentId });
+      
+      if (allReviews.length > 0) {
+        // Recalculate average rating if there are still reviews
+        const totalRating = allReviews.reduce((sum, review) => sum + review.rating, 0);
+        establishment.rating = totalRating / allReviews.length;
+      } else {
+        // Reset rating if no reviews left
+        establishment.rating = 0;
+      }
+      
+      establishment.reviewCount = allReviews.length;
+      await establishment.save();
+    }
+    
+    res.status(200).json({ message: 'Review deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting review:', err);
     res.status(500).json({ message: 'Server error' });
   }
 });

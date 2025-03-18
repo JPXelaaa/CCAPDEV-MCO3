@@ -16,7 +16,7 @@ function Review({
   title, 
   review, 
   rating = 5, 
-  photos = [], 
+  photoUrls = [], // Use only photoUrls from the server
   onDelete, 
   preview 
 }) {
@@ -41,7 +41,7 @@ function Review({
           <div className="user-info">
             <div className="profile-picture">
               <img
-                src={user?.avatar ? `http://localhost:5000/uploads/${user.avatar}` : "https://i.pinimg.com/originals/6d/8b/9b/6d8b9b45c14da6fbfd09a7ede56b4a83.jpg"}
+                src={user?.avatarUrl || "https://i.pinimg.com/originals/6d/8b/9b/6d8b9b45c14da6fbfd09a7ede56b4a83.jpg"}
                 alt="User Profile"
               />
             </div>
@@ -61,12 +61,12 @@ function Review({
       <div className="review-text">{review}</div>
 
       {/* Review Photos */}
-      {photos && photos.length > 0 && (
+      {photoUrls && photoUrls.length > 0 && (
         <div className="review-photo">
-          {photos.map((photo, index) => (
+          {photoUrls.map((photoUrl, index) => (
             <div className="photo-entry" key={index}>
               <img 
-                src={`http://localhost:5000/uploads/${photo}`} 
+                src={photoUrl}
                 className="actual-photo" 
                 alt={`Review Photo ${index + 1}`} 
               />

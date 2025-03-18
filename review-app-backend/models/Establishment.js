@@ -11,7 +11,10 @@ const EstablishmentSchema = new mongoose.Schema({
         data: Buffer, // Store binary image data
         contentType: String, // Store MIME type
     },
-    photos: [{ type: String }], 
+    photos: [{
+        data: Buffer, // Changed from string to buffer
+        contentType: String // Added MIME type field
+    }], 
     menu: [{ type: String }], 
     address: { type: String, required: true },
     phoneNumber: { type: String, required: true },
