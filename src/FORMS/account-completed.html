@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up</title>
+  <style>
+    .modal {
+      position: fixed; 
+      z-index: 1; 
+      left: 0;
+      top: 0;
+      width: 100%; 
+      height: 100%; 
+      background-color: rgba(0, 0, 0, 0.4); 
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 10% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 30%; 
+      max-width: 300px;
+      border-radius: 10px;
+    }
+
+    #sign-up-title {
+      text-align: center;
+      color: rgb(82, 82, 82);
+      margin-bottom: 20px;
+    }
+
+    .content-row {
+      align-items: center;
+    }
+
+    .logo-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .logo-container img {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+    }
+
+    .logo-container h5 {
+      text-align: center;
+      margin-top: 0;
+      color:rgb(82, 82, 82);
+    }
+
+    #wordlogo {
+      margin-top: 15px;
+      display: flex;
+      align-items: center;
+      font-size: 16px;
+      color: rgb(82, 82, 82);
+    }
+
+    #pen {
+      margin-left: 8px;
+      width: 16px;
+      height: 16px;
+    }
+
+    .input-container {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      margin-left: 50px;
+    }
+
+    textarea {
+        resize: none;
+    }
+
+    .form-input, .form-description {
+      width: 85%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px; 
+      margin-top: 10%
+    }
+
+    .form-description {
+      height: 80px;
+    }
+
+    .arrow {
+      border: solid black;
+      border-width: 0 3px 3px 0;
+      display: inline-block;
+      padding: 2px;
+    }
+
+    .right {
+      transform: rotate(-45deg);
+      margin-left: 5px;
+    }
+
+    .left {
+      transform: rotate(135deg);
+      margin-right: 5px;
+    }
+
+    .steps-container {
+      display: flex;
+      justify-content: center;    
+      align-items: center;
+      margin-top: 25px;      
+    }
+
+    .steps {
+      background-color: rgb(194, 188, 188);
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin: 0 5px;  
+    }
+
+    .current-step {
+      background-color: rgb(0, 0, 0);
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin: 0 5px;
+    }
+
+    button {
+      background-color: rgb(82, 82, 82);;
+      border-width: 1;
+      padding: 2% 5%;
+      font-size: 16px;
+      color: white;
+      width: 80%;
+      margin-top: 10%;
+      margin-bottom: 2%
+    }
+
+  </style>
+</head>
+
+<body>
+  <div id="loginModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+      <h2 id="sign-up-title">Account Completed</h2>
+
+      <!-- Row with Logo and Input -->
+      <div class="content-row">
+        <!-- Logo Part -->
+        <div class="logo-container">
+          <h5>Your account has been completed and is ready to use.</h5>
+          <img src="https://www.svgrepo.com/show/433385/confirm-so.svg">
+          <button>Proceed to Account</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</body>
+</html>

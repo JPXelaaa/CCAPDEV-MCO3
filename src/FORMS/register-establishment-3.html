@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up</title>
+  <style>
+    .modal {
+      position: fixed; 
+      z-index: 1; 
+      left: 0;
+      top: 0;
+      width: 100%; 
+      height: 100%; 
+      background-color: rgba(0, 0, 0, 0.4); 
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 70%;
+      max-width: 400px;
+      border-radius: 10px;
+      max-height: 90vh; 
+      overflow-y: auto; 
+    }
+
+    #sign-up-title {
+      text-align: center;
+      color: rgb(82, 82, 82);
+      margin-bottom: 10px;
+    }
+
+    .form-input, .form-select {
+      width: 95%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+      background-color: white;
+    }
+
+    .form-select {
+      width: 100%;  
+    }
+
+    .hours-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .hours-row select {
+      flex: 1;
+    }
+
+    .submit-btn {
+      padding: 10px 15px;
+      background-color: black;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    p {
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .arrow {
+      border: solid black;
+      border-width: 0 3px 3px 0;
+      display: inline-block;
+      padding: 2px;
+    }
+
+    .right {
+      transform: rotate(-45deg);
+      margin-left: 5px;
+    }
+
+    .left {
+      transform: rotate(135deg);
+      margin-right: 5px;
+    }
+
+    .steps-container {
+      display: flex;
+      justify-content: center;    
+      align-items: center;
+      margin-top: 25px;      
+    }
+
+    .steps, .current-step {
+      background-color: rgb(194, 188, 188);
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin: 0 5px;  
+    }
+
+    .current-step {
+      background-color: rgb(0, 0, 0);
+    }
+
+  </style>
+</head>
+
+<body>
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <form action="/login" method="post">
+        <h2 id="sign-up-title">Sign Up</h2>
+
+        <p>Address 1</p>
+        <input class="form-input" type="text" name="Address 1" placeholder="Address 1" required>
+
+        <p>Address 2</p>
+        <input class="form-input" type="text" name="Address 2" placeholder="Address 2">
+
+        <p>City</p>
+        <input class="form-input" type="text" name="City" placeholder="City" required>
+
+        <p>Postal Code</p>
+        <input class="form-input" type="text" name="Postal Code" pattern="^[0-9]{4}$" maxlength="4" placeholder="4-digit code" required>
+
+        <p>Province</p>
+        <select class="form-select" name="province" id="province">
+          <option value="" selected disabled>None</option>
+          <option value="Manila">Manila</option>
+          <option value="Makati">Makati</option>
+          <option value="Quezon City">Quezon City</option>
+          <option value="Caloocan">Caloocan</option>
+        </select>
+
+        <p>Phone Number</p>
+        <input class="form-input" type="tel" name="Phone Number" pattern="[0-9]{4}-[0-9]{3}-[0-9]{4}" placeholder="09XX-XXX-XXXX" required>
+
+        <p>Website (optional)</p>
+        <input class="form-input" type="text" name="Website" placeholder="http://www.companyaddress.com.ph">
+
+        <p>Categories</p>
+        <input class="form-input" type="text" name="Categories" placeholder="Add up to three inputs only (comma separated)" required>
+
+        <p>Hours</p>
+        <div class="hours-row">
+          <select class="form-select" name="Day">
+            <option value="" selected disabled>Day</option>
+            <option value="Monday">Mon</option>
+            <option value="Tuesday">Tues</option>
+            <option value="Wednesday">Wed</option>
+            <option value="Thursday">Thurs</option>
+          </select>
+
+          <select class="form-select" name="Start Time">
+            <option value="" selected disabled>Start</option>
+            <option value="10:00AM">10:00AM</option>
+            <option value="10:30AM">10:30AM</option>
+            <option value="11:00AM">11:00AM</option>
+            <option value="11:30AM">11:30AM</option>
+          </select>
+
+          <select class="form-select" name="End Time">
+            <option value="" selected disabled>End</option>
+            <option value="9:00PM">9:00PM</option>
+            <option value="9:30PM">9:30PM</option>
+            <option value="10:00PM">10:00PM</option>
+            <option value="10:30PM">10:30PM</option>
+          </select>
+
+          <button type="submit" class="submit-btn">Submit</button>
+        </div>
+
+        <p>Facilities & Services</p>
+        <div class="hours-row">
+          <select class="form-select" name="Facilities">
+            <option value="" selected disabled>Select Facility</option>
+            <option value="Pet-Friendly">Pet-Friendly</option>
+            <option value="WiFi Included">WiFi Included</option>
+            <option value="Offers Delivery">Offers Delivery</option>
+          </select>
+
+          <button type="submit" class="submit-btn">Submit</button>
+        </div>
+
+      </form>
+
+      <div class="steps-container">
+        <div class="arrow left"></div>
+        <div class="steps"></div>
+        <div class="steps"></div>
+        <div class="current-step"></div>
+        <div class="steps"></div>
+        <div class="arrow right"></div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

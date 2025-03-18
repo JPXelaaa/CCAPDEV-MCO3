@@ -1,0 +1,524 @@
+body, html {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow-y: auto;
+}
+
+/* Navigation Bar */
+nav {
+    background-color: #F4C3B3;
+    display: flex;
+    justify-content: space-between;
+    padding: 5px;
+    flex-wrap: wrap; 
+    position: sticky; 
+    top: 0;          
+    z-index: 1000; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-weight: bold; 
+  }
+
+  .nav-left, .nav-center, .nav-right {
+    align-items: center;
+    flex: 1; 
+    text-align: center;
+  }
+
+  .nav-right {
+    padding: 15px;
+    justify-content: center;
+  }
+
+  .nav-center, .nav-right {
+    display: flex;
+    align-items: center;
+  }
+
+  .nav-right h4 {
+    margin: 0;
+  }
+
+  .nav-right a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .profile-option {
+    height: 40px;
+    width: 40px;
+    border-radius: 50px;
+    background-color: black;
+    margin-left: 20px;
+  }
+
+  #page-logo {
+    height: 60px;
+    margin: 0;
+    margin-left: 30%;
+  }
+
+  .content-row {
+    display: flex;
+    justify-content: space-between; 
+    align-items: flex-start;
+    margin: 20px;
+  }
+
+/**Restaurant Information**/
+.main-body {
+  background-color: #FAF5F5;
+}
+
+.restaurant {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+}
+
+.logo {
+    background-color: black;
+    width: 150px;
+    height: 150px;
+    border-radius: 15px;
+    margin-top: 20px;
+}
+
+.resto-name {
+    font-size: 24px;
+    font-weight: bold;
+    margin-left: 20px;
+    font-family: 'Montserrat'; 
+}
+
+#instruction {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 15px;
+    margin-top: 20px;
+    width: 80%;
+    font-size: 18px;
+}
+
+/**Review Section**/
+
+.make-review-container {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.review-header {
+    margin-left: -15px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.review-header h1 {
+    font-family: "Montserrat";
+    font-size: 30px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.establishment-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.establishment-logo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 15px;
+    border: 1px solid #ddd;
+}
+
+.establishment-name h2 {
+    font-size: 50px;
+    margin-top: 120px;
+}
+
+.establishment-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.review-form {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.review-header h4 {
+    font-family: "Montserrat";
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.review-form label {
+    font-weight: bold;
+    color: #333;
+}
+
+.rating-stars {
+    display: flex;
+    gap: 10px;
+    font-size: 30px;
+    color: #ddd;
+}
+
+.star {
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.star:hover, .star.selected {
+    color: #FFD700;
+}
+
+
+input[type="text"], textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px; 
+    font-size: 16px;
+    background-color: white;
+    margin-top: 5px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease-in-out;
+}
+
+input[type="text"]:focus, textarea:focus {
+    border-color: #4b4b4b;
+    outline: none;
+}
+
+textarea {
+    resize: vertical;
+    height: 120px;
+}
+
+.photo-upload {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.upload-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #4b4b4b;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 15px;
+    transition: background-color 0.3s;
+}
+
+.upload-button:hover {
+    background-color: #333;
+}
+
+.photo-limit {
+    color: #666;
+    font-size: 14px;
+}
+
+.photo-previews {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.photo-preview {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    aspect-ratio: 1/1;
+    border: 1px solid #ddd;
+}
+
+.photo-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.remove-photo {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.remove-photo:hover {
+    background-color: rgba(255, 0, 0, 0.8);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.cancel-button {
+    display: inline-block;
+    padding: 12px 25px;
+    background-color: #e0e0e0;
+    color: #333;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.cancel-button:hover {
+    background-color: #ccc;
+}
+
+.submit-button {
+    padding: 12px 25px;
+    background-color: #4b4b4b;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.submit-button:hover {
+    background-color: #333;
+}
+
+.submit-button:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+}
+
+.review-box {
+    border: 2px solid #ddd; 
+    padding: 20px;
+    width: 80%;
+    margin: auto;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-area {
+  align-self: center;
+  width: 90%;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: white;
+  margin: 10px 0;
+  box-sizing: border-box;
+}
+
+.overall-review {
+    display: flex;
+    width: 100%;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.overall-review p {
+    font-size: 14px;
+    margin-left: 10px;
+    align-self: center;
+}
+
+.rating {
+    width: 30px;
+    cursor: pointer;
+}
+
+.review-text textarea {
+    width: 100%;
+    height: 150px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 12px;
+    font-size: 16px;
+    resize: none;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+}
+
+.review-photo {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.photo-entry {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 1/1;
+    background-color: #f9f9f9;
+}
+
+.photo-entry img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+#add-photos-btn {
+    padding: 12px 20px;
+    background-color: #4b4b4b;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%; 
+    max-width: 150px;
+    font-size: 14px;
+    margin-top: 15px;
+    transition: background-color 0.3s;
+}
+
+#add-photos-btn:hover {
+    background-color: #333;
+}
+
+.post-review-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  margin-right: 5%;
+}
+
+#post-review-btn {
+  padding: 10px 15px;
+  background-color: #4b4b4b;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 0 75px 25px 0;
+}
+
+#cancel-btn {
+  padding: 10px 15px;
+  background-color: #aaaaaa;
+  color: rgb(49, 49, 49);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 0 25px 25px 0;
+}
+
+.close-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.close-btn:hover {
+  background-color: red;
+}
+
+.star-rating {
+    direction: rtl;
+    display: inline-block;
+    cursor: pointer;
+    margin: -35px 0;
+    margin-left: -25px;
+}
+
+.star-rating input {
+    display: none;
+}
+
+.star-rating label {
+    color: #ddd;
+    font-size: 35px;
+    padding: 0 2px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.star-rating label:hover,
+.star-rating label:hover~label,
+.star-rating input:checked~label {
+    color: #ffc107;
+}
+
+#title {
+    width: 350px;
+}
+
+#body {
+    width: 700px;
+}
+
+#upload-btn {
+    color: white;
+}

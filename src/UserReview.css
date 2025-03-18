@@ -1,0 +1,255 @@
+.review-body {
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr;
+  background-color: #FAF5F5;
+  width: 100%;
+  gap: 20px;
+  padding: 20px;
+}
+
+.left-profile-body, .center-profile-body, .right-profile-body {
+  padding: 20px;
+  background-color: #FAF5F5;
+  border-radius: 10px;
+}
+
+.option-area {
+  text-align: center;
+  padding: 20px 0;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.option-area span a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.option-area span {
+  font-size: 20px;
+  font-weight: 600;
+  margin-right: 15px;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 5px;
+  transition: background-color 0.2s;
+}
+
+.option-area span:hover {
+  background-color: #f4c3b3;
+}
+
+.option-separator, #about-option, #media-option {
+  color: gray;
+}
+
+.about-section {
+  border: 1px solid #e0e0e0;
+  border-radius: 25px;
+  background-color: #FAF5F5;
+  margin-top: 20px;
+  padding: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.profile-body h3 {
+  text-align: left;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #F4C3B3;
+}
+
+.user-review-container {
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.review-establishment-name {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.review-establishment-name h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.delete-review-btn, .edit-review-btn {
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.edit-review-btn {
+  background-color: rgb(109, 172, 109);
+  margin-right: 5px;
+}
+
+.edit-review-btn:hover {
+  background-color: rgb(150, 197, 150);
+}
+
+.delete-review-btn:hover {
+  background-color: #ff7875;
+}
+
+.photos-div {
+  background-color: #FAF5F5;
+  border: 1px solid #e0e0e0;
+  border-radius: 25px;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.right-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.photos-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-top: 15px;
+  margin-bottom: 0px;
+}
+
+.photos-section p {
+  text-align: center;
+}
+
+.photo-preview {
+  margin-bottom: 15px;
+}
+
+.photo-entry {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  overflow: hidden;
+  height: 150px;
+}
+
+.actual-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+#see-all-label {
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+#see-all-label:hover {
+  color: #b16757 !important;
+  text-decoration: underline;
+}
+
+.edit-review-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.edit-review-content {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.edit-review-content h3 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.form-group input, 
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.rating-input {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.star {
+  cursor: pointer;
+  color: #ccc;
+}
+
+.star.filled {
+  color: #f8ce0b;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.save-btn, .cancel-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.save-btn {
+  background-color: #4A90E2;
+  color: white;
+}
+
+.save-btn:hover {
+  background-color: #3A7BC8;
+}
+
+.cancel-btn {
+  background-color: #f1f1f1;
+}
+
+.cancel-btn:hover {
+  background-color: #e1e1e1;
+}

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up</title>
+  <style>
+    .modal {
+      position: fixed; 
+      z-index: 1; 
+      left: 0;
+      top: 0;
+      width: 100%; 
+      height: 100%; 
+      background-color: rgba(0, 0, 0, 0.4); 
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 10% auto;
+      padding: 60px;
+      border: 1px solid #888;
+      width: 30%; 
+      max-width: 300px;
+      border-radius: 10px;
+    }
+
+    #sign-up-title {
+      text-align: center;
+      color: rgb(82, 82, 82);
+      margin-bottom: 10%;
+      margin-top: -5px;
+    }
+
+    .form-input {
+      width: 93%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-bottom: 5px;
+    }
+
+    .arrow {
+      border: solid black;
+      border-width: 0 3px 3px 0;
+      display: inline-block;
+      padding: 2px;
+    }
+
+    .right {
+      transform: rotate(-45deg);
+      margin-left: 5px;
+    }
+
+    .steps-container {
+      display: flex;
+      justify-content: center;    
+      align-items: center;
+      margin-top: 25px;      
+    }
+
+    .steps, .current-step {
+      background-color: rgb(194, 188, 188);
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin: 0 5px;  
+    }
+
+    .current-step {
+      background-color: rgb(0, 0, 0);
+    }
+
+    p {
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div id="loginModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+      
+      <!-- Login Form -->
+      <form action="/login" method="post">
+        <h2 id="sign-up-title">Sign Up</h2>
+        <p> Email Address</p>
+        <input class="form-input" type="text" name="email address" placeholder="Input email address" required>
+        <p> Username</p>
+        <input class="form-input" type="text" name="username" placeholder="Input username" required>
+        <p> Password</p>
+        <input class="form-input" type="text" name="password" placeholder="Input password" required>
+      </form>
+
+      <!--Navigation Bar-->
+      <div class="steps-container">
+        <div class="current-step"></div>
+        <div class="steps"></div>
+        <div class="steps"></div>
+        <div class="steps"></div>
+        <div class="arrow right"></div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

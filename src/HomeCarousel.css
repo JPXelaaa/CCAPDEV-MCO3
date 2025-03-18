@@ -1,0 +1,19 @@
+body {
+  background-color: #FAF5F5;
+}
+
+.carousel-container {
+  padding: 0 10%;
+  margin-bottom: 9%;
+  align-items: stretch;
+  grid-auto-rows: 1fr;
+}
+
+.slick-slide > div {
+  margin: 0 10px;
+  margin-bottom: 9%;
+}
+
+.slick-arrow.slick-prev::before, .slick-arrow.slick-next::before {
+  color: black;
+}

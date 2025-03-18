@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up</title>
+  <style>
+    .modal {
+      z-index: 1; 
+      left: 0;
+      top: 0;
+      width: 100%; 
+      height: 100%; 
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 10% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 50%; 
+      max-width: 300px; 
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    #sign-up-title {
+      text-align: center;
+      color: rgb(58, 58, 58);
+      margin: 2%;
+    }
+
+    .content-row h4 {
+      text-align: center;
+      padding: 5%;
+      color: #888;
+    }
+
+    .logo-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .logo {
+      background-color: rgb(0, 0, 0);
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+    }
+
+    #wordlogo {
+      margin-top: 15px;
+      display: flex;
+      align-items: center;
+      font-size: 16px;
+      color: rgb(82, 82, 82);
+    }
+
+    #pen {
+      margin-left: 8px;
+      width: 16px;
+      height: 16px;
+    }
+
+    .input-container {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      margin-left: 50px;
+    }
+
+    textarea {
+        resize: none;
+    }
+
+    .form-input, .form-description {
+      width: 85%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px; 
+      margin-top: 10%
+    }
+
+    .form-description {
+      height: 80px;
+    }
+
+    .arrow {
+      border: solid black;
+      border-width: 0 3px 3px 0;
+      display: inline-block;
+      padding: 2px;
+    }
+
+    .right {
+      transform: rotate(-45deg);
+      margin-left: 5px;
+    }
+
+    .left {
+      transform: rotate(135deg);
+      margin-right: 5px;
+    }
+
+    .steps-container {
+      display: flex;
+      justify-content: center;    
+      align-items: center;
+      margin-top: 25px;      
+    }
+
+    .steps {
+      background-color: rgb(194, 188, 188);
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin: 0 5px;  
+    }
+
+    .current-step {
+      background-color: rgb(0, 0, 0);
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin: 0 5px;
+    }
+
+    p {
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .submit-container {
+      display: flex;
+      justify-content: space-evenly;
+      margin-top: 20px;
+    }
+
+    .submit-cancel {
+      padding: 10px 15px;
+      background-color: rgb(189, 187, 187);
+      color: black;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .submit-delete {
+      padding: 10px 15px;
+      background-color: black;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div id="loginModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+      <h1 id="sign-up-title">Are you sure you want to delete your account?</h1>
+
+      <!-- Row with Logo and Input -->
+      <div class="content-row">
+       <h4> This action cannot be undone. Kindly consider before proceeding.</h4>
+      </div>
+
+      <!-- Submit Button (aligned to right) -->
+      <div class="submit-container">
+        <button type="button" class="submit-cancel" id="cancelButton">CANCEL</button>
+        <button type="button" class="submit-delete" id="deleteButton">DELETE</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    function closeModal() {
+      document.getElementById("loginModal").style.display = "none";
+    }
+
+    document.getElementById("deleteButton").addEventListener("click", function() {
+      window.parent.postMessage("closeDelete", "*");
+      window.top.location.href = "/../USER/starting-page-carousel.html";
+    });
+
+    document.getElementById("cancelButton").addEventListener("click", function() {
+      window.parent.postMessage("closeCancel", "*");
+      window.location.reload();
+    });
+  </script>
+</body>
+</html>

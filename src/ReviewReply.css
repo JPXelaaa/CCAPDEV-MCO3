@@ -1,0 +1,56 @@
+.review-reply-form {
+    margin-top: 10px;
+    padding: 10px;
+    border-top: 1px solid #eee;
+  }
+  
+  .review-reply-form textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .review-reply-form button {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .review-reply-form button:disabled {
+    background-color: #ccc;
+  }
+  
+  .review-replies {
+    margin-top: 10px;
+    padding-left: 20px;
+  }
+  
+  .review-reply {
+    background-color: #f8f9fa;
+    padding: 10px;
+    margin-top: 10px;
+    border-left: 3px solid #007bff;
+    border-radius: 4px;
+  }
+  
+  .reply-toggle {
+    color: #007bff;
+    background: none;
+    border: none;
+    padding: 5px 0;
+    cursor: pointer;
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .reply-toggle:hover {
+    text-decoration: underline;
+  }

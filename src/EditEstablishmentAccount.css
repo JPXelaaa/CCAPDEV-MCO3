@@ -1,0 +1,117 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #FAF5F5; 
+    font-family: 'Lato';
+    overflow: hidden;
+  }
+  
+  a {
+    font-weight: 600;
+  }
+  
+  /* Left Section */
+  .left-section {
+      flex: 1;
+      margin-left: 150px;
+  }
+  
+  #sign-up-title {
+    text-align: left;
+    color: rgb(0, 0, 0);
+    margin-bottom: 20px;
+    font-weight: bold;
+    font-family: 'Montserrat';
+    font-size: 30px;
+  }
+  
+  .form-input{
+    width: 100%;
+    max-width: 40%; 
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color: white;
+    margin: 5px 0;
+  }
+  
+  /** Buttons Section **/
+  .button-container {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .submit-btn {
+    padding: 10px 15px;
+    background-color: #8F8983;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .delete-container {
+    text-align: center; 
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column; 
+  }
+  
+  .delete-btn {
+    background-color: #f66147; 
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 150px;
+  }
+  
+  #cancel {
+    padding: 10px 15px;
+    background-color: #4b4b4b;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  p {
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+
+  /*Others */
+
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+  }
+  iframe {
+      background: transparent;
+      border: none;
+    }
+  #deleteModal {
+    margin: 0px;
+    margin-top: 0px;
+    display: none;
+    position: fixed;
+    top: 20%;
+    left: 30%;
+    width: 650px;
+    max-width: 800px;
+    height: 600px;
+    border: none;
+    background-color: transparent;
+    z-index: 1001;
+  }

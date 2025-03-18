@@ -1,0 +1,91 @@
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Establishment Preview */
+.establishment-preview {
+  border: 2px solid black;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Establishment Image */
+.establishment-image, .establishment-img {
+  width: 100%;
+  padding-top: 56.25%; 
+  position: relative;
+  overflow: hidden;
+}
+
+.establishment-image img, .establishment-img img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Establishment Logo */
+.establishment-logo {
+  border: 2px solid black;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  align-self: center;
+  position: relative;
+  top: -10%;
+  overflow: hidden;
+}
+
+.carousel-preview .establishment-logo {
+  top: -38.5px;
+  right: .5px;
+}
+
+.establishment-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Establishment Details */
+.est-name {
+  font-size: 1.5rem; 
+  text-align: center;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+}
+
+.establishment-description {
+  padding: 15px;
+  font-size: 14px;
+  padding-top: 5px;
+  height: 120px;
+}
+
+/* Review Section */
+.overall-review {
+  display: flex;
+  width: 95%;
+  justify-content: center;
+  margin-bottom: 15px;
+  margin-top: 5px;
+  padding-left: 6%;
+  align-items: center;
+}
+
+.rating {
+  width: 25px;
+}
+
+.overall-review span h2 {
+  margin: 0;
+  font-size: 1.25rem; 
+  padding-top: 2px;
+}

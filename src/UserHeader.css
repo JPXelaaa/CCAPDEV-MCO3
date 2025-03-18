@@ -1,0 +1,56 @@
+.image-cover {
+  display: flex;
+  justify-content: center;
+  background-color: #ffeae2;
+  height: 250px;
+  align-items: center;
+  width: 100%;
+  border: none;
+}
+
+.profile-header-inner {
+  width: fit-content; 
+  height: fit-content; 
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  font-size: 18px;
+}
+
+.profile-header-picture img {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  border-width: 2px;
+  border-style: solid;
+}
+
+.profile-header-picture {
+  margin-right: 10%;
+}
+
+.profile-header-details {
+  width: 250px;
+}
+
+.profile-header-details h2, .profile-header-details h3 {
+  margin: 0;
+}
+
+#num-review {
+  margin-top: 10%;
+  font-weight: 0;
+}
+
+.edit-profile button {
+  padding: 10px 15px;
+  background-color: #4b4b4b;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: medium;
+  margin-left: 40%;
+  width: 120%;
+}
+

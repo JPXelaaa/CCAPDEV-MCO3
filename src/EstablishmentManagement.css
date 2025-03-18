@@ -1,0 +1,792 @@
+body, html {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow-y: auto;
+  font-family: 'Lato', sans-serif;
+}
+
+.establishment-management {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f9f9f9;
+}
+
+/* Profile Header Styles */
+.establishment-management .profile-header-container {
+  width: 100%;
+  background-color: #ffeae2 ;
+  margin-bottom: 10px;  
+  height: 250px;
+}
+
+.establishment-management .profile-header {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 15px;
+}
+
+.establishment-management .profile-content {
+  display: flex;
+  align-items: center;
+  position: relative;
+  min-height: 220px;
+  margin-left: 350px;
+  margin-top: 0;
+}
+
+.establishment-management .profile-header-picture {
+  flex-shrink: 0;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%; 
+  overflow: hidden;
+}
+
+.establishment-management .profile-header-picture img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.establishment-management .profile-header-details {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  margin-left: -40px;
+}
+
+.establishment-management .profile-header-details #establishment-name {
+  font-size: 35px;
+  font-weight: bold;
+  line-height: 1.2 ;
+  font-family: "Montserrat";
+}
+
+.establishment-management .profile-header-details .overall-rating {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.establishment-management .profile-header-details #star-rating {
+  width: 35px;
+  height: 35px;
+}
+
+.establishment-management .profile-header-details #num-review {
+  font-size: 20px;
+  color: #666;
+  margin: 0;
+  font-weight: 500;
+}
+
+.establishment-management .edit-profile {
+  flex-shrink: 0;
+  position: relative;
+  margin-right: 350px;
+}
+
+.establishment-management .dropdown {
+  position: relative;
+  display: block;
+}
+
+.establishment-management .edit-profile .btn.dropdown-toggle {
+  font-size: 16px;
+  padding: 1rem;
+  background-color: #4b4b4b;
+  border-radius: 12px;
+  color: white;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  min-width: fit-content;
+  justify-content: center;
+}
+
+.establishment-management .edit-profile .btn.dropdown-toggle:hover {
+  background-color: #222;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.establishment-management .dropdown-menu {
+  position: absolute;
+  right: 0;
+  padding: 0.75rem 0;
+  margin: 0;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background-color: white;
+  z-index: 1000;
+  display: none;
+  transform-origin: top right;
+  list-style: none;
+}
+
+.establishment-management .dropdown-menu.show {
+  display: block;
+}
+
+.establishment-management .dropdown-menu li {
+  margin: 0;
+  padding: 0;
+}
+
+.establishment-management .dropdown-item {
+  padding: 1rem 1.5rem;
+  color: #333;
+  font-size: 1.1rem ;
+  display: block;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-weight: 500;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.establishment-management .dropdown-item:hover,
+.establishment-management .dropdown-item:focus {
+  background-color: #f8f9fa;
+  color: #222;
+  outline: none;
+}
+
+.establishment-management .dropdown-item:active {
+  background-color: #f0f0f0;
+  color: #222 ;
+}
+
+/* Profile Body Styling */
+.profile-body {
+  display: flex;
+  flex-direction: column;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: transparent;
+}
+
+/* Reviews Section */
+.establishment-management .reviews-section {
+  background-color: transparent;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 2rem auto;
+  align-items: center;
+  margin-left: 250px;
+}
+
+.reviews-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.reviews-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  font-family: "Montserrat";
+  margin-bottom: -30px;
+  margin-top: -25px;
+}
+
+/* Filter Tags */
+.establishment-management .filter-tags {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  margin-top: -10px;
+}
+
+.establishment-management .filter-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  color: #333;
+  cursor: pointer;
+}
+
+.filter-tag:hover {
+  background-color: #eee;
+}
+
+.filter-tag img {
+  width: 16px;
+  height: 16px;
+  opacity: 0.7;
+}
+
+.filter-tag.active {
+  background-color: #333;
+  color: white;
+}
+
+.filter-tag.active img {
+  filter: brightness(0) invert(1);
+  opacity: 0.9;
+}
+
+/* Sort and Filter Controls */
+.establishment-management .controls-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center ;
+  border-bottom: 1px solid #eee;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  margin-top: -80px;
+
+}
+
+.establishment-management .sort-control, .establishment-management .filter-control {
+  position: relative !important;
+}
+
+.establishment-management .control-button {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+  padding: 0.75rem 1.25rem !important;
+  background-color: white !important;
+  border: 1px solid #ddd !important;
+  border-radius: 8px !important;
+  font-size: 1rem !important;
+  color: #333 !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+}
+
+.establishment-management .control-button:hover {
+  background-color: #f5f5f5 !important;
+  border-color: #ccc !important;
+}
+
+.establishment-management .control-button img {
+  width: 20px !important;
+  height: 20px !important;
+  opacity: 0.7 !important;
+}
+
+/* Review Items */
+.review-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Ensures reviews align in the center */
+}
+
+.review-item {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.establishment-management .review-item {
+  background: white !important;
+  border-radius: 16px !important;
+  padding: 2rem !important;
+  margin-bottom: 2rem !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+  width: 100% !important;
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.reviewer-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.reviewer-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  color: #333;
+}
+
+.review-date {
+  color: #666;
+  font-size: 0.9rem;
+  margin-left: auto;
+}
+
+.review-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0.75rem 0;
+  color: #222;
+}
+
+.establishment-management .review-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-left: 15px;
+  color: #222;
+}
+
+.establishment-management .review-rating {
+  display: flex;
+  gap: 0.25rem;
+  margin-left: 10px;
+}
+
+.review-rating {
+  display: flex;
+  gap: 0.25rem;
+  margin: 0.5rem 0;
+}
+
+.review-rating img {
+  width: 20px;
+  height: 20px;
+}
+
+.review-text {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: #444;
+  margin: 1.25rem 0;
+}
+
+.establishment-management .review-text {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #444;
+  margin-left: 10px;
+}
+
+.review-photos {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.establishment-management .review-photos {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 1.5rem !important;
+  margin-top: 1.5rem !important;
+  width: 100% !important;
+}
+
+.review-photo {
+  width: 100%;
+  height: 350px;
+  object-fit: cover;
+  border-radius: 12px;
+  transition: transform 0.2s;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.establishment-management .review-photo {
+  width: 100% !important;
+  height: 400px !important;
+  object-fit: cover !important;
+  border-radius: 12px !important;
+  transition: transform 0.2s !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+.establishment-management .review-photo:hover {
+  transform: scale(1.03) !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15) !important;
+}
+
+.review-photo:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.review-item:last-child {
+  margin-bottom: 0;
+}
+
+/* Form Styling */
+.profile-tab, .photos-tab, .reviews-tab {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+.profile-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #555;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-control:focus {
+  border-color: #e57373;
+  outline: none;
+}
+
+.logo-upload {
+  display: flex;
+  align-items: center;
+}
+
+.logo-preview {
+  width: 80px;
+  height: 80px;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-right: 15px;
+  border: 1px solid #ddd;
+}
+
+.logo-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-label {
+  background-color: #e57373;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.file-label:hover {
+  background-color: #ef5350;
+}
+
+.submit-btn {
+  background-color: #e57373;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  grid-column: span 2;
+  margin-top: 10px;
+}
+
+.submit-btn:hover {
+  background-color: #ef5350;
+}
+
+.submit-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Photos Tab */
+.photos-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.photo-item {
+  position: relative;
+  height: 200px;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.photo-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.delete-photo {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: rgba(255, 0, 0, 0.7);
+  color: white;
+  border: none;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.photo-upload {
+  margin-top: 20px;
+}
+
+.photo-preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.photo-preview {
+  width: 100px;
+  height: 100px;
+  border-radius: 5px;
+  overflow: hidden;
+  position: relative;
+}
+
+.photo-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.remove-preview {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background-color: rgba(255, 0, 0, 0.7);
+  color: white;
+  border: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+/* Success Message */
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 10px 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+/* Error container */
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 50px;
+  text-align: center;
+}
+
+.error-message {
+  color: #721c24;
+  background-color: #f8d7da;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  max-width: 500px;
+}
+
+.back-button {
+  background-color: #e57373;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.back-button:hover {
+  background-color: #ef5350;
+}
+
+/* Recent Review Styling */
+.recent-review {
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 3%;
+  background-color: white;
+  margin: 3% 0;
+}
+
+.review-header, .review-establishment {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center; 
+  padding: 2%;
+}
+
+#title {
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.overall-review {
+  display: flex;
+  justify-content: left;
+  align-self: center;
+  margin-left: 4.8%;
+  margin-top: 1%;
+  margin-bottom: 10px;
+}
+
+.user-info {
+  display: flex; 
+  align-items: center; 
+}
+
+.profile-picture {
+  width: 40px; 
+  height: 40px;
+  border-radius: 50%; 
+  background-color: gray; 
+}
+
+.username {
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+  font-size: 20px; 
+}
+
+.date-time {
+  margin: 0;
+}
+
+.review-establishment, .review-text {
+  padding: 0% 5% 0% 5%;
+}
+
+.review-photo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 3%;
+  gap: 1%;
+}
+
+.review-footer {
+  display: flex;
+  justify-content: flex-start; 
+  align-items: center;
+  margin-left: 5%;
+  margin-bottom: 10px;
+}
+
+.footer-content {
+  display: flex;
+  align-items: center; 
+  gap: 10px; 
+}
+
+.reply-text {
+  font-size: 16px;
+  color: black;
+  margin: 0;
+}
+
+#thumbs-up {
+  width: 40px;
+  height: 40px;
+}
+
+/* Pages Navigation */
+.pages {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.page-number, .page-arrow {
+  text-decoration: none;
+  color: black;
+  padding: 8px 12px;
+  margin: 0 5px;
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: white;
+  font-weight: bold;
+}
+
+.page-number:hover, .page-arrow:hover {
+  background-color: #f0f0f0;
+}
+
+.active {
+  background-color: black;
+  color: white;
+}
+
+.dots {
+  padding: 8px 12px;
+  color: black;
+}
+
+/* Form Control Textarea */
+textarea.form-control {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Override conflicting styles */
+.establishment-management .review-photos img {
+  max-width: none !important;
+  width: 100% !important;
+  height: 400px !important;
+}
