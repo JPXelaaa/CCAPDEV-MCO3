@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import "./SignUpModal.css";
+import bcrypt from "bcryptjs";
 
 function SignUpModal({ onClose, setIsLoggedIn, setUser }) {
   const [userType, setUserType] = useState("user");
@@ -88,6 +89,14 @@ function SignUpModal({ onClose, setIsLoggedIn, setUser }) {
       setError("Passwords do not match!");
       return;
     }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const formData = new FormData();
+    formData.append("username", username);
+    formData.append("password", hashedPassword);
+    formData.append("userType", userType);
+    
 
     try {
       const formData = new FormData();

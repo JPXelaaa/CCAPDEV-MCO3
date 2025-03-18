@@ -207,23 +207,24 @@ app.post("/api/login", async (req, res) => {
 
     let user;
     
-    // Check the appropriate collection based on userType
+    // Fetch the user from the correct collection and include password
     if (userType === "establishment") {
-      user = await Establishment.findOne({ username }).select('+password');
+      user = await Establishment.findOne({ username }).select("+password");
     } else {
-      user = await User.findOne({ username, userType }).select('+password');
+      user = await User.findOne({ username, userType }).select("+password");
     }
 
     if (!user) {
       return res.status(401).json({ message: "Invalid username or password" });
     }
 
-    // TODO: Replace with proper password hashing
-    if (password !== user.password) {
+    // Compare the provided password with the hashed password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
       return res.status(401).json({ message: "Invalid username or password" });
     }
 
-    // Generate JWT Token with all necessary information
+    // Generate JWT Token
     const tokenPayload = {
       userId: user._id,
       userType,
@@ -247,7 +248,7 @@ app.post("/api/login", async (req, res) => {
       username: user.username,
       userType,
       description: user.description || "",
-      ...(userType === "establishment" 
+      ...(userType === "establishment"
         ? {
             name: user.name,
             logo: user.logo || "default-establishment.jpg",
