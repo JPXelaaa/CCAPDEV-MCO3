@@ -7,6 +7,7 @@ function ReviewForEstablishment({
   reviewId,
   username, 
   userAvatar,
+  user,
   date, 
   title, 
   rating = 5, 
@@ -26,89 +27,16 @@ function ReviewForEstablishment({
   const [replyError, setReplyError] = useState(null);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
 
-  // This function will help debug the current user's state
-  const debugUserState = () => {
-    console.log("Current user state:", {
-      isLoggedIn,
-      currentUser,
-      token: localStorage.getItem('token') ? "Token exists" : "No token found",
-    });
+  // Function to get the correct avatar URL
+  const getAvatarUrl = () => {
+    if (!user) {
+      return "https://i.pinimg.com/originals/6d/8b/9b/6d8b9b45c14da6fbfd09a7ede56b4a83.jpg"; // Default profile picture
+    }
+    return `http://localhost:5000/api/images/user/${user._id}/avatar`;
   };
 
-  // Handle reply text changes
-  const handleReplyChange = (e) => {
-    setReply(e.target.value);
-  };
-  
-  // Handle reply submission from ReviewReply component
-  const handleReplySubmitted = (newReply) => {
-    console.log("Reply submitted from ReviewReply component:", newReply);
-    // Create a temporary reply object if the server response is incomplete
-    const replyToAdd = newReply.content ? newReply : {
-      content: typeof newReply === 'string' ? newReply : "Establishment response",
-      createdAt: new Date().toISOString()
-    };
-    
-    setReplies(prev => ({
-      ...prev,
-      [reviewId]: [...(prev[reviewId] || []), replyToAdd]
-    }));
-    setShowReplyForm(false);
-  };
-
-  useEffect(() => {
-    const fetchReplies = async () => {
-      try {
-        const response = await fetch(`http://localhost:5000/api/reviews/${reviewId}/replies`);
-        if (response.ok) {
-          const data = await response.json();
-          setReplies(prev => ({
-            ...prev,
-            [reviewId]: data
-          }));
-        } else {
-          // Handle the 404 gracefully
-          console.log(`No replies found for review ${reviewId}`);
-          // Initialize with empty array to prevent repeated fetch attempts
-          setReplies(prev => ({
-            ...prev,
-            [reviewId]: []
-          }));
-        }
-      } catch (error) {
-        console.error('Error fetching replies:', error);
-        // Initialize with empty array on error
-        setReplies(prev => ({
-          ...prev,
-          [reviewId]: []
-        }));
-      }
-    };
-  
-    fetchReplies();
-  }, [reviewId]);
-
-  // Local storage functionality (renamed from addLocalReply)
-  const handleReplySubmit = () => {
-    if (!reply.trim()) return;
-    
-    const localReply = {
-      content: reply,
-      createdAt: new Date().toISOString(),
-      isLocalOnly: true // Mark as locally created
-    };
-    
-    setReplies(prev => ({
-      ...prev,
-      [reviewId]: [...(prev[reviewId] || []), localReply]
-    }));
-    
-    setReply("");
-    setShowReplyBox(false);
-    setShowReplies(prev => ({
-      ...prev,
-      [reviewId]: true
-    }));
+  const getPhotoUrl = (index) => {
+    return `http://localhost:5000/api/images/review/${reviewId}/photo/${index}`;
   };
 
   // Handle opening photo modal
@@ -123,13 +51,16 @@ function ReviewForEstablishment({
 
   return (
     <div className="rec-review">
-      {/* Review Header*/}
+      {/* Review Header */}
       <div className="review-header">
         <div className="user-info">
           <div className="profile-picture">
             <img
-              src={userAvatar ? `http://localhost:5000/uploads/${userAvatar}` : "https://i.pinimg.com/originals/6d/8b/9b/6d8b9b45c14da6fbfd09a7ede56b4a83.jpg"}
+              src={getAvatarUrl()} // ✅ Uses the function for avatar logic
               alt="User Profile"
+              onError={(e) => { 
+                e.target.src = "https://i.pinimg.com/originals/6d/8b/9b/6d8b9b45c14da6fbfd09a7ede56b4a83.jpg"; 
+              }}
             />
           </div>
           <p className="username">{username}</p>
@@ -158,9 +89,12 @@ function ReviewForEstablishment({
           {photos.slice(0, type === "view" ? 2 : photos.length).map((photo, index) => (
             <div className="photo-entry" key={index} onClick={() => openPhotoModal(index)}>
               <img 
-                src={`http://localhost:5000/api/images/review/${reviewId}/photo/${index}`} 
+                src={getPhotoUrl(index)} 
                 className="actual-photo" 
                 alt={`Review Photo ${index + 1}`} 
+                onError={(e) => { 
+                  e.target.src = "https://via.placeholder.com/150"; // Fallback image
+                }}
               />
             </div>
           ))}
@@ -169,41 +103,41 @@ function ReviewForEstablishment({
       
       {/* Photo Modal */}
       {selectedPhoto !== null && (
-        <div className="photo-modal-overlay" onClick={closePhotoModal}>
-          <div className="photo-modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="close-modal" onClick={closePhotoModal}>×</button>
-            <img 
-              src={`http://localhost:5000/api/images/review/${reviewId}/photo/${selectedPhoto}`} 
-              alt={`Review Photo ${selectedPhoto + 1}`}
-              className="modal-photo"
-            />
-            <div className="photo-navigation">
-              {selectedPhoto > 0 && (
-                <button 
-                  className="nav-button prev" 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedPhoto(selectedPhoto - 1);
-                  }}
-                >
-                  ‹
-                </button>
-              )}
-              {selectedPhoto < photos.length - 1 && (
-                <button 
-                  className="nav-button next" 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedPhoto(selectedPhoto + 1);
-                  }}
-                >
-                  ›
-                </button>
-              )}
-            </div>
+      <div className="photo-modal-overlay" onClick={closePhotoModal}>
+        <div className="photo-modal-content" onClick={(e) => e.stopPropagation()}>
+          <button className="close-modal" onClick={closePhotoModal}>×</button>
+          <img 
+            src={getPhotoUrl(selectedPhoto)} 
+            alt={`Review Photo ${selectedPhoto + 1}`}
+            className="modal-photo"
+          />
+          <div className="photo-navigation">
+            {selectedPhoto > 0 && (
+              <button 
+                className="nav-button prev" 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedPhoto(selectedPhoto - 1);
+                }}
+              >
+                ‹
+              </button>
+            )}
+            {selectedPhoto < photos.length - 1 && (
+              <button 
+                className="nav-button next" 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedPhoto(selectedPhoto + 1);
+                }}
+              >
+                ›
+              </button>
+            )}
           </div>
         </div>
-      )}
+      </div>
+    )}
               
       {/* Review Footer (Reply only) */}
       <div className="review-footer">
@@ -215,78 +149,6 @@ function ReviewForEstablishment({
           )}
         </div>
       </div>
-
-      {/* User Reply Form */}
-      {showReplyBox && isLoggedIn && (
-        <div className="review-reply-form">
-          <textarea
-            value={reply}
-            onChange={handleReplyChange}
-            placeholder="Write your reply..."
-            required
-          />
-          {replyError && <p className="error-message">{replyError}</p>}
-          <div className="reply-buttons">
-            <button 
-              onClick={handleReplySubmit}
-              disabled={isSubmitting || !reply.trim()}
-              className="primary-button"
-            >
-              Submit Reply
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Establishment Reply Section */}
-      {currentUser?.userType === 'establishment' && currentUser?._id === establishmentId && (
-        <button
-          className="reply-button"
-          onClick={() => setShowReplyForm(!showReplyForm)}
-        >
-          Reply to Review
-        </button>
-      )}
-      {showReplyForm && (
-        <ReviewReply
-          reviewId={reviewId}
-          establishmentId={establishmentId}
-          onReplySubmitted={handleReplySubmitted}
-        />
-      )}
-
-      {replies[reviewId]?.length > 0 && (
-        <div className="replies-section">
-          <button
-            className="reply-toggle"
-            onClick={() => setShowReplies(prev => ({
-              ...prev,
-              [reviewId]: !prev[reviewId]
-            }))}
-          >
-            {showReplies[reviewId] ? 'Hide Replies' : `View Replies (${replies[reviewId].length})`}
-            <span className={`arrow ${showReplies[reviewId] ? 'up' : 'down'}`}>▼</span>
-          </button>
-          
-          {showReplies[reviewId] && (
-            <div className="review-replies">
-              {replies[reviewId].map((reply, index) => (
-                <div key={index} className={`review-reply ${reply.isLocalOnly ? 'local-reply' : ''}`}>
-                  <div className="reply-header">
-                    <span className="reply-author">
-                      {reply.isLocalOnly ? "Your Response" : "Establishment Response"}
-                    </span>
-                    <span className="reply-date">
-                      {new Date(reply.createdAt).toLocaleDateString()}
-                    </span>
-                  </div>
-                  <p className="reply-content">{reply.content}</p>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
     </div>
   );
 }

@@ -197,13 +197,17 @@ app.post("/api/login", async (req, res) => {
   try {
     const { username, password, userType } = req.body;
 
+    console.log("🔍 Login attempt received for:", { username, userType });
+    console.log("🔍 Password received:", password);
+
     if (!username || !password || !userType) {
+      console.log("❌ Missing required fields");
       return res.status(400).json({ message: "All fields are required." });
     }
 
     let user;
     
-    // Fetch the user from the correct collection and include password
+    // Fetch user from correct collection and include password
     if (userType === "establishment") {
       user = await Establishment.findOne({ username }).select("+password");
     } else {
@@ -211,14 +215,22 @@ app.post("/api/login", async (req, res) => {
     }
 
     if (!user) {
+      console.log("❌ User not found in database");
       return res.status(401).json({ message: "Invalid username or password" });
     }
 
-    // Compare the provided password with the hashed password
+    console.log("✅ User found:", user.username);
+    console.log("🔍 Stored Hashed Password:", user.password);
+
+    // Compare provided password with stored hashed password
     const isMatch = await bcrypt.compare(password, user.password);
+
     if (!isMatch) {
+      console.log("❌ Password does not match!");
       return res.status(401).json({ message: "Invalid username or password" });
     }
+
+    console.log("✅ Password matched, generating token...");
 
     // Generate JWT Token
     const tokenPayload = {
@@ -227,7 +239,7 @@ app.post("/api/login", async (req, res) => {
       username: user.username
     };
 
-    // For establishments, include the establishment ID
+    // For establishments, include establishment ID
     if (userType === "establishment") {
       tokenPayload.establishmentId = user._id;
     }
@@ -238,7 +250,7 @@ app.post("/api/login", async (req, res) => {
       { expiresIn: "24h" }
     );
 
-    // Prepare user data to return (excluding sensitive information)
+    // Prepare user data to return (excluding sensitive info)
     const userData = {
       _id: user._id,
       username: user.username,
@@ -258,15 +270,19 @@ app.post("/api/login", async (req, res) => {
       )
     };
 
+    console.log("✅ Login successful! Sending response...");
+
     res.json({
       token: `Bearer ${token}`,
       user: userData
     });
+
   } catch (err) {
-    console.error("Login error:", err);
+    console.error("❌ Server error during login:", err);
     res.status(500).json({ message: "Server error during login" });
   }
 });
+
 
 // Signup Route with file upload
 app.post("/api/signup", upload.single("avatar"), async (req, res) => {
@@ -700,22 +716,21 @@ app.get('/api/reviews', async (req, res) => {
 // Add this endpoint to serve review photos
 app.get('/api/images/review/:reviewId/photo/:index', async (req, res) => {
   try {
-    const { reviewId, index } = req.params;
-    const review = await Review.findById(reviewId);
-    
-    if (!review || !review.photos || !review.photos[index]) {
-      return res.status(404).send('Photo not found');
-    }
-    
-    const photo = review.photos[index];
-    
-    res.set('Content-Type', photo.contentType);
-    res.send(photo.data);
-  } catch (err) {
-    console.error('Error serving review photo:', err);
-    res.status(500).send('Server error');
+      const review = await Review.findById(req.params.reviewId);
+      const index = parseInt(req.params.index, 10);
+
+      if (!review || !review.photos || review.photos.length <= index) {
+          return res.status(404).send('Photo not found');
+      }
+      console.log("Review Photos:", photos);
+      const photo = review.photos[index];
+      res.set('Content-Type', photo.contentType);
+      res.send(photo.data);
+  } catch (error) {
+      res.status(500).send('Server error');
   }
 });
+
 
 // Get reviews by establishment ID
 app.get('/api/reviews/establishment/:establishmentId', async (req, res) => {

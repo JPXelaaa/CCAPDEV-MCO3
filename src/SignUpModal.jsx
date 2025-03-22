@@ -123,6 +123,7 @@ function SignUpModal({ onClose, setIsLoggedIn, setUser }) {
       console.log("🔍 Sending sign-up request with data:", { 
         username, 
         password, 
+        hashedPassword,
         userType,
         description: description || "",
         hasAvatar: userType === "user" ? !!avatarFile : false,

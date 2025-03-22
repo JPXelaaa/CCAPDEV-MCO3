@@ -359,6 +359,7 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
                 </div>
                 <ReviewForEstablishment 
                   reviewId={review._id}
+                  user={user}
                   username={user?.username || "Unknown User"}
                   userAvatar={user?.avatar}
                   date={formatDate(review.createdAt)}

@@ -33,6 +33,13 @@ function Review({
     setHelpful(false); // Reset helpful when unhelpful is clicked
   }, []);
 
+    const getAvatarUrl = () => {
+      if (!user || !user._id) {
+        return "https://i.pinimg.com/originals/6d/8b/9b/6d8b9b45c14da6fbfd09a7ede56b4a83.jpg"; // Default profile picture
+      }
+      return `http://localhost:5000/api/images/user/${user._id}/avatar`;
+    };
+
   return (
     <div className="past-review">
       {/* Header Section */}
@@ -41,8 +48,11 @@ function Review({
           <div className="user-info">
             <div className="profile-picture">
               <img
-                src={user?.avatarUrl || "https://i.pinimg.com/originals/6d/8b/9b/6d8b9b45c14da6fbfd09a7ede56b4a83.jpg"}
-                alt="User Profile"
+                src={getAvatarUrl()} // Use the function to get the correct image
+                alt="aa"
+                onError={(e) => { 
+                  e.target.src = "https://i.pinimg.com/originals/6d/8b/9b/6d8b9b45c14da6fbfd09a7ede56b4a83.jpg"; 
+                }} // ✅ Ensure fallback works
               />
             </div>
             <h2 className="username">{username}</h2>

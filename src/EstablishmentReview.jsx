@@ -205,6 +205,7 @@ function EstablishmentReview({ establishmentId: propEstablishmentId, isLoggedIn,
                     key={review._id}
                     reviewId={review._id}
                     username={review.user.username}
+                    user={user}
                     userAvatar={review.user.avatar}
                     date={formatDate(review.createdAt)}
                     title={review.title}
