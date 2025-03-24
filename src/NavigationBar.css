@@ -9,10 +9,6 @@ nav {
   top: -2px;
 }
 
-.nav-right {
-  margin-right: 25px;
-  margin-left: -30px;
-}
 
 #log-in, #sign-up {
   width: 110px;
@@ -25,6 +21,7 @@ nav {
 
 #log-in h2, #sign-up h2 {
   align-self: center;
+  margin: 0;
 }
 
 #sign-up {

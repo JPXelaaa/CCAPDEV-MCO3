@@ -127,7 +127,6 @@ function NavigationBar({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowEstabli
             </>
           ) : (
             <>
-              <h2 className="nav-link"><Link to="/">Home</Link></h2>
               <button id="log-in"><h2 className="nav-link" onClick={() => setShowLogin(true)}>LOG IN</h2></button>
               <button id="sign-up" onClick={toggleProfileOptions}><h2 className="nav-link">SIGN UP</h2>
               {showProfileOptions && (

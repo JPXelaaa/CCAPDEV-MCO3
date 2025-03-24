@@ -7,7 +7,7 @@ const HomeGrid = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const establishmentsPerPage = 5;
+  const establishmentsPerPage = 12;
 
   useEffect(() => {
     const fetchEstablishments = async () => {
