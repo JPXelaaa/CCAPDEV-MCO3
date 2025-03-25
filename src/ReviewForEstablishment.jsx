@@ -143,9 +143,29 @@ function ReviewForEstablishment({
       <div className="review-footer">
         <div className="footer-content">
           {isLoggedIn && (
+            <>
+
+              <button
+              id="helpful"
+              /*className={helpful ? "selected" : ""}
+              onClick={handleHelpfulClick}*/
+            >
+              <img src="https://www.svgrepo.com/show/522577/like.svg" alt="Helpful Icon" />
+              Helpful {/*({helpful ? 1 : 0})*/}
+            </button>
+            <button
+              id="unhelpful"
+              /*className={unhelpful ? "selected" : ""}
+              onClick={handleUnhelpfulClick}*/
+            >
+              <img src="https://www.svgrepo.com/show/522518/dislike.svg" alt="Unhelpful Icon" />
+              Unhelpful {/*({unhelpful ? 1 : 0})*/}
+            </button>
+
             <p className="rep-text" onClick={() => setShowReplyBox((prev) => !prev)}>
               Reply
             </p>
+            </>
           )}
         </div>
       </div>
