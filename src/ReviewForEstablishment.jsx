@@ -79,7 +79,7 @@ function ReviewForEstablishment({
       </div>
 
       {/* Review Text */}
-      <div className="review-text">
+      <div className="review-section">
         {type === "view" ? (reviewText.length > 100 ? reviewText.substring(0,100) + "..." : reviewText) : reviewText}
       </div>
 

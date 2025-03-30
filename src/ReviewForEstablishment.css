@@ -2,8 +2,10 @@
     border-width: 1px;
     border-style: solid;
     border-radius: 25px;
+    border-color: #ddd;
     background-color: white;
     margin: 3% 0;
+    padding-top: 2%;
   }
   
   .review-header, .review-establishment {
@@ -16,15 +18,15 @@
   #title{
     margin: 0;
     font-family: 'Montserrat';
+    font-size: 20px;
   }
   
   .overall-rev {
     display: flex;
     justify-content: left;
     align-self: center;
-    margin-left: 35px;
-    margin-top: 1%;
-    margin-bottom: 10px;
+    margin-left: 4.5%;
+    margin-bottom: 3%;
   }
   
   .user-info {
@@ -34,11 +36,12 @@
   }
   
   .profile-picture {
-    width: 40px; 
-    height: 40px;
+    width: 60px; 
+    height: 60px;
     border-radius: 50%; 
     background-color: gray; 
     overflow: hidden;
+    border: 1px solid #000000;
   }
   
   .profile-picture img {
@@ -64,9 +67,12 @@
     padding: 0% 5% 0% 5%;
   }
   
-  .review-text {
-    margin-bottom: 15px;
-    line-height: 1.5;
+  .review-section {
+    border: 1px solid #ddd;
+    margin: 0% 5%;
+    min-height: 150px;
+    width: 90%;
+    padding: 2%;;
   }
   
   .review-photo {
