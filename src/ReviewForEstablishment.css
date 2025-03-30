@@ -144,7 +144,7 @@
   .rep-text {
     font-size: 14px;
     color: #1890ff;
-    margin-right: 2%;
+    margin-right: 5%;
     cursor: pointer;
     padding: 5px 10px;
     border-radius: 4px;
@@ -309,4 +309,9 @@
   
   .reply-button:hover {
     background-color: #005c94;
+  }
+
+  .react-button {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
   }

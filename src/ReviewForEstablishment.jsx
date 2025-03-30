@@ -145,7 +145,8 @@ function ReviewForEstablishment({
           {isLoggedIn && (
             <>
 
-              <button
+            <div class="react-button">
+            <button
               id="helpful"
               /*className={helpful ? "selected" : ""}
               onClick={handleHelpfulClick}*/
@@ -161,6 +162,8 @@ function ReviewForEstablishment({
               <img src="https://www.svgrepo.com/show/522518/dislike.svg" alt="Unhelpful Icon" />
               Unhelpful {/*({unhelpful ? 1 : 0})*/}
             </button>
+            </div>
+
 
             <p className="rep-text" onClick={() => setShowReplyBox((prev) => !prev)}>
               Reply
