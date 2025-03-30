@@ -1,36 +1,58 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import './HomeGrid.css';
 import EstablishmentPreview from "./EstablishmentPreview";
+import debounce from "lodash.debounce";
 
-const HomeGrid = () => {
+const HomeGrid = ({searchQuery, sortOption}) => {
   const [establishments, setEstablishments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const establishmentsPerPage = 12;
 
-  useEffect(() => {
-    const fetchEstablishments = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch('http://localhost:5000/api/establishments');
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        setEstablishments(data);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching establishments:", error);
-        setError("Failed to load establishments. Please try again later.");
-        setLoading(false);
+ const fetchEstablishments = async (query, sortOption) => {
+    try {
+      setLoading(true);
+  
+      let url = "http://localhost:5000/api/establishments";
+      if (query) {
+        url = `http://localhost:5000/api/establishments/${query}`;
       }
-    };
-
-    fetchEstablishments();
-  }, []);
+  
+      const response = await fetch(url);
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+  
+      if (sortOption === "highToLow") {
+        data.sort((a, b) => b.rating - a.rating);
+      } else if (sortOption === "lowToHigh") {
+        data.sort((a, b) => a.rating - b.rating);
+      } else if (sortOption === "popular") {
+        data.sort((a, b) => b.reviewCount - a.reviewCount);
+      }
+  
+      setEstablishments(data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching establishments:", error);
+      setError("Failed to load establishments. Please try again later.");
+      setLoading(false);
+    }
+  };
+  
+  const debouncedFetch = useCallback(
+    debounce((query, sortOption) => fetchEstablishments(query, sortOption), 300),
+    []
+  );
+  
+  useEffect(() => {
+    debouncedFetch(searchQuery, sortOption);
+  }, [searchQuery, sortOption]);
+  
 
   const indexOfLastEstablishment = currentPage * establishmentsPerPage;
   const indexOfFirstEstablishment = indexOfLastEstablishment - establishmentsPerPage;

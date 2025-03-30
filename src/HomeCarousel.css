@@ -17,3 +17,7 @@ body {
 .slick-arrow.slick-prev::before, .slick-arrow.slick-next::before {
   color: black;
 }
+
+.slick-slide {
+  width: 305px !important; 
+}
