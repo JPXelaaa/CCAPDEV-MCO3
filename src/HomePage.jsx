@@ -11,6 +11,8 @@ function HomePage({ setShowLogin, setShowSignUp, setShowEstablishmentSignUp, isL
   const [searchQuery, setSearchQuery] = useState("");
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  const [sortOption, setSortOption] = useState(""); 
+
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("loggedInUser"));
@@ -68,12 +70,34 @@ function HomePage({ setShowLogin, setShowSignUp, setShowEstablishmentSignUp, isL
               </a>
               {showFilterDropdown && (
                 <ul className="dropdown-menu">
-                  <li><a className="dropdown-item" onClick={() => console.log('Most Popular selected')}>Most Popular</a></li>
-                  <li><a className="dropdown-item" onClick={() => console.log('High to Low Ratings selected')}>High to Low Ratings</a></li>
-                  <li><a className="dropdown-item" onClick={() => console.log('Low to High Ratings selected')}>Low to High Ratings</a></li>
+                  <li>
+                    <a
+                      className="dropdown-item"
+                      onClick={() => setSortOption("popular")}
+                    >
+                      Most Popular
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      className="dropdown-item"
+                      onClick={() => setSortOption("highToLow")}
+                    >
+                      High to Low Ratings
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      className="dropdown-item"
+                      onClick={() => setSortOption("lowToHigh")}
+                    >
+                      Low to High Ratings
+                    </a>
+                  </li>
                 </ul>
               )}
             </li>
+
             <li className="page-item">
               <a className="btn btn-secondary" onClick={toggleSearchDropdown}>
                 <img src="https://www.svgrepo.com/show/532555/search.svg" alt="Search View" />
@@ -82,21 +106,14 @@ function HomePage({ setShowLogin, setShowSignUp, setShowEstablishmentSignUp, isL
               {showSearchDropdown && (
                 <div className="search-dropdown">
                   <input
+                    id="search-input"
                     type="search"
                     className="search-input"
                     placeholder="Search"
                     aria-label="Search"
-                    value={searchQuery}
+                    //value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
-                  <button 
-                    className="search-button"
-                    onClick={handleSearch}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = '#b16757'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
-                  >
-                    GO
-                  </button>
                 </div>
               )}
             </li>
@@ -105,7 +122,7 @@ function HomePage({ setShowLogin, setShowSignUp, setShowEstablishmentSignUp, isL
 
         <div className="spacer"></div>
 
-        {isCarousel ? <HomeCarousel /> : <HomeGrid />}
+        {isCarousel ? <HomeCarousel searchQuery={searchQuery} sortOption={sortOption} /> : <HomeGrid searchQuery={searchQuery} sortOption={sortOption} />}
       </div>
       
       <Footer />

@@ -101,7 +101,7 @@ function NavigationBar({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowEstabli
                           e.target.src = "https://via.placeholder.com/150";
                         }}
                       />
-                      <span>{user.username}</span>
+                      <h6 className="nav-username">{user.username}</h6>
                     </>
                   ) : (
                     <>
@@ -113,7 +113,7 @@ function NavigationBar({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowEstabli
                           e.target.src = "https://i.pinimg.com/originals/6d/8b/9b/6d8b9b45c14da6fbfd09a7ede56b4a83.jpg";
                         }}
                       />
-                      <span>{user.username}</span>
+                      <h6 className="nav-username">{user.username}</h6>
                     </>
                   )}
                   {showProfileOptions && (

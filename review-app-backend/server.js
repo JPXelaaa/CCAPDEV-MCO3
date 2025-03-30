@@ -135,6 +135,34 @@ app.get('/api/establishments', async (req, res) => {
   }
 });
 
+// Search establishments
+app.get('/api/establishments/:search', async (req, res) => {
+  try {
+    const establishments = await Establishment.find({
+      name: { $regex: req.params.search, $options: "i" }
+    })
+      .lean()
+      .select('name description rating reviewCount logo photos')
+      .sort({ name: 1 });
+    
+    // Transform the response to include image URLs instead of binary data
+    const transformedEstablishments = establishments.map(est => {
+      return {
+        ...est,
+        logoUrl: est._id ? `/api/images/establishment/${est._id}/logo` : null,
+        photoUrls: est.photos && est.photos.length > 0 
+          ? Array.from({ length: est.photos.length }, (_, i) => `/api/images/establishment/${est._id}/photo${i}`) 
+          : []
+      };
+    });
+    
+    res.json(transformedEstablishments);
+  } catch (error) {
+    console.error('Error fetching establishments:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Get a single establishment by ID
 app.get('/api/establishments/:id', async (req, res) => {
   try {
