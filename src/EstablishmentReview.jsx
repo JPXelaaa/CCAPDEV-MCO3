@@ -39,8 +39,9 @@ function EstablishmentReview({ establishmentId: propEstablishmentId, isLoggedIn,
       const response = await fetch(url);
       
       if (!response.ok) throw new Error("Failed to fetch reviews");
-
+  
       const data = await response.json();
+      console.log("Review data:", data); // Fixed variable name
       setReviews(data);
     } catch (err) {
       console.error("Error fetching reviews:", err);
@@ -201,20 +202,21 @@ function EstablishmentReview({ establishmentId: propEstablishmentId, isLoggedIn,
                 <p className="error-message">{error}</p>
               ) : displayedReviews.length > 0 ? (
                 displayedReviews.map((review) => (
-                  <ReviewForEstablishment
-                    key={review._id}
+                    <ReviewForEstablishment 
+                    key={review._id}  
                     reviewId={review._id}
-                    username={review.user.username}
-                    user={user}
-                    userAvatar={review.user.avatar}
+                    user={review.user}  
+                    username={review.user?.username || "Unknown User"}  
+                    userAvatar={review.user?.avatar}  
                     date={formatDate(review.createdAt)}
                     title={review.title}
                     rating={review.rating}
                     reviewText={review.body}
-                    photos={review.photos}
+                    photos={review.photos || []}
+                    photoUrls={review.photoUrls || []}
                     helpful={review.helpful}
                     unhelpful={review.unhelpful}
-                    currentUser={user}
+                    currentUser={user}  
                     isLoggedIn={isLoggedIn}
                     userVote={reviewVotes[review._id] || null}
                     onVoteUpdate={handleVoteUpdate}

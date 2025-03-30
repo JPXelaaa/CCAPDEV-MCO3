@@ -10,8 +10,9 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [reviewToDelete, setReviewToDelete] = useState(null);
   const [editingReview, setEditingReview] = useState(null);
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const [allPhotos, setAllPhotos] = useState([]);
   const [editFormData, setEditFormData] = useState({
-    
     title: "",
     body: "",
     rating: 0
@@ -33,6 +34,25 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
     }
   }, [isLoggedIn, user, reviews]);
 
+  // Extract and prepare all photos
+  useEffect(() => {
+    if (reviews && reviews.length > 0) {
+      const extractedPhotos = [];
+      reviews.forEach(review => {
+        if (review.photos && review.photos.length > 0) {
+          review.photos.forEach(photo => {
+            extractedPhotos.push({
+              photo: photo,
+              reviewId: review._id
+            });
+          });
+        }
+      });
+      setAllPhotos(extractedPhotos);
+      console.log("Extracted photos:", extractedPhotos);
+    }
+  }, [reviews]);
+
   const fetchUserReviews = async (userId) => {
     try {
       setLoading(true);
@@ -43,6 +63,7 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
       }
       
       const data = await response.json();
+      console.log("Fetched reviews:", data);
       setReviews(data);
       setLoading(false);
     } catch (err) {
@@ -123,7 +144,7 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
             return;
         }
 
-        const { logo, ...updatedData } = editFormData; // exclude logo field in frontend
+        const { logo, ...updatedData } = editFormData;
 
         const response = await fetch(`http://localhost:5000/api/reviews/${editingReview._id}`, {
             method: "PUT",
@@ -131,7 +152,7 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
                 "Content-Type": "application/json",
                 Authorization: token
             },
-            body: JSON.stringify(updatedData), // now 'logo' is not sent
+            body: JSON.stringify(updatedData),
         });
 
         console.log("Response status:", response.status);
@@ -162,7 +183,7 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
         console.error("Error updating review:", err);
         setError(`Failed to update review: ${err.message}`);
     }
-};
+  };
 
   // function to cancel editing
   const cancelEdit = () => {
@@ -213,13 +234,13 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
     }
   };
   
-  // Add this function to cancel the delete operation
+  // function to cancel the delete operation
   const cancelDelete = () => {
     setShowDeleteConfirmation(false);
     setReviewToDelete(null);
   };
   
-  // Add this to render the confirmation dialog
+  // render the confirmation dialog
   const renderDeleteConfirmation = () => {
     if (!showDeleteConfirmation) return null;
   
@@ -258,6 +279,68 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
     }));
   };
 
+  // Handle opening photo modal
+  const openPhotoModal = (photoIndex) => {
+    setSelectedPhoto(photoIndex);
+  };
+
+  // Handle closing photo modal
+  const closePhotoModal = () => {
+    setSelectedPhoto(null);
+  };
+
+  // Function to get photo URL - directly copying approach from ReviewForEstablishment
+  const getPhotoUrl = (photo) => {
+    return `http://localhost:5000/uploads/${photo}`;
+  };
+
+  // Render photo modal
+  const renderPhotoModal = () => {
+    if (selectedPhoto === null || allPhotos.length === 0) return null;
+    
+    const currentPhoto = allPhotos[selectedPhoto];
+    
+    return (
+      <div className="photo-modal-overlay" onClick={closePhotoModal}>
+        <div className="photo-modal-content" onClick={(e) => e.stopPropagation()}>
+          <button className="close-modal" onClick={closePhotoModal}>×</button>
+          <img 
+            src={getPhotoUrl(currentPhoto.photo)} 
+            alt={`Review Photo ${selectedPhoto + 1}`}
+            className="modal-photo"
+            onError={(e) => { 
+              e.target.src = "https://via.placeholder.com/150"; // Fallback image
+            }}
+          />
+          <div className="photo-navigation">
+            {selectedPhoto > 0 && (
+              <button 
+                className="nav-button prev" 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedPhoto(selectedPhoto - 1);
+                }}
+              >
+                ‹
+              </button>
+            )}
+            {selectedPhoto < allPhotos.length - 1 && (
+              <button 
+                className="nav-button next" 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedPhoto(selectedPhoto + 1);
+                }}
+              >
+                ›
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   // render the edit form
   const renderEditForm = () => {
     if (!editingReview) return null;
@@ -281,20 +364,20 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
               />
             </div>
             
-            <div class="col-md-6">
+            <div className="col-md-6">
             <label>Rating:</label>
-              <div class="rating-card p-4">
-                  <div class="star-rating animated-stars">
+              <div className="rating-card p-4">
+                  <div className="star-rating animated-stars">
                       <input type="radio" id="star5" name="rating" value="5" onClick={() => handleRatingChange(5)}/>
-                      <label for="star5" class="bi bi-star-fill"></label>
+                      <label htmlFor="star5" className="bi bi-star-fill"></label>
                       <input type="radio" id="star4" name="rating" value="4" onClick={() => handleRatingChange(4)}/>
-                      <label for="star4" class="bi bi-star-fill"></label>
+                      <label htmlFor="star4" className="bi bi-star-fill"></label>
                       <input type="radio" id="star3" name="rating" value="3" onClick={() => handleRatingChange(3)}/>
-                      <label for="star3" class="bi bi-star-fill"></label>
+                      <label htmlFor="star3" className="bi bi-star-fill"></label>
                       <input type="radio" id="star2" name="rating" value="2" onClick={() => handleRatingChange(2)}/>
-                      <label for="star2" class="bi bi-star-fill"></label>
+                      <label htmlFor="star2" className="bi bi-star-fill"></label>
                       <input type="radio" id="star1" name="rating" value="1" onClick={() => handleRatingChange(1)}/>
-                      <label for="star1" class="bi bi-star-fill"></label>
+                      <label htmlFor="star1" className="bi bi-star-fill"></label>
                   </div>
               </div>
           </div>
@@ -319,6 +402,10 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
       </div>
     );
   };
+
+  // Console logs for debugging
+  console.log("All photos array:", allPhotos);
+  console.log("Reviews with photos:", reviews.filter(r => r.photos && r.photos.length > 0));
 
   return (
     <div className="review-body">
@@ -357,23 +444,25 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
                     </button>
                   </div>
                 </div>
+                {/* Force photos array to be an array even if null/undefined */}
                 <ReviewForEstablishment 
-                  reviewId={review._id}
-                  user={user}
-                  username={user?.username || "Unknown User"}
-                  userAvatar={user?.avatar}
-                  date={formatDate(review.createdAt)}
-                  title={review.title}
-                  rating={review.rating}
-                  reviewText={review.body}
-                  photos={review.photos}
-                  helpful={review.helpful}
-                  unhelpful={review.unhelpful}
-                  currentUser={user}
-                  isLoggedIn={isLoggedIn}
-                  userVote={reviewVotes[review._id] || null}
-                  onVoteUpdate={handleVoteUpdate}
-                />
+                      reviewId={review._id}
+                      user={review.user}  
+                      username={review.user?.username || "Unknown User"}  
+                      userAvatar={review.user?.avatar}  
+                      date={formatDate(review.createdAt)}
+                      title={review.title}
+                      rating={review.rating}
+                      reviewText={review.body}
+                      photos={review.photos || []}
+                      photoUrls={review.photoUrls || []}
+                      helpful={review.helpful}
+                      unhelpful={review.unhelpful}
+                      currentUser={user}  
+                      isLoggedIn={isLoggedIn}
+                      userVote={reviewVotes[review._id] || null}
+                      onVoteUpdate={handleVoteUpdate}
+                    />
               </div>
             ))
           ) : (
@@ -399,20 +488,20 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
               <p>Loading photos...</p>
             ) : error ? (
               <p>{error}</p>
-            ) : reviews.length > 0 ? (
-      
-              reviews
-                .flatMap(review => review.photos || [])
-                .slice(0, 5) // only first five will be shown
-                .map((photo, index) => (
-                  <div className="photo-preview" key={index}>
-                    <img 
-                      src={`http://localhost:5000/uploads/${photo}`} 
-                      className="actual-photo"
-                      alt={`Review photo ${index + 1}`}
-                    />
-                  </div>
-                ))
+            ) : allPhotos.length > 0 ? (
+              allPhotos.slice(0, 5).map((photoObj, index) => (
+                <div className="photo-preview" key={index} onClick={() => openPhotoModal(index)}>
+                  <img 
+                    src={getPhotoUrl(photoObj.photo)} 
+                    className="actual-photo"
+                    alt={`Review photo ${index + 1}`}
+                    onError={(e) => { 
+                      console.log("Image failed to load:", photoObj.photo);
+                      e.target.src = "https://via.placeholder.com/150"; // Fallback image
+                    }}
+                  />
+                </div>
+              ))
             ) : (
               <p>No photos available.</p>
             )}
@@ -420,7 +509,7 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
         </div>
       </div>
       
-      {renderEditForm()}
+      {renderPhotoModal()}
       {renderDeleteConfirmation()}
       {renderEditForm()}
     </div>
