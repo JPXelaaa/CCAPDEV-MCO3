@@ -37,6 +37,7 @@ const HomeGrid = ({searchQuery, sortOption}) => {
   
       setEstablishments(data);
       setLoading(false);
+
     } catch (error) {
       console.error("Error fetching establishments:", error);
       setError("Failed to load establishments. Please try again later.");
@@ -65,7 +66,13 @@ const HomeGrid = ({searchQuery, sortOption}) => {
   const prevPage = () => setCurrentPage(prev => Math.max(prev - 1, 1));
 
   if (loading) {
-    return <div className="left-main loading">Loading establishments...</div>;
+    return (<>
+      <div className="loading">Loading establishments...</div>
+      <div class="text-center">
+        <div class="spinner-border" role="status">
+        </div>
+      </div>
+    </>);
   }
 
   if (error) {

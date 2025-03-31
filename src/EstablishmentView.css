@@ -124,7 +124,7 @@ h4 {
   justify-content: center; 
   align-items: center;
   width: 750px; 
-  height: 500px; 
+  height: 450px; 
   overflow: hidden; 
   border: 2px solid #ddd; 
   border-radius: 10px; 
@@ -134,7 +134,7 @@ h4 {
 }
 
 .establishment-image {
-  margin-top: -400px;
+  margin-top: -420px;
   width: 100%;
   height: fit-content;
   object-fit: cover;
@@ -174,6 +174,21 @@ h4 {
 
 .arrow-button.right {
   right: 10px;
+}
+
+.establishment-container {
+  animation: transitionIn 0.5s ease-in-out;
+}
+
+@keyframes transitionIn {
+  from {
+      opacity: 0;
+      transform: translateY(0);
+  }
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
 }
 
 .establishment-view .tags {
@@ -248,8 +263,8 @@ h4 {
   position: relative;
 }
 
-.contact-info p {
-  margin: 3px 0;
+.location-info p, .contact-info p {
+  font-weight: normal;
 }
 
 .hours-info .hours-list {

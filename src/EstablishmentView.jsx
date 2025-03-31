@@ -217,20 +217,6 @@ const EstablishmentView = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowSig
       />
 
       <div className="establishment-container">
-        {isOwner && (
-          <div className="owner-management-panel">
-            <h3>Establishment Management</h3>
-            <div className="management-actions">
-              <button 
-                className="management-btn"
-                onClick={() => navigate(`/establishment/manage/${establishmentId}`)}
-              >
-                Manage Establishment
-              </button>
-            </div>
-          </div>
-        )}
-
         <div className="establishment-top-section">
           {/* Left column - Logo and basic info */}
           <div className="establishment-logo-section">

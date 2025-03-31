@@ -34,7 +34,8 @@ function LoginModal({ onClose, setIsLoggedIn, setUser }) {
 
       // Store token and user data
       localStorage.setItem("token", data.token);
-      localStorage.setItem("loggedInUser", JSON.stringify(data.user));
+      const minimalUser = { id: data.user.id, username: data.user.username };
+      localStorage.setItem("loggedInUser", JSON.stringify(minimalUser));
       
       // Update application state
       setIsLoggedIn(true);
@@ -50,7 +51,7 @@ function LoginModal({ onClose, setIsLoggedIn, setUser }) {
   };
 
   return (
-    <div className="login-modal-overlay">
+    <div id="login-modal" className="login-modal-overlay">
       <div className="login-modal-content">
         <h2>{`Log In as ${userType === "user" ? "User" : "Establishment"}`}</h2>
         <form className="login-form" onSubmit={handleSubmit}>
@@ -103,8 +104,6 @@ function LoginModal({ onClose, setIsLoggedIn, setUser }) {
             {isLoading ? "Logging in..." : "Log In"}
           </button>
         </form>
-
-        <p className="login-signup-link">No account yet? <a href="#">Sign up here</a>.</p>
 
         <button className="login-close-button" onClick={onClose}>X</button>
       </div>

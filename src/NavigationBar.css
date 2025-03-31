@@ -75,11 +75,24 @@ nav {
   transition: opacity 0.2s ease-in-out;
   justify-content: flex-start;
   margin-top: 5px;
+  animation: slideDown 0.3s ease forwards;
 }
 
 .dropdown-options {
   right: 85px;
 }
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 
 
 /* Navigation links styling */
