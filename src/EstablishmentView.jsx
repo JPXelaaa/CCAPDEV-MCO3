@@ -250,23 +250,7 @@ const EstablishmentView = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowSig
                 &gt;
               </button>
               </div>
-              
-              <div className="tags">
-                <div className="tag-container">
-                  <div className="rectangle">
-                    <p className="tag-text">Pizza</p>
-                  </div>
-                  
-                  <div className="rectangle">
-                    <p className="tag-text">Hotdog</p>
-                  </div>
-
-                  <div className="rectangle">
-                    <p className="tag-text">Burger</p>
-                  </div>
-                </div>
-              </div>
-
+          
             </div>
 
           {/* Right column - Contact info */}

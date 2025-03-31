@@ -124,7 +124,7 @@ h4 {
   justify-content: center; 
   align-items: center;
   width: 750px; 
-  height: 500px; 
+  height: 450px; 
   overflow: hidden; 
   border: 2px solid #ddd; 
   border-radius: 10px; 
@@ -134,7 +134,7 @@ h4 {
 }
 
 .establishment-image {
-  margin-top: -400px;
+  margin-top: -420px;
   width: 100%;
   height: fit-content;
   object-fit: cover;
