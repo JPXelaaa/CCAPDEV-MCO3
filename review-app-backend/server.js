@@ -109,32 +109,42 @@ app.get('/api/images/:type/:id/:field', async (req, res) => {
   }
 });
 
-// Get all establishments
-app.get('/api/establishments', async (req, res) => {
+// Get establishment by id
+app.get('/api/establishments/:id', async (req, res) => {
   try {
-    const establishments = await Establishment.find()
-      .lean()
-      .select('name description rating reviewCount logo photos')
-      .sort({ name: 1 });
-    
+    console.log("establishment ENTERED!!!");
+    const { id } = req.params;
+
+    // Validate ID format
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid establishment ID format' });
+    }
+
+    // Find establishment by ID and populate owner information
+    const establishment = await Establishment.findById(id)
+      .populate('owner', '_id name email')
+      .lean();
+
+    if (!establishment) {
+      return res.status(404).json({ message: 'Establishment not found' });
+    }
+
     // Transform the response to include image URLs instead of binary data
-    const transformedEstablishments = establishments.map(est => {
-      return {
-        ...est,
-        logoUrl: est._id ? `/api/images/establishment/${est._id}/logo` : null,
-        photoUrls: est.photos && est.photos.length > 0 
-          ? Array.from({ length: est.photos.length }, (_, i) => `/api/images/establishment/${est._id}/photo${i}`) 
-          : []
-      };
-    });
+    const transformedEstablishment = {
+      ...establishment,
+      logoUrl: `/api/images/establishment/${id}/logo`,
+      photoUrls: establishment.photos && establishment.photos.length > 0 
+        ? establishment.photos.map((photo, index) => 
+            `/api/images/establishment/${id}/photo${index}`)
+        : []
+    };
     
-    res.json(transformedEstablishments);
+    res.json(transformedEstablishment);
   } catch (error) {
-    console.error('Error fetching establishments:', error);
+    console.error('Error fetching establishment:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
-
 // Search establishments
 app.get('/api/establishments/:search', async (req, res) => {
   try {
@@ -570,16 +580,15 @@ app.post("/api/edit-account", upload.single("avatar"), async (req, res) => {
       });
     }
 
-    if (oldPassword.trim() === "") {
+    if (oldPassword.trim() == "") {
       return res.status(400).json({ 
         status: "error", 
         message: "Input your password to proceed" 
       });
     }
     
-    // Verify old password - use bcrypt to compare
-    const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
-    if (!isPasswordValid) {
+    // Verify old password
+    if (oldPassword !== user.password) {
       return res.status(400).json({ 
         status: "error", 
         message: "Current password is incorrect" 
@@ -607,9 +616,7 @@ app.post("/api/edit-account", upload.single("avatar"), async (req, res) => {
     }
     
     if (password && password.trim() !== "") {
-      // Hash the new password before saving
-      const salt = await bcrypt.genSalt(10);
-      updateData.password = await bcrypt.hash(password, salt);
+      updateData.password = password;
     }
     
     if (description !== undefined) {
@@ -1413,6 +1420,32 @@ app.get('/api/reviews/:reviewId/votes', async (req, res) => {
   } catch (err) {
     console.error('Error retrieving review votes:', err);
     res.status(500).json({ message: 'Server error retrieving votes' });
+  }
+});
+
+// Get all establishments
+app.get('/api/establishments', async (req, res) => {
+  try {
+    const establishments = await Establishment.find()
+      .lean()
+      .select('name description rating reviewCount logo photos')
+      .sort({ name: 1 });
+    
+    // Transform the response to include image URLs instead of binary data
+    const transformedEstablishments = establishments.map(est => {
+      return {
+        ...est,
+        logoUrl: est._id ? `/api/images/establishment/${est._id}/logo` : null,
+        photoUrls: est.photos && est.photos.length > 0 
+          ? Array.from({ length: est.photos.length }, (_, i) => `/api/images/establishment/${est._id}/photo${i}`) 
+          : []
+      };
+    });
+    
+    res.json(transformedEstablishments);
+  } catch (error) {
+    console.error('Error fetching establishments:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
