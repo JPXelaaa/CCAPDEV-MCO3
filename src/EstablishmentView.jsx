@@ -245,11 +245,6 @@ const EstablishmentView = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowSig
                 {establishment?.website && (
                   <p>{establishment.website}</p>
                 )}
-                {isOwner && (
-                  <button className="edit-info-btn">
-                    <img src="https://www.svgrepo.com/show/513324/edit.svg" alt="Edit" width="16" height="16" />
-                  </button>
-                )}
               </div>
             </div>
 
@@ -265,11 +260,7 @@ const EstablishmentView = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowSig
                   <div className="day-time"><div className="day">Saturday</div><div className="time">11:00AM - 9:00PM</div></div>
                   <div className="day-time"><div className="day">Sunday</div><div className="time">11:00AM - 9:00PM</div></div>
                 </div>
-                {isOwner && (
-                  <button className="edit-info-btn">
-                    <img src="https://www.svgrepo.com/show/513324/edit.svg" alt="Edit" width="16" height="16" />
-                  </button>
-                )}
+                
               </div>
             </div>
           </div>
@@ -282,14 +273,7 @@ const EstablishmentView = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowSig
             <div className="overview">
               <h4>Overview</h4>
               <p>
-                {establishment?.description || 
-                  `"Buns & Slices" is a fun and fast casual eatery serving up 
-                  mouthwatering hotdogs, juicy burgers, and cheesy, oven-baked 
-                  pizzas. Located in the heart of downtown, we pride ourselves 
-                  on using fresh ingredients and crafting delicious meals that 
-                  hit the spot every time. Whether you're grabbing a classic 
-                  cheeseburger, a gourmet pizza with all the toppings, or a 
-                  fully-loaded hotdog, we've got something for everyone.`}
+                {establishment?.description || "No Overview provided."}
               </p>
               {isOwner && (
                 <button className="edit-info-btn">
