@@ -51,7 +51,7 @@ function LoginModal({ onClose, setIsLoggedIn, setUser }) {
   };
 
   return (
-    <div className="login-modal-overlay">
+    <div id="login-modal" className="login-modal-overlay">
       <div className="login-modal-content">
         <h2>{`Log In as ${userType === "user" ? "User" : "Establishment"}`}</h2>
         <form className="login-form" onSubmit={handleSubmit}>

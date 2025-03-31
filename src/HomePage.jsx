@@ -99,7 +99,7 @@ function HomePage({ setShowLogin, setShowSignUp, setShowEstablishmentSignUp, isL
             </li>
 
             <li className="page-item">
-              <a className="btn btn-secondary" onClick={toggleSearchDropdown}>
+              <a className="btn btn-secondary" onClick={() => {toggleSearchDropdown(); setIsCarousel(false); }}>
                 <img src="https://www.svgrepo.com/show/532555/search.svg" alt="Search View" />
               </a>
 

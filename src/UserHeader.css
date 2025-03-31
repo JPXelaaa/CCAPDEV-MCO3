@@ -8,6 +8,21 @@
   border: none;
 }
 
+.profile-header {
+  animation: transitionIn 0.5s ease-in-out;
+}
+
+@keyframes transitionIn {
+  from {
+      opacity: 0;
+      transform: translateY(0);
+  }
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
+
 .profile-header-inner {
   width: fit-content; 
   height: fit-content; 

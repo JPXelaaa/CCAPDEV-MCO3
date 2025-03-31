@@ -16,10 +16,34 @@ body, html {
 .main-content {
   flex: 1;
   width: 100%;
+  animation: transitionIn 0.5s ease-in-out;
+}
+
+@keyframes transitionIn {
+  from {
+      opacity: 0;
+      transform: translateY(0);
+  }
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
 }
 
 .left-main {
   padding: 0 12%;
+  animation: transitionIn 0.5s ease-in-out;
+}
+
+@keyframes transitionIn {
+  from {
+      opacity: 0;
+      transform: translateY(0);
+  }
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
 }
 
 .main-section {
@@ -110,7 +134,20 @@ body, html {
   width: 400px;
   display: flex;
   align-items: center;
+  animation: slideDown 0.3s ease forwards;
 }
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 
 .search-input {
   border: none;

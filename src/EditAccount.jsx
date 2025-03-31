@@ -46,6 +46,11 @@ function EditAccount({ setShowLogin, setShowSignUp, setShowEstablishmentSignUp, 
   const updateData = async (e) => {
     e.preventDefault();
   
+    console.log("Updating data with the following values:");
+    console.log("Username:", username); 
+    console.log("Old Password:", oldPassword);
+    
+
     // Validate passwords if changing password
     if (password) {
       if (password !== confirmPassword) {
@@ -53,7 +58,7 @@ function EditAccount({ setShowLogin, setShowSignUp, setShowEstablishmentSignUp, 
         return;
       }
       
-      if (!oldPassword) {
+      if (!(await bcrypt.compare(password, user.password))) {
         alert("Please enter your current password to change to a new password.");
         return;
       }
@@ -122,7 +127,7 @@ function EditAccount({ setShowLogin, setShowSignUp, setShowEstablishmentSignUp, 
         setUser={setUser}
       />
 
-      <div>
+      <div class="edit-account-container">
         <div className="content-row">
           <div className="left-section">
             <form>

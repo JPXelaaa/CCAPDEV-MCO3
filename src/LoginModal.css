@@ -151,3 +151,18 @@
     margin-bottom: 10px;
     text-align: center;
 }
+
+#login-modal {
+    animation: transitionIn 0.3s ease-in-out;
+}
+
+@keyframes transitionIn {
+    from {
+        opacity: 0;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
