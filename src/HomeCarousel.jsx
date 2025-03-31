@@ -88,7 +88,13 @@ function HomeCarousel({searchQuery, sortOption}) {
   };
 
   if (loading) {
-    return <div className="carousel-container loading">Loading establishments...</div>;
+    return (<>
+      <div className="left-main loading">Loading establishments...</div>
+      <div class="text-center">
+        <div class="spinner-border" role="status">
+        </div>
+      </div>
+    </>);
   }
 
   if (error) {
