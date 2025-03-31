@@ -105,8 +105,6 @@ function LoginModal({ onClose, setIsLoggedIn, setUser }) {
           </button>
         </form>
 
-        <p className="login-signup-link">No account yet? <a href="#">Sign up here</a>.</p>
-
         <button className="login-close-button" onClick={onClose}>X</button>
       </div>
     </div>
