@@ -570,15 +570,16 @@ app.post("/api/edit-account", upload.single("avatar"), async (req, res) => {
       });
     }
 
-    if (oldPassword.trim() == "") {
+    if (oldPassword.trim() === "") {
       return res.status(400).json({ 
         status: "error", 
         message: "Input your password to proceed" 
       });
     }
     
-    // Verify old password
-    if (oldPassword !== user.password) {
+    // Verify old password - use bcrypt to compare
+    const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
+    if (!isPasswordValid) {
       return res.status(400).json({ 
         status: "error", 
         message: "Current password is incorrect" 
@@ -606,7 +607,9 @@ app.post("/api/edit-account", upload.single("avatar"), async (req, res) => {
     }
     
     if (password && password.trim() !== "") {
-      updateData.password = password;
+      // Hash the new password before saving
+      const salt = await bcrypt.genSalt(10);
+      updateData.password = await bcrypt.hash(password, salt);
     }
     
     if (description !== undefined) {
@@ -744,21 +747,27 @@ app.get('/api/reviews', async (req, res) => {
 // Add this endpoint to serve review photos
 app.get('/api/images/review/:reviewId/photo/:index', async (req, res) => {
   try {
-      const review = await Review.findById(req.params.reviewId);
-      const index = parseInt(req.params.index, 10);
+    console.log('Entered Photos!')
+    const review = await Review.findById(req.params.reviewId);
+    const index = parseInt(req.params.index, 10);
+    
+    // Variable name mismatch: "photoIndex" vs "index"
+    if (!review || !review.photos || !review.photos[index]) {
+      return res.status(404).send('Photo not found');
+    }
+    
+    // Set the appropriate content type
+    res.set('Content-Type', review.photos[index].contentType);
 
-      if (!review || !review.photos || review.photos.length <= index) {
-          return res.status(404).send('Photo not found');
-      }
-      console.log("Review Photos:", photos);
-      const photo = review.photos[index];
-      res.set('Content-Type', photo.contentType);
-      res.send(photo.data);
+    console.log('Review photos in API:', review.photos);
+    console.log('Photos length in API:', review.photos ? review.photos.length : 'null');
+    // Send the binary data
+    res.send(review.photos[index].data);
   } catch (error) {
-      res.status(500).send('Server error');
+    console.error('Error fetching review photo:', error);
+    res.status(500).send('Server error');
   }
 });
-
 
 // Get reviews by establishment ID
 app.get('/api/reviews/establishment/:establishmentId', async (req, res) => {
@@ -794,11 +803,13 @@ app.get('/api/reviews/establishment/:establishmentId', async (req, res) => {
       if (reviewObj.photos && reviewObj.photos.length > 0) {
         reviewObj.photoUrls = Array.from(
           { length: reviewObj.photos.length }, 
-          (_, i) => `/api/images/review/${reviewObj._id}/photo${i}`
+          (_, i) => `/api/images/review/${reviewObj._id}/photo/${i}`
         );
-        delete reviewObj.photos; // Remove binary data
+        // Don't delete photos, but replace binary data with empty objects to maintain the array length
+        reviewObj.photos = Array(reviewObj.photos.length).fill({});
       } else {
         reviewObj.photoUrls = [];
+        reviewObj.photos = [];
       }
       
       return reviewObj;
@@ -845,11 +856,13 @@ app.get('/api/reviews/user/:userId', async (req, res) => {
       if (reviewObj.photos && reviewObj.photos.length > 0) {
         reviewObj.photoUrls = Array.from(
           { length: reviewObj.photos.length }, 
-          (_, i) => `/api/images/review/${reviewObj._id}/photo${i}`
+          (_, i) => `/api/images/review/${reviewObj._id}/photo/${i}`
         );
-        delete reviewObj.photos; // Remove binary data
+        // Don't delete photos, but replace binary data with empty objects to maintain the array length
+        reviewObj.photos = Array(reviewObj.photos.length).fill({});
       } else {
         reviewObj.photoUrls = [];
+        reviewObj.photos = [];
       }
       
       return reviewObj;
@@ -858,96 +871,6 @@ app.get('/api/reviews/user/:userId', async (req, res) => {
     res.json(transformedReviews);
   } catch (err) {
     console.error('Error fetching reviews by user:', err);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// Get review votes for a specific review
-app.get('/api/reviews/:reviewId/vote', verifyToken, async (req, res) => {
-  try {
-    const { reviewId } = req.params;
-    
-    if (!mongoose.Types.ObjectId.isValid(reviewId)) {
-      return res.status(400).json({ message: 'Invalid review ID' });
-    }
-    
-    // Find the review
-    const review = await Review.findById(reviewId);
-    if (!review) {
-      return res.status(404).json({ message: 'Review not found' });
-    }
-    
-    // Check if the user has already voted on this review
-    const userVote = review.votes.find(vote => vote.user.toString() === req.userId);
-    
-    res.json({
-      reviewId,
-      userVote: userVote ? userVote.voteType : null,
-      helpfulCount: review.votes.filter(vote => vote.voteType === 'helpful').length,
-      unhelpfulCount: review.votes.filter(vote => vote.voteType === 'unhelpful').length
-    });
-  } catch (err) {
-    console.error('Error fetching review vote:', err);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// Vote on a review (helpful/unhelpful)
-app.post('/api/reviews/:reviewId/vote', verifyToken, async (req, res) => {
-  try {
-    const { reviewId } = req.params;
-    const { voteType } = req.body; // 'helpful', 'unhelpful', or null (to remove vote)
-    
-    if (!mongoose.Types.ObjectId.isValid(reviewId)) {
-      return res.status(400).json({ message: 'Invalid review ID' });
-    }
-    
-    if (voteType && !['helpful', 'unhelpful', null].includes(voteType)) {
-      return res.status(400).json({ message: 'Invalid vote type' });
-    }
-    
-    // Find the review
-    const review = await Review.findById(reviewId);
-    if (!review) {
-      return res.status(404).json({ message: 'Review not found' });
-    }
-    
-    // Check if the user is trying to vote on their own review
-    if (review.user.toString() === req.userId) {
-      return res.status(400).json({ message: 'Cannot vote on your own review' });
-    }
-    
-    // Check if the user has already voted on this review
-    const existingVoteIndex = review.votes.findIndex(vote => vote.user.toString() === req.userId);
-    
-    if (existingVoteIndex !== -1) {
-      // User has already voted
-      if (voteType === null) {
-        // Remove the vote
-        review.votes.splice(existingVoteIndex, 1);
-      } else {
-        // Update the vote
-        review.votes[existingVoteIndex].voteType = voteType;
-      }
-    } else if (voteType !== null) {
-      // Add a new vote
-      review.votes.push({
-        user: req.userId,
-        voteType
-      });
-    }
-    
-    await review.save();
-    
-    // Return updated vote counts
-    res.json({
-      reviewId,
-      userVote: voteType,
-      helpfulCount: review.votes.filter(vote => vote.voteType === 'helpful').length,
-      unhelpfulCount: review.votes.filter(vote => vote.voteType === 'unhelpful').length
-    });
-  } catch (err) {
-    console.error('Error voting on review:', err);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -1291,6 +1214,208 @@ app.delete('/api/establishments/:id/photos/:photoIndex', verifyToken, async (req
   }
 });
 
+app.post('/api/reviews/:reviewId/vote', verifyToken, async (req, res) => {
+  try {
+    const { reviewId } = req.params;
+    const { vote } = req.body;
+    
+    console.log('Vote request received:', { 
+      reviewId, 
+      vote, 
+      userId: req.userId,
+      userIdType: typeof req.userId 
+    });
+
+    if (!mongoose.Types.ObjectId.isValid(reviewId)) {
+      return res.status(400).json({ message: 'Invalid review ID' });
+    }
+    
+    // Find the review
+    const review = await Review.findById(reviewId);
+    if (!review) {
+      return res.status(404).json({ message: 'Review not found' });
+    }
+    
+    console.log('Review votes before update:', { 
+      _id: review._id,
+      helpfulCount: review.helpfulCount, 
+      unhelpfulCount: review.unhelpfulCount,
+      votesCount: review.votes.length
+    });
+    
+    // Check if the user has already voted on this review
+    const existingVoteIndex = review.votes.findIndex(
+      v => v.user.toString() === req.userId
+    );
+    
+    console.log('Existing vote check:', { 
+      existingVoteIndex, 
+      hasVoted: existingVoteIndex !== -1,
+      requestUserId: req.userId,
+      allVoteUserIds: review.votes.map(v => v.user.toString())
+    });
+    
+    let updatedVoteType = vote;
+    
+    if (existingVoteIndex !== -1) {
+      // User has already voted
+      const existingVote = review.votes[existingVoteIndex];
+      console.log('Existing vote found:', { 
+        existingVoteType: existingVote.voteType, 
+        newVoteType: vote 
+      });
+      
+      // If same vote, remove the vote and decrement count
+      if (existingVote.voteType === vote) {
+        review.votes.splice(existingVoteIndex, 1);
+        if (vote === 'helpful') {
+          review.helpfulCount = Math.max(0, review.helpfulCount - 1);
+        } else {
+          review.unhelpfulCount = Math.max(0, review.unhelpfulCount - 1);
+        }
+        updatedVoteType = null; // Removed vote
+      } 
+      // If different vote, update the vote and adjust counts
+      else {
+        if (existingVote.voteType === 'helpful') {
+          review.helpfulCount = Math.max(0, review.helpfulCount - 1);
+          review.unhelpfulCount += 1;
+        } else {
+          review.unhelpfulCount = Math.max(0, review.unhelpfulCount - 1);
+          review.helpfulCount += 1;
+        }
+        existingVote.voteType = vote;
+      }
+    } 
+    // New vote
+    else {
+      review.votes.push({ 
+        user: req.userId, 
+        voteType: vote 
+      });
+      
+      // Increment appropriate count
+      if (vote === 'helpful') {
+        review.helpfulCount += 1;
+      } else {
+        review.unhelpfulCount += 1;
+      }
+    }
+    
+    console.log('Review after update (before save):', { 
+      helpfulCount: review.helpfulCount, 
+      unhelpfulCount: review.unhelpfulCount,
+      votesCount: review.votes.length
+    });
+    
+    // Save the review
+    await review.save();
+    
+    // Fetch the fresh review to confirm changes were saved
+    const updatedReview = await Review.findById(reviewId);
+    console.log('Review after save:', { 
+      helpfulCount: updatedReview.helpfulCount, 
+      unhelpfulCount: updatedReview.unhelpfulCount,
+      votesCount: updatedReview.votes.length
+    });
+    
+    console.log('User vote lookup:', {
+      userId: req.userId,
+      votes: updatedReview.votes.map(v => ({
+        voteUser: v.user.toString(),
+        voteType: v.voteType,
+        matches: v.user.toString() === req.userId
+      }))
+    });
+
+    // Find user's current vote
+    const userVote = updatedReview.votes.find(
+      v => v.user.toString() === req.userId
+    )?.voteType || null;
+    
+    console.log('Response being sent:', { 
+      reviewId, 
+      userVote: userVote ? userVote.voteType : null,
+      helpfulCount: updatedReview.helpfulCount, 
+      unhelpfulCount: updatedReview.unhelpfulCount 
+    });
+    
+    res.json({ 
+      reviewId,
+      userVote: userVote ? userVote.voteType : null,
+      helpfulCount: updatedReview.helpfulCount,
+      unhelpfulCount: updatedReview.unhelpfulCount
+    });
+  } catch (err) {
+    console.error('Error processing review vote:', err);
+    res.status(500).json({ message: 'Server error processing vote' });
+  }
+});
+
+app.get('/api/reviews/:reviewId/votes', async (req, res) => {
+  try {
+    const { reviewId } = req.params;
+    let userId = null;
+    
+    // Optional: Get the user ID from token if available
+    // This allows returning the user's vote status if they're logged in
+    try {
+      if (req.headers.authorization) {
+        const token = req.headers.authorization.split(' ')[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        userId = decoded.userId;
+      }
+    } catch (tokenErr) {
+      // If token is invalid, just continue without user identification
+      console.log('Token validation error:', tokenErr.message);
+    }
+    
+    console.log('Votes retrieval request:', { 
+      reviewId, 
+      authenticatedUser: userId ? true : false
+    });
+
+    if (!mongoose.Types.ObjectId.isValid(reviewId)) {
+      return res.status(400).json({ message: 'Invalid review ID' });
+    }
+    
+    // Find the review
+    const review = await Review.findById(reviewId);
+    if (!review) {
+      return res.status(404).json({ message: 'Review not found' });
+    }
+    
+    // Get the user's vote if they're logged in
+    let userVote = null;
+    if (userId) {
+      const userVoteObj = review.votes.find(
+        v => v.user.toString() === userId
+      );
+      userVote = userVoteObj ? userVoteObj.voteType : null;
+    }
+    
+    console.log('Sending review vote data:', {
+      reviewId,
+      helpfulCount: review.helpfulCount,
+      unhelpfulCount: review.unhelpfulCount,
+      userVote,
+      totalVotes: review.votes.length
+    });
+    
+    // Return the vote counts and user's vote if available
+    res.json({
+      reviewId,
+      helpfulCount: review.helpfulCount,
+      unhelpfulCount: review.unhelpfulCount,
+      userVote
+    });
+    
+  } catch (err) {
+    console.error('Error retrieving review votes:', err);
+    res.status(500).json({ message: 'Server error retrieving votes' });
+  }
+});
+
 app.post('/api/reviews/:reviewId/reply', verifyToken, async (req, res) => {
   console.log("Received reply request for review ID:", req.params.reviewId);
   try {
@@ -1333,3 +1458,4 @@ app.get('/:reviewId/replies', verifyToken, async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+

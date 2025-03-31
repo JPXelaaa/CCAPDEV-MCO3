@@ -34,7 +34,8 @@ function LoginModal({ onClose, setIsLoggedIn, setUser }) {
 
       // Store token and user data
       localStorage.setItem("token", data.token);
-      localStorage.setItem("loggedInUser", JSON.stringify(data.user));
+      const minimalUser = { id: data.user.id, username: data.user.username };
+      localStorage.setItem("loggedInUser", JSON.stringify(minimalUser));
       
       // Update application state
       setIsLoggedIn(true);

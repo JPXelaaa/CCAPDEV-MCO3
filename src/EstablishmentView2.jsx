@@ -35,7 +35,11 @@ function EstablishmentView2({ isLoggedIn, setIsLoggedIn, setShowLogin, user, set
   if (loading) return <p>Loading establishment details...</p>;
   if (error) return <p>Error: {error}</p>;
   if (!establishment) return <p>No establishment found.</p>;
-  
+
+  console.log('Review before rendering:', review);
+  console.log('Review photos:', review.photos);
+  console.log('Photos exists and is array:', Array.isArray(review.photos));
+
   return (
     <>
       <NavigationBar
@@ -151,16 +155,25 @@ function EstablishmentView2({ isLoggedIn, setIsLoggedIn, setShowLogin, user, set
             <div className="reviews-container">
               {establishment.reviews.length > 0 ? (
                 establishment.reviews.map((review) => (
-                  <ReviewForEstablishment
-                    key={review._id}
-                    username={review.user.username}
-                    date={new Date(review.createdAt).toLocaleDateString()}
-                    title={review.title}
-                    rating={review.rating}
-                    reviewText={review.body}
-                    photos={review.photos}
-                    type="establishment"
-                  />
+
+                  <ReviewForEstablishment 
+                      reviewId={review._id}
+                      user={review.user}  
+                      username={review.user?.username || "Unknown User"}  
+                      userAvatar={review.user?.avatar}  
+                      date={formatDate(review.createdAt)}
+                      title={review.title}
+                      rating={review.rating}
+                      reviewText={review.body}
+                      photos={review.photos || []}
+                      photoUrls={review.photoUrls || []}
+                      helpful={review.helpful}
+                      unhelpful={review.unhelpful}
+                      currentUser={user}  
+                      isLoggedIn={isLoggedIn}
+                      userVote={reviewVotes[review._id] || null}
+                      onVoteUpdate={handleVoteUpdate}
+                    />
                 ))
               ) : (
                 <p>No reviews available.</p>

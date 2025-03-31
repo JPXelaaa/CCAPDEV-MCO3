@@ -4,8 +4,12 @@ const ReviewSchema = new mongoose.Schema({
     title: { type: String, required: true },
     body: { type: String, required: true },
     rating: { type: Number, required: true },
-    helpful: { type: Number, default: 0 },
-    unhelpful: { type: Number, default: 0 },
+    helpfulCount: { type: Number, default: 0 },
+    unhelpfulCount: { type: Number, default: 0 },
+    votes: [{
+        user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        voteType: { type: String, enum: ['helpful', 'unhelpful'] }
+    }],
     photos: [{
         data: Buffer,
         contentType: String
