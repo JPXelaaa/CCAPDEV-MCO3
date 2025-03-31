@@ -208,6 +208,7 @@ function SignUpModal({ onClose, setIsLoggedIn, setUser }) {
               )}
               
               <div className="input-group">
+                <label> Username </label>
                 <input
                   className="form-input"
                   type="text"
@@ -219,6 +220,7 @@ function SignUpModal({ onClose, setIsLoggedIn, setUser }) {
               </div>
 
               <div className="input-group">
+              <label> Password </label>
                 <input
                   className="form-input"
                   type="password"
@@ -230,6 +232,7 @@ function SignUpModal({ onClose, setIsLoggedIn, setUser }) {
               </div>
 
               <div className="input-group">
+              <label> Confirm Password </label>
                 <input
                   className="form-input"
                   type="password"

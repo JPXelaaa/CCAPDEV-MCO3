@@ -315,11 +315,6 @@ const EstablishmentView = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowSig
                 {establishment?.website && (
                   <p>{establishment.website}</p>
                 )}
-                {isOwner && (
-                  <button className="edit-info-btn">
-                    <img src="https://www.svgrepo.com/show/513324/edit.svg" alt="Edit" width="16" height="16" />
-                  </button>
-                )}
               </div>
             </div>
 
@@ -330,11 +325,7 @@ const EstablishmentView = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowSig
                   {/* Fix: Display formatted hours */}
                   {formatHours()}
                 </div>
-                {isOwner && (
-                  <button className="edit-info-btn">
-                    <img src="https://www.svgrepo.com/show/513324/edit.svg" alt="Edit" width="16" height="16" />
-                  </button>
-                )}
+                
               </div>
             </div>
           </div>
