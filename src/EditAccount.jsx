@@ -127,7 +127,7 @@ function EditAccount({ setShowLogin, setShowSignUp, setShowEstablishmentSignUp, 
         setUser={setUser}
       />
 
-      <div>
+      <div class="edit-account-container">
         <div className="content-row">
           <div className="left-section">
             <form>
