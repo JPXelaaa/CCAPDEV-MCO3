@@ -570,15 +570,16 @@ app.post("/api/edit-account", upload.single("avatar"), async (req, res) => {
       });
     }
 
-    if (oldPassword.trim() == "") {
+    if (oldPassword.trim() === "") {
       return res.status(400).json({ 
         status: "error", 
         message: "Input your password to proceed" 
       });
     }
     
-    // Verify old password
-    if (oldPassword !== user.password) {
+    // Verify old password - use bcrypt to compare
+    const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
+    if (!isPasswordValid) {
       return res.status(400).json({ 
         status: "error", 
         message: "Current password is incorrect" 
@@ -606,7 +607,9 @@ app.post("/api/edit-account", upload.single("avatar"), async (req, res) => {
     }
     
     if (password && password.trim() !== "") {
-      updateData.password = password;
+      // Hash the new password before saving
+      const salt = await bcrypt.genSalt(10);
+      updateData.password = await bcrypt.hash(password, salt);
     }
     
     if (description !== undefined) {

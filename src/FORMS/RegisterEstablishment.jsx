@@ -31,14 +31,8 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
   const [hours, setHours] = useState([]);
   const [facilities, setFacilities] = useState([]);
   
-  // Step 4: Photos and Menu
-  const [photos, setPhotos] = useState([]);
-  const [menu, setMenu] = useState([]);
-  
   // Refs for file inputs
   const logoInputRef = useRef(null);
-  const photosInputRef = useRef(null);
-  const menuInputRef = useRef(null);
   
   // New state variables and handlers for hours and facilities
   const [newHour, setNewHour] = useState({ day: "", start: "", end: "" });
@@ -77,20 +71,6 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
   
   const handleLogoClick = () => {
     logoInputRef.current.click();
-  };
-  
-  const handlePhotosChange = (e) => {
-    const files = Array.from(e.target.files);
-    if (files.length > 0) {
-      setPhotos(prevPhotos => [...prevPhotos, ...files]);
-    }
-  };
-  
-  const handleMenuChange = (e) => {
-    const files = Array.from(e.target.files);
-    if (files.length > 0) {
-      setMenu(prevMenu => [...prevMenu, ...files]);
-    }
   };
   
   const handleNext = () => {
@@ -142,8 +122,8 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
       }
     }
     
-    // Move to next step
-    if (step < 4) {
+    // Move to next step if not at the last step
+    if (step < 3) {
       setStep(step + 1);
     }
   };
@@ -186,16 +166,6 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
         formData.append("logo", logoFile);
       }
       
-      // Add photos
-      photos.forEach((photo) => {
-        formData.append("photos", photo);
-      });
-      
-      // Add menu items
-      menu.forEach((menuItem) => {
-        formData.append("menu", menuItem);
-      });
-      
       console.log("🔍 Sending establishment registration request");
       
       const response = await fetch("http://localhost:5000/api/register-establishment", {
@@ -229,18 +199,6 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
     } catch (error) {
       console.error("❌ Error submitting form:", error);
       setError("Failed to register establishment. Please try again.");
-    }
-  };
-  
-  const addHour = (day, start, end) => {
-    if (day && start && end) {
-      setHours([...hours, { day, start, end }]);
-    }
-  };
-  
-  const addFacility = (facility) => {
-    if (facility && !facilities.includes(facility)) {
-      setFacilities([...facilities, facility]);
     }
   };
   
@@ -514,46 +472,16 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
                 ))}
               </div>
             </div>
-          </div>
-        );
-      
-      case 4:
-        return (
-          <div className="step-content">
-            <h2 className="step-title">Final Steps</h2>
-            <p className="final-step-text">Final Steps..</p>
             
-            <div className="content-row">
-              <div className="box-container">
-                <div 
-                  className="add-box"
-                  onClick={() => photosInputRef.current.click()}
-                >
-                  <span className="plus">+</span>
-                  <p>Add Photos</p>
-                </div>
-                {photos.length > 0 && (
-                  <p className="file-count">{photos.length} photos selected</p>
-                )}
-              </div>
-              
-              <div className="box-container">
-                <div 
-                  className="add-box"
-                  onClick={() => menuInputRef.current.click()}
-                >
-                  <span className="plus">+</span>
-                  <p>Add Menu</p>
-                </div>
-                {menu.length > 0 && (
-                  <p className="file-count">{menu.length} menu items selected</p>
-                )}
-              </div>
+            <div className="submit-container">
+              <button 
+                type="button" 
+                className="submit-btn"
+                onClick={handleSubmit}
+              >
+                Finish
+              </button>
             </div>
-            
-            <p className="optional-text">
-              <i>This is optional. You may add them later on under "Edit business details."</i>
-            </p>
           </div>
         );
       
@@ -574,7 +502,7 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
             <div className="arrow left" onClick={handlePrevious}></div>
           )}
           
-          {[1, 2, 3, 4].map((s) => (
+          {[1, 2, 3].map((s) => (
             <div 
               key={s} 
               className={s === step ? "current-step" : "step"}
@@ -585,22 +513,10 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
             ></div>
           ))}
           
-          {step < 4 && (
+          {step < 3 && (
             <div className="arrow right" onClick={handleNext}></div>
           )}
         </div>
-        
-        {step === 4 && (
-          <div className="submit-container">
-            <button 
-              type="button" 
-              className="submit-btn"
-              onClick={handleSubmit}
-            >
-              Finish
-            </button>
-          </div>
-        )}
         
         <button 
           className="close-button" 
@@ -614,24 +530,6 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
           ref={logoInputRef}
           onChange={handleLogoChange}
           accept="image/*"
-          style={{ display: "none" }}
-        />
-        
-        <input
-          type="file"
-          ref={photosInputRef}
-          onChange={handlePhotosChange}
-          accept="image/*"
-          multiple
-          style={{ display: "none" }}
-        />
-        
-        <input
-          type="file"
-          ref={menuInputRef}
-          onChange={handleMenuChange}
-          accept="image/*"
-          multiple
           style={{ display: "none" }}
         />
       </div>
