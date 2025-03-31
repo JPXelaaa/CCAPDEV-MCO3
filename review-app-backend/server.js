@@ -1449,41 +1449,35 @@ app.get('/api/establishments', async (req, res) => {
   }
 });
 
-app.post('/api/reviews/:reviewId/reply', verifyToken, async (req, res) => {
-  console.log("Received reply request for review ID:", req.params.reviewId);
+app.post('/api/reviews/:reviewId/replies', verifyToken, async (req, res) => {
   try {
     const { reviewId } = req.params;
-    const { content, establishmentId } = req.body;
+    const { content } = req.body;
+    const userId = req.userId;
     
-    // Verify the user is the establishment owner
+    // Check if this establishment owns this review
+    const review = await Review.findById(reviewId).populate('establishment');
+    if (!review) {
+      return res.status(404).json({ message: 'Review not found' });
+    }
 
-    const reply = {
-      reviewId,
+    if (review.establishment._id.toString() !== userId) {
+      return res.status(403).json({ message: 'You can only reply to reviews for your establishment' });
+    }
+
+    // Add the reply
+    review.replies.push({
       content,
-      establishmentId,
-      createdAt: new Date()
-    };
+      establishmentId: userId,
+      createdAt: Date.now()
+    });
 
-    await reply.save().catch(error => console.error("Database save error:", error));
-
-    const review = await Review.findByIdAndUpdate(
-      reviewId,
-      { $push: { replies: reply } },
-      { new: true }
-    );
-
-    res.json(reply);
-  } catch (error) {
-    res.status(500).json({ message: 'Error adding reply' });
-  }
-});
-
-app.get('/:reviewId/replies', verifyToken, async (req, res) => {
-  try {
-    const review = await Review.findById(req.params.reviewId);
-    res.json(review.replies || []);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching replies' });
+    await review.save();
+    
+    res.status(201).json(review);
+  } catch (err) {
+    console.error('Error adding reply:', err);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 

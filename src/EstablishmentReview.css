@@ -150,6 +150,75 @@
     font-weight: bold;
 }
 
+/* Review and Reply styling */
+.review-item {
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 15px;
+}
+
+.review-replies {
+  margin-left: 20px;
+  margin-top: 15px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.review-replies h4 {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.reply-item {
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: white;
+  border-radius: 6px;
+  border-left: 4px solid #0066cc;
+}
+
+.reply-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.reply-author {
+  font-weight: bold;
+  color: #0066cc;
+}
+
+.reply-date {
+  font-size: 12px;
+  color: #777;
+}
+
+.reply-content {
+  line-height: 1.5;
+}
+
+.reply-actions {
+  margin-top: 10px;
+  text-align: right;
+}
+
+.reply-button {
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.reply-button:hover {
+  background-color: #004d99;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .profile-body {

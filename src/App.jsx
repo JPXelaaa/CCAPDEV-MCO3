@@ -9,6 +9,7 @@ import LoginModal from "./LoginModal";
 import RegisterEstablishment from "./FORMS/RegisterEstablishment";
 import EstablishmentView from "./EstablishmentView";
 import EstablishmentManagement from "./EstablishmentManagement";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   const [showSignUp, setShowSignUp] = useState(false); 

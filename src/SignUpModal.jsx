@@ -151,10 +151,8 @@ function SignUpModal({ onClose, setIsLoggedIn, setUser }) {
           
           // Set the new user data
           localStorage.setItem("token", data.token);
-          const minimalUser = { id: data.user.id, username: data.user.username };
-          localStorage.setItem("loggedInUser", JSON.stringify(minimalUser));
+          localStorage.setItem("loggedInUser", JSON.stringify(data.user));
           
-          // Update application state
           setIsLoggedIn(true);
           if (typeof setUser === 'function') {
             setUser(data.user);
