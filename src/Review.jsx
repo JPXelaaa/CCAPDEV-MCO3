@@ -1,7 +1,8 @@
 import "./Review.css";
-import Rating from './Rating'
+import Rating from './Rating';
 import { Link } from "react-router-dom";
 import { useState, useCallback } from "react";
+import ImageModal from './ImageModal'; //import for click image modal
 
 function Review({ 
   id, 
@@ -22,6 +23,8 @@ function Review({
 }) {
   const [helpful, setHelpful] = useState(false);
   const [unhelpful, setUnhelpful] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [currentPhoto, setCurrentPhoto] = useState(""); 
 
   const handleHelpfulClick = useCallback(() => {
     setHelpful((prev) => !prev);
@@ -33,12 +36,22 @@ function Review({
     setHelpful(false); // Reset helpful when unhelpful is clicked
   }, []);
 
-    const getAvatarUrl = () => {
-      if (!user || !user._id) {
-        return "https://i.pinimg.com/originals/6d/8b/9b/6d8b9b45c14da6fbfd09a7ede56b4a83.jpg"; // Default profile picture
-      }
-      return `http://localhost:5000/api/images/user/${user._id}/avatar`;
-    };
+  const getAvatarUrl = () => {
+    if (!user || !user._id) {
+      return "https://i.pinimg.com/originals/6d/8b/9b/6d8b9b45c14da6fbfd09a7ede56b4a83.jpg"; // Default profile picture
+    }
+    return `http://localhost:5000/api/images/user/${user._id}/avatar`;
+  };
+
+  const openModal = (photoUrl) => {
+    setCurrentPhoto(photoUrl);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setCurrentPhoto(""); // Clear the current photo
+  };
 
   return (
     <div className="past-review">
@@ -79,11 +92,15 @@ function Review({
                 src={photoUrl}
                 className="actual-photo" 
                 alt={`Review Photo ${index + 1}`} 
+                onClick={() => openModal(photoUrl)} // Open modal on click
               />
             </div>
           ))}
         </div>
       )}
+
+      {/* Modal for Bigger Image */}
+      {isModalOpen && <ImageModal photoUrl={currentPhoto} onClose={closeModal} />}
 
       {/* Review Footer */}
       {!preview && (
