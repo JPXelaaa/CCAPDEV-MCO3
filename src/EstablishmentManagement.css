@@ -119,21 +119,6 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.establishment-management .dropdown-menu {
-  position: absolute;
-  right: 0;
-  padding: 0.75rem 0;
-  margin: 0;
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background-color: white;
-  z-index: 1000;
-  display: none;
-  transform-origin: top right;
-  list-style: none;
-}
-
 .establishment-management .dropdown-menu.show {
   display: block;
 }

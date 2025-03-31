@@ -180,7 +180,6 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
             return;
         }
 
-        // Use Bearer token format as seen in UserReview.js
         const response = await fetch(`http://localhost:5000/api/establishments/${establishmentId}`, {
             method: 'PUT',
             headers: {
@@ -297,8 +296,7 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
           setPhotos(photoUrls);
         }
       }
-      
-      // Clear the photo upload state
+
       setPhotoFiles([]);
       setPhotoPreviewUrls([]);
       
