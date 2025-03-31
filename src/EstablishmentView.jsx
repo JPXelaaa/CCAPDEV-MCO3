@@ -178,20 +178,6 @@ const EstablishmentView = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowSig
       />
 
       <div className="establishment-container">
-        {isOwner && (
-          <div className="owner-management-panel">
-            <h3>Establishment Management</h3>
-            <div className="management-actions">
-              <button 
-                className="management-btn"
-                onClick={() => navigate(`/establishment/manage/${establishmentId}`)}
-              >
-                Manage Establishment
-              </button>
-            </div>
-          </div>
-        )}
-
         <div className="establishment-top-section">
           {/* Left column - Logo and basic info */}
           <div className="establishment-logo-section">
@@ -203,19 +189,9 @@ const EstablishmentView = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowSig
                   e.target.src = "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2a/24/b1/8f/view-from-sky-deck.jpg?w=600&h=-1&s=1";
                 }}
               />
-              {isOwner && (
-                <button className="edit-logo-btn">
-                  <img src="https://www.svgrepo.com/show/513324/edit.svg" alt="Edit" width="16" height="16" />
-                </button>
-              )}
             </div>
             <h3 className="establishment-name">
-              {establishment?.name || "test123"}
-              {isOwner && (
-                <button className="edit-name-btn">
-                  <img src="https://www.svgrepo.com/show/513324/edit.svg" alt="Edit" width="16" height="16" />
-                </button>
-              )}
+              {establishment?.name || "Establishment Name"}
             </h3>
             <div className="establishment-rating">
               <div className="star-rating">
@@ -240,7 +216,7 @@ const EstablishmentView = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowSig
               </button>
               <img 
                 src={displayImages[currentImageIndex]} 
-                alt={establishment?.name || "Establishment"} 
+                alt={establishment?.name} 
                 className="establishment-image"
                 onError={(e) => {
                   e.target.src = "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2a/24/b1/8f/view-from-sky-deck.jpg?w=600&h=-1&s=1";
@@ -258,19 +234,14 @@ const EstablishmentView = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowSig
             <div className="info-block location-block">
               <h4>Location</h4>
               <div className="location-info">
-                {establishment?.address || "test123 test123 test123 Manila test"}
-                {isOwner && (
-                  <button className="edit-info-btn">
-                    <img src="https://www.svgrepo.com/show/513324/edit.svg" alt="Edit" width="16" height="16" />
-                  </button>
-                )}
+                <p>{establishment?.address || "No address provided."}</p>
               </div>
             </div>
 
             <div className="info-block contact-block">
               <h4>Contact</h4>
               <div className="contact-info">
-                <p>{establishment?.phoneNumber || "0909-909-9900"}</p>
+                <p>{establishment?.phoneNumber || "No contact details provided."}</p>
                 {establishment?.website && (
                   <p>{establishment.website}</p>
                 )}
