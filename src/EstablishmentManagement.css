@@ -448,7 +448,7 @@ body {
 }
 
 .file-label {
-  background-color: #e57373;
+  background-color: #c1c1c1;
   color: white;
   padding: 8px 15px;
   border-radius: 4px;
@@ -458,11 +458,11 @@ body {
 }
 
 .file-label:hover {
-  background-color: #ef5350;
+  background-color: #939393;
 }
 
 .submit-btn {
-  background-color: #e57373;
+  background-color: #ed605d;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -475,7 +475,7 @@ body {
 }
 
 .submit-btn:hover {
-  background-color: #ef5350;
+  background-color: #e63c39;
 }
 
 .submit-btn:disabled {
