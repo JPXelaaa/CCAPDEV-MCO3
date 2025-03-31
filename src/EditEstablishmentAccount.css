@@ -25,6 +25,21 @@ html, body {
     font-family: 'Montserrat';
     font-size: 30px;
   }
+
+  .content-row {
+    animation: transitionIn 0.5s ease-in-out;
+  }
+
+  @keyframes transitionIn {
+    from {
+        opacity: 0;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+  }
   
   .form-input{
     width: 100%;
