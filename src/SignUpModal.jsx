@@ -151,10 +151,8 @@ function SignUpModal({ onClose, setIsLoggedIn, setUser }) {
           
           // Set the new user data
           localStorage.setItem("token", data.token);
-          const minimalUser = { id: data.user.id, username: data.user.username };
-          localStorage.setItem("loggedInUser", JSON.stringify(minimalUser));
+          localStorage.setItem("loggedInUser", JSON.stringify(data.user));
           
-          // Update application state
           setIsLoggedIn(true);
           if (typeof setUser === 'function') {
             setUser(data.user);
@@ -210,6 +208,7 @@ function SignUpModal({ onClose, setIsLoggedIn, setUser }) {
               )}
               
               <div className="input-group">
+                <label> Username </label>
                 <input
                   className="form-input"
                   type="text"
@@ -221,6 +220,7 @@ function SignUpModal({ onClose, setIsLoggedIn, setUser }) {
               </div>
 
               <div className="input-group">
+              <label> Password </label>
                 <input
                   className="form-input"
                   type="password"
@@ -232,6 +232,7 @@ function SignUpModal({ onClose, setIsLoggedIn, setUser }) {
               </div>
 
               <div className="input-group">
+              <label> Confirm Password </label>
                 <input
                   className="form-input"
                   type="password"

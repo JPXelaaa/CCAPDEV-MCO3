@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import ReviewForEstablishment from "./ReviewForEstablishment";
 import "./EstablishmentReview.css";
 
-function EstablishmentReview({ establishmentId: propEstablishmentId, isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, preview = false }) {
+function EstablishmentReview({ establishmentId: propEstablishmentId, isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, preview = false, onReplyClick }) {
   const { establishmentId: paramEstablishmentId } = useParams();
   const establishmentId = propEstablishmentId || paramEstablishmentId;
   
@@ -41,7 +41,8 @@ function EstablishmentReview({ establishmentId: propEstablishmentId, isLoggedIn,
       if (!response.ok) throw new Error("Failed to fetch reviews");
   
       const data = await response.json();
-      console.log("Review data:", data); // Fixed variable name
+      console.log("Review data:", data);
+      console.log("Review replies:", data.map(review => review.replies)); // Add this line
       setReviews(data);
     } catch (err) {
       console.error("Error fetching reviews:", err);
@@ -50,7 +51,7 @@ function EstablishmentReview({ establishmentId: propEstablishmentId, isLoggedIn,
       setLoading(false);
     }
   };
-
+  
   const fetchUserVotes = async () => {
     if (!isLoggedIn || !user) return;
 /*
@@ -128,6 +129,16 @@ function EstablishmentReview({ establishmentId: propEstablishmentId, isLoggedIn,
     }));
   };
 
+  // Check if user is an establishment owner
+  const isEstablishmentOwner = isLoggedIn && user && user.userType === 'establishment';
+
+  // Handle reply to review
+  const handleReplyClick = (reviewId) => {
+    if (onReplyClick) {
+      onReplyClick(reviewId);
+    }
+  };
+
   return (
     <div className="profile-body">
       <div className="center-profile-body">
@@ -202,30 +213,59 @@ function EstablishmentReview({ establishmentId: propEstablishmentId, isLoggedIn,
                 <p className="error-message">{error}</p>
               ) : displayedReviews.length > 0 ? (
                 displayedReviews.map((review) => (
+                  <div className="review-item" key={review._id}>
                     <ReviewForEstablishment 
-                    key={review._id}  
-                    reviewId={review._id}
-                    user={review.user}  
-                    username={review.user?.username || "Unknown User"}  
-                    userAvatar={review.user?.avatar}  
-                    date={formatDate(review.createdAt)}
-                    title={review.title}
-                    rating={review.rating}
-                    reviewText={review.body}
-                    photos={review.photos || []}
-                    photoUrls={review.photoUrls || []}
-                    helpful={review.helpful}
-                    unhelpful={review.unhelpful}
-                    currentUser={user}  
-                    isLoggedIn={isLoggedIn}
-                    userVote={reviewVotes[review._id] || null}
-                    onVoteUpdate={handleVoteUpdate}
-                  />
+                      key={review._id}  
+                      reviewId={review._id}
+                      user={review.user}  
+                      username={review.user?.username || "Unknown User"}  
+                      userAvatar={review.user?.avatar}  
+                      date={formatDate(review.createdAt)}
+                      title={review.title}
+                      rating={review.rating}
+                      reviewText={review.body}
+                      photos={review.photos || []}
+                      photoUrls={review.photoUrls || []}
+                      helpful={review.helpful}
+                      unhelpful={review.unhelpful}
+                      currentUser={user}  
+                      isLoggedIn={isLoggedIn}
+                      userVote={reviewVotes[review._id] || null}
+                      onVoteUpdate={handleVoteUpdate}
+                    />
+                    
+                    {/* Display replies if they exist */}
+                    {review.replies && review.replies.length > 0 && (
+                      <div className="review-replies">
+                        <h4>Establishment Responses</h4>
+                        {review.replies.map((reply, index) => (
+                          <div key={index} className="reply-item">
+                            <div className="reply-header">
+                              <span className="reply-author">Owner Response</span>
+                              <span className="reply-date">{formatDate(reply.createdAt)}</span>
+                            </div>
+                            <div className="reply-content">{reply.content}</div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {/* Reply button for establishment owners */}
+                    {isEstablishmentOwner && (
+                      <div className="reply-actions">
+                        <button 
+                          className="reply-button"
+                          onClick={() => handleReplyClick(review._id)}
+                        >
+                          {review.replies && review.replies.length > 0 ? 'Add Another Reply' : 'Reply to Review'}
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 ))
               ) : (
                 <p className="no-reviews-message">
                   No reviews available. 
-                  
                 </p>
               )}
             </div>

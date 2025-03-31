@@ -113,61 +113,17 @@ body {
 .establishment-management .dropdown {
   position: relative;
   display: block;
-}
-
-.establishment-management .edit-profile .btn.dropdown-toggle {
-  font-size: 16px;
-  padding: 1rem;
-  background-color: #4b4b4b;
-  border-radius: 12px;
-  color: white;
-  font-weight: 500;
-  display: inline-flex;
-  align-items: center;
-  position: relative;
-  min-width: fit-content;
-  justify-content: center;
-}
-
-.establishment-management .edit-profile .btn.dropdown-toggle:hover {
-  background-color: #222;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.establishment-management .dropdown-menu {
-  position: absolute;
-  right: 0;
-  padding: 0.75rem 0;
-  margin: 0;
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background-color: white;
-  z-index: 1000;
-  display: none;
-  transform-origin: top right;
-  list-style: none;
-}
-
-.establishment-management .dropdown-menu.show {
-  display: block;
-}
-
-.establishment-management .dropdown-menu li {
-  margin: 0;
-  padding: 0;
+  margin-left: 50px;
 }
 
 .establishment-management .dropdown-item {
-  padding: 1rem 1.5rem;
-  color: #333;
+  padding: 1rem 1rem;
+  color: #ffffff;
   font-size: 1.1rem ;
   display: block;
   cursor: pointer;
-  border: none;
-  background: none;
+  background:#444;
   width: 100%;
-  text-align: left;
   font-weight: 500;
   line-height: 1.4;
   margin: 0;
@@ -175,14 +131,9 @@ body {
 
 .establishment-management .dropdown-item:hover,
 .establishment-management .dropdown-item:focus {
-  background-color: #f8f9fa;
-  color: #222;
+  background-color: #909090;
+  color: #1c1c1c;
   outline: none;
-}
-
-.establishment-management .dropdown-item:active {
-  background-color: #f0f0f0;
-  color: #222 ;
 }
 
 /* Profile Body Styling */
@@ -527,7 +478,7 @@ body {
 }
 
 .file-label {
-  background-color: #e57373;
+  background-color: #c1c1c1;
   color: white;
   padding: 8px 15px;
   border-radius: 4px;
@@ -537,11 +488,11 @@ body {
 }
 
 .file-label:hover {
-  background-color: #ef5350;
+  background-color: #939393;
 }
 
 .submit-btn {
-  background-color: #e57373;
+  background-color: #ed605d;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -554,7 +505,7 @@ body {
 }
 
 .submit-btn:hover {
-  background-color: #ef5350;
+  background-color: #e63c39;
 }
 
 .submit-btn:disabled {

@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import NavigationBar from './NavigationBar';
 import Footer from './footer';
 import EstablishmentReview from './EstablishmentReview';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 import './EstablishmentManagement.css';
 
 const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowSignUp, setShowEstablishmentSignUp, user, setUser }) => {
@@ -16,6 +18,14 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
   const [activeFilters, setActiveFilters] = useState(['With photos', 'Positive Rating', 'Good Service']);
   const [sortBy, setSortBy] = useState('Recent');
   const [filterRating, setFilterRating] = useState('All');
+  
+  // Reply modal state
+  const [showReplyModal, setShowReplyModal] = useState(false);
+  const [selectedReviewId, setSelectedReviewId] = useState(null);
+  const [replyContent, setReplyContent] = useState('');
+  const [replyError, setReplyError] = useState(null);
+  const [replySuccess, setReplySuccess] = useState(null);
+  const [isSubmittingReply, setIsSubmittingReply] = useState(false);
   
   // Form states
   const [name, setName] = useState('');
@@ -91,6 +101,11 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
 
     fetchEstablishment();
   }, [isLoggedIn, user, establishmentId, navigate, setIsLoggedIn]);
+  
+  const token = localStorage.getItem('token');
+  if (token) {
+    setIsLoggedIn(true); // Restore login state
+  }
 
   const handleLogoChange = (e) => {
     const file = e.target.files[0];
@@ -180,7 +195,6 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
             return;
         }
 
-        // Use Bearer token format as seen in UserReview.js
         const response = await fetch(`http://localhost:5000/api/establishments/${establishmentId}`, {
             method: 'PUT',
             headers: {
@@ -235,8 +249,7 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
     } finally {
         setIsSubmitting(false);
     }
-};
-
+  };
 
   const handlePhotosSubmit = async (e) => {
     e.preventDefault();
@@ -297,8 +310,7 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
           setPhotos(photoUrls);
         }
       }
-      
-      // Clear the photo upload state
+
       setPhotoFiles([]);
       setPhotoPreviewUrls([]);
       
@@ -322,6 +334,72 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
       setActiveFilters(activeFilters.filter(f => f !== filter));
     } else {
       setActiveFilters([...activeFilters, filter]);
+    }
+  };
+
+  // Handle opening the reply modal
+  const handleOpenReplyModal = (reviewId) => {
+    setSelectedReviewId(reviewId);
+    setReplyContent('');
+    setReplyError(null);
+    setShowReplyModal(true);
+  };
+
+  // Handle closing the reply modal
+  const handleCloseReplyModal = () => {
+    setShowReplyModal(false);
+    setSelectedReviewId(null);
+    setReplyContent('');
+    setReplyError(null);
+  };
+
+  // Handle submitting a reply
+  const handleReplySubmit = async () => {
+    if (!replyContent.trim()) {
+      setReplyError('Reply cannot be empty');
+      return;
+    }
+
+    try {
+      setIsSubmittingReply(true);
+      setReplyError(null);
+      
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setReplyError('Authentication required');
+        setIsLoggedIn(false);
+        navigate('/');
+        return;
+      }
+
+      const response = await fetch(`http://localhost:5000/api/reviews/${selectedReviewId}/replies`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        },
+        body: JSON.stringify({ content: replyContent })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to submit reply');
+      }
+
+      // Successfully submitted reply
+      setReplySuccess('Reply submitted successfully');
+      setTimeout(() => {
+        handleCloseReplyModal();
+        setReplySuccess(null);
+         
+        navigate(0);  // This will reload the page
+      }, 2000);
+      
+    } catch (err) {
+      console.error("Error submitting reply:", err);
+      setReplyError(err.message || "Failed to submit reply. Please try again later.");
+    } finally {
+      setIsSubmittingReply(false);
     }
   };
 
@@ -381,17 +459,6 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
                     </div>
                     <div className="edit-profile">
                       <div className="dropdown">
-                        <button 
-                          className="btn dropdown-toggle" 
-                          type="button" 
-                          data-bs-toggle="dropdown" 
-                          data-bs-auto-close="true"
-                          aria-expanded="false"
-                        >
-                          Edit Profile
-                        </button>
-                        <ul className="dropdown-menu">
-                          <li>
                             <button 
                               className="dropdown-item" 
                               onClick={() => {
@@ -399,18 +466,8 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
                                 setActiveTab('profile');
                               }}
                             >
-                              Edit Establishment Details
+                              Edit Establishment Profile
                             </button>
-                          </li>
-                          <li>
-                            <button 
-                              className="dropdown-item" 
-                              onClick={() => navigate(`/establishments/${establishmentId}`)}
-                            >
-                              View as User
-                            </button>
-                          </li>
-                        </ul>
                       </div>
                     </div>
                   </div>
@@ -523,6 +580,7 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
                     setShowLogin={setShowLogin}
                     user={user}
                     setUser={setUser}
+                    onReplyClick={handleOpenReplyModal}
                   />
                 </div>
               )}
@@ -536,11 +594,47 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
                 setShowLogin={setShowLogin}
                 user={user}
                 setUser={setUser}
+                onReplyClick={handleOpenReplyModal}
               />
             </div>
           )}
         </div>
       )}
+
+      {/* Reply Modal */}
+      <Modal show={showReplyModal} onHide={handleCloseReplyModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Reply to Review</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {replyError && <div className="error-message">{replyError}</div>}
+          {replySuccess && <div className="success-message">{replySuccess}</div>}
+          <div className="form-group">
+            <label htmlFor="replyContent">Your Reply:</label>
+            <textarea
+              id="replyContent"
+              className="form-control"
+              rows="5"
+              value={replyContent}
+              onChange={(e) => setReplyContent(e.target.value)}
+              placeholder="Write your response to this review..."
+            />
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseReplyModal}>
+            Cancel
+          </Button>
+          <Button 
+            variant="primary" 
+            onClick={handleReplySubmit}
+            disabled={isSubmittingReply}
+          >
+            {isSubmittingReply ? 'Submitting...' : 'Submit Reply'}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      
       <Footer />
     </div>
   );
