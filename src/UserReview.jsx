@@ -12,10 +12,12 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
   const [editingReview, setEditingReview] = useState(null);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [allPhotos, setAllPhotos] = useState([]);
+  const [photoPreviewUrls, setPhotoPreviewUrls] = useState([]);
   const [editFormData, setEditFormData] = useState({
     title: "",
     body: "",
-    rating: 0
+    rating: 0,
+    photos: []
   });
 
   useEffect(() => {
@@ -111,7 +113,8 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
     setEditFormData({
       title: review.title,
       body: review.body,
-      rating: review.rating
+      rating: review.rating,
+      photos: review.photos || []
     });
   };
 
@@ -341,6 +344,24 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
     );
   };
 
+  const handlePhotoUpload = (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+    
+    // Limit to 5 photos
+    const newFiles = files.slice(0, 5 - photoFiles.length);
+    if (newFiles.length === 0) {
+      alert("You can only upload a maximum of 5 photos.");
+      return;
+    }
+    
+    // Create preview URLs for the selected photos
+    const newPreviewUrls = newFiles.map(file => URL.createObjectURL(file));
+    
+    setPhotoFiles(prev => [...prev, ...newFiles]);
+    setPhotoPreviewUrls(prev => [...prev, ...newPreviewUrls]);
+  };
+
   // render the edit form
   const renderEditForm = () => {
     if (!editingReview) return null;
@@ -392,6 +413,43 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
                 rows="5"
               />
             </div>
+
+            <div className="form-group">
+              <label>Photos (optional):</label>
+              <div className="photo-upload">
+                <input 
+                  type="file" 
+                  id="photos" 
+                  onChange={handlePhotoUpload} 
+                  multiple 
+                  accept="image/*" 
+                  style={{ display: 'none' }}
+                />
+                <label htmlFor="photos" className="upload-button" id="upload-btn">
+                  Add Photos
+                </label>
+                <span className="photo-limit">
+                  {editFormData.photos.length}/5 photos
+                </span>
+              </div>
+
+              {editFormData.photos.length > 0 && (
+              <div className="photo-previews">
+                {editFormData.photos.map((url, index) => (
+                  <div key={index} className="photo-preview">
+                    <img src={url} alt={`Preview ${index + 1}`} />
+                    <button 
+                      type="button" 
+                      className="remove-photo" 
+                      onClick={() => removePhoto(index)}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
             
             <div className="form-actions">
               <button type="submit" className="save-btn">Save Changes</button>
