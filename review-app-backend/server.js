@@ -1179,7 +1179,7 @@ app.delete('/api/reviews/:id', verifyToken, async (req, res) => {
 app.put('/api/establishments/:id', verifyToken, upload.single('logo'), async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description, address, phoneNumber, website } = req.body;
+    const { name, description, address, phoneNumber, website, hours } = req.body;
     
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: 'Invalid establishment ID' });
@@ -1200,6 +1200,25 @@ app.put('/api/establishments/:id', verifyToken, upload.single('logo'), async (re
     if (address) updateData.address = address;
     if (phoneNumber) updateData.phoneNumber = phoneNumber;
     if (website) updateData.website = website;
+    
+    // Handle business hours update if provided
+    if (hours && Array.isArray(hours)) {
+      // Validate hours data
+      const validHours = hours.every(hour => 
+        hour.day && 
+        hour.open && 
+        hour.close && 
+        typeof hour.day === 'string' && 
+        typeof hour.open === 'string' && 
+        typeof hour.close === 'string'
+      );
+      
+      if (validHours) {
+        updateData.hours = hours;
+      } else {
+        return res.status(400).json({ message: 'Invalid hours format' });
+      }
+    }
     
     // Handle logo upload if provided
     if (req.file) {
@@ -1222,7 +1241,6 @@ app.put('/api/establishments/:id', verifyToken, upload.single('logo'), async (re
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
-
 
 app.put('/api/reviews/:id', verifyToken, async (req, res) => {
   try {

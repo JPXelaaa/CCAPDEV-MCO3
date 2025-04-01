@@ -41,6 +41,12 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
   const [successMessage, setSuccessMessage] = useState('');
 
   const [showProfileOptions, setShowProfileOptions] = useState(false);
+  
+  // Business Hours states
+  const [showHoursEditor, setShowHoursEditor] = useState(false);
+  const [hours, setHours] = useState([]);
+  const [newHour, setNewHour] = useState({ day: '', open: '09:00', close: '17:00' });
+  const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 
   useEffect(() => {
@@ -93,6 +99,7 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
         setPhoneNumber(data.phoneNumber || '');
         setWebsite(data.website || '');
         setPhotos(data.photos || []);
+        setHours(data.hours || []);
       } catch (err) {
         console.error('Error fetching establishment:', err);
         setError(err.message);
@@ -179,6 +186,24 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
     }
   };
 
+  // Business Hours functions
+  const handleUpdateHours = (index, field, value) => {
+    const updatedHours = [...hours];
+    updatedHours[index][field] = value;
+    setHours(updatedHours);
+  };
+
+  const handleRemoveHours = (index) => {
+    setHours(hours.filter((_, i) => i !== index));
+  };
+
+  const handleAddHours = () => {
+    if (newHour.day && newHour.open && newHour.close) {
+      setHours([...hours, { ...newHour }]);
+      setNewHour({ day: '', open: '09:00', close: '17:00' });
+    }
+  };
+
   const handleProfileSubmit = async (event) => {
     event.preventDefault();
     
@@ -195,13 +220,13 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
             return;
         }
 
-        // First update the establishment profile information
         const profileData = {
             name,
             description,
             address,
             phoneNumber,
             website,
+            hours
         };
                     
         const authHeader = token.startsWith('Bearer ') ? token : `Bearer ${token}`;
@@ -271,6 +296,7 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
             const refreshData = await refreshResponse.json();
             setEstablishment(refreshData);
             setPhotos(refreshData.photos || []);
+            setHours(refreshData.hours || []);
         }
 
         setLogoFile(null);
@@ -540,6 +566,84 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
                       />
                     </div>
                     
+                    {/* Business Hours Section */}
+                    <div className="form-group">
+                      <p>Business Hours</p>
+                      <button
+                        type="button"
+                        className="toggle-hours-btn"
+                        onClick={() => setShowHoursEditor(!showHoursEditor)}
+                      >
+                        {showHoursEditor ? "Hide Hours Editor" : "Edit Business Hours"}
+                      </button>
+                     
+                      {showHoursEditor && (
+                        <div className="hours-editor">
+                          <div className="hours-table">
+                            <div className="hours-header">
+                              <span>Day</span>
+                              <span>Opening Time</span>
+                              <span>Closing Time</span>
+                              <span>Actions</span>
+                            </div>
+                           
+                            {hours.map((hour, index) => (
+                              <div key={index} className="hours-row">
+                                <span>{hour.day}</span>
+                                <input
+                                  type="time"
+                                  value={hour.open}
+                                  onChange={(e) => handleUpdateHours(index, 'open', e.target.value)}
+                                />
+                                <input
+                                  type="time"
+                                  value={hour.close}
+                                  onChange={(e) => handleUpdateHours(index, 'close', e.target.value)}
+                                />
+                                <button
+                                  type="button"
+                                  className="remove-hours-btn"
+                                  onClick={() => handleRemoveHours(index)}
+                                >
+                                  Remove
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                         
+                          <div className="add-hours">
+                            <select
+                              value={newHour.day}
+                              onChange={(e) => setNewHour({...newHour, day: e.target.value})}
+                            >
+                              <option value="">Select Day</option>
+                              {daysOfWeek.filter(day => !hours.some(h => h.day === day)).map(day => (
+                                <option key={day} value={day}>{day}</option>
+                              ))}
+                            </select>
+                            <input
+                              type="time"
+                              value={newHour.open}
+                              onChange={(e) => setNewHour({...newHour, open: e.target.value})}
+                            />
+                            <input
+                              type="time"
+                              value={newHour.close}
+                              onChange={(e) => setNewHour({...newHour, close: e.target.value})}
+                            />
+                            <button
+                              type="button"
+                              className="add-hours-btn"
+                              onClick={handleAddHours}
+                              disabled={!newHour.day}
+                            >
+                              Add Hours
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    
                     {/* Photos Management Section (Integrated) */}
                     <div className="photos-management-section">
                       <h3>Establishment Photos</h3>
@@ -614,7 +718,6 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
                         </div>
                       </div>
                     </div>
-                    
                     <button 
                       type="submit" 
                       className="submit-btn" 
