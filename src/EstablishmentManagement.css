@@ -129,6 +129,30 @@ body {
   margin: 0;
 }
 
+.dropdown-toggle:hover {
+  background-color: rgb(160, 160, 160);
+  color: white;
+}
+
+.dropdown-edit {
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 5px 10px;
+  top: 50px;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  min-width: 110px;
+  opacity: 1;
+  transition: opacity 0.2s ease-in-out;
+  margin-top: 5px;
+  animation: slideDown 0.3s ease forwards;
+  right: -150%;
+}
+
 .establishment-management .dropdown-item:hover,
 .establishment-management .dropdown-item:focus {
   background-color: #dbdbdb;
