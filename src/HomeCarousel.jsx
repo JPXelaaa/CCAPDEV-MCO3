@@ -59,22 +59,22 @@ function HomeCarousel({searchQuery, sortOption}) {
   const settings = {
     dots: true,
     infinite: true,
-    speed: 1200,
+    speed: 800,
     slidesToShow: Math.min(establishments.length, 4),
-    slidesToScroll: Math.min(establishments.length, 4),
+    slidesToScroll: Math.min(establishments.length, 1),
     responsive: [
       {
         breakpoint: 1024,
         settings: {
           slidesToShow: Math.min(establishments.length, 3),
-          slidesToScroll: Math.min(establishments.length, 3)
+          slidesToScroll: Math.min(establishments.length, 1)
         }
       },
       {
         breakpoint: 768,
         settings: {
           slidesToShow: Math.min(establishments.length, 2),
-          slidesToScroll: Math.min(establishments.length, 2)
+          slidesToScroll: Math.min(establishments.length, 1)
         }
       },
       {
