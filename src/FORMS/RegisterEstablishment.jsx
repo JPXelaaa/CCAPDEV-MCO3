@@ -189,12 +189,31 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
       console.log("✅ Server Response:", data);
       
       if (data.token && data.user) {
+      setUser(data.user);
+            
+      const minimalUser = {
+        _id: data.user._id,
+        username: data.user.username,
+        userType: data.user.userType,
+      };
+
+      try {
         localStorage.setItem("token", data.token);
-        localStorage.setItem("loggedInUser", JSON.stringify(data.user));
-        setIsLoggedIn(true);
-        setUser(data.user);
-        onClose();
-        navigate(`/establishment/${data.user._id}`);
+        localStorage.setItem("loggedInUser", JSON.stringify(minimalUser));
+      } catch (storageError) {
+        console.error("Failed to store user data in localStorage", storageError);
+        // If localStorage fails, at least keep the user logged in for this session
+        setError("Warning: Unable to remember login between sessions due to storage limitations");
+        // Wait 3 seconds before closing so the user can see the warning
+        setTimeout(() => {
+          setIsLoggedIn(true);
+          onClose();
+        }, 3000);
+        return;
+      }
+
+      setIsLoggedIn(true);
+      onClose();
       }
     } catch (error) {
       console.error("❌ Error submitting form:", error);

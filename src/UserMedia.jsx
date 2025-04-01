@@ -30,9 +30,9 @@ function UserMedia({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, isR
       setReviews(data);
       
       // Extract all photos from all reviews
-      const allPhotos = data.flatMap(review => 
-        (review.photos || []).map(photo => ({
-          photo,
+      const allPhotos = data.flatMap((review, reviewIndex) => 
+        (review.photos || []).map((photo, photoIndex) => ({
+          photoIndex: photoIndex, // Use the index in the photos array
           reviewId: review._id,
           establishment: review.establishment.name,
           date: review.createdAt
@@ -103,7 +103,7 @@ function UserMedia({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, isR
       <div className="center-profile-body">
         <h3 style={{ fontSize: "22px", fontWeight: "600" }}>Media</h3>
         <div className="rec-review">
-          <div className="photos-section">
+        <div className="photos-section">
             {loading ? (
               <p>Loading photos...</p>
             ) : error ? (
@@ -112,9 +112,17 @@ function UserMedia({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, isR
               photos.map((photoData, index) => (
                 <div className="photo-preview" key={index}>
                   <img 
-                    src={`http://localhost:5000/uploads/${photoData.photo}`} 
+                    src={`http://localhost:5000/api/images/review/${photoData.reviewId}/photo/${photoData.photoIndex}`}
                     className="actual-photo"
                     alt={`Photo from ${photoData.establishment}`}
+                    onError={(e) => {
+                      console.error("Image failed to load");
+                      e.target.onerror = null; 
+                      e.target.style.backgroundColor = "#cccccc";
+                      e.target.style.width = "100%";
+                      e.target.style.height = "100%";
+                      e.target.alt = "Image unavailable";
+                    }}
                   />
                   <div className="photo-info">
                     <p>{photoData.establishment}</p>

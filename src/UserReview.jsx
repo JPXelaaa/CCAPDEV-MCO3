@@ -19,15 +19,36 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
     rating: 0,
     photos: []
   });
+  const [userDescription, setUserDescription] = useState("");
+  const [loadingDescription, setLoadingDescription] = useState(true);
 
   useEffect(() => {
-    // fetch reviews if we have a user
     if (user && user._id) {
       fetchUserReviews(user._id);
+      fetchUserDescription(user._id);
     } else {
       setLoading(false);
+      setLoadingDescription(false);
     }
   }, [user]);
+
+  const fetchUserDescription = async (userId) => {
+    try {
+      setLoadingDescription(true);
+      const response = await fetch(`http://localhost:5000/api/users/${userId}`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch user details');
+      }
+      
+      const userData = await response.json();
+      setUserDescription(userData.description || "");
+      setLoadingDescription(false);
+    } catch (err) {
+      console.error('Error fetching user description:', err);
+      setLoadingDescription(false);
+    }
+  };
 
   useEffect(() => {
     // fetch user's votes for each review if user is logged in
@@ -471,7 +492,11 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
         <h3 style={{ fontSize: "22px", fontWeight: "600" }}>About Me</h3>
         <div className="about-section">
           <div className="review-text">
-            {user?.description || "No description available."}
+            {loadingDescription ? (
+              <p>Loading description...</p>
+            ) : (
+              userDescription || "No description available."
+            )}
           </div>
         </div>
       </div>
@@ -550,11 +575,11 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
               allPhotos.slice(0, 6).map((photoObj, index) => (
                 <div className="photo-preview" key={index} onClick={() => openPhotoModal(index)}>
                   <img 
-                    src={getPhotoUrl(photoObj.photo)} 
+                    src={`http://localhost:5000/api/images/review/${photoObj.reviewId}/photo/${photoObj.photoIndex || index}`}
                     className="actual-photo"
                     alt={`Review photo ${index + 1}`}
                     onError={(e) => { 
-                      console.log("Image failed to load:", photoObj.photo);
+                      console.log("Image failed to load:", photoObj);
                       e.target.src = "https://static.vecteezy.com/system/resources/previews/022/014/063/original/missing-picture-page-for-website-design-or-mobile-app-design-no-image-available-icon-vector.jpg"; // Fallback image
                     }}
                   />

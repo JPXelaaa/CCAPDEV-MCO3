@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import "./EditAccount.css";
 import NavigationBar from "./NavigationBar.jsx";
+import bcrypt from "bcryptjs";
 
 function EditAccount({ setShowLogin, setShowSignUp, setShowEstablishmentSignUp, isLoggedIn, setIsLoggedIn, user, setUser }) {
   const location = useLocation();
@@ -58,7 +59,7 @@ function EditAccount({ setShowLogin, setShowSignUp, setShowEstablishmentSignUp, 
         return;
       }
       
-      if (!(await bcrypt.compare(password, user.password))) {
+      if (!oldPassword) {
         alert("Please enter your current password to change to a new password.");
         return;
       }
@@ -71,11 +72,8 @@ function EditAccount({ setShowLogin, setShowSignUp, setShowEstablishmentSignUp, 
       formData.append("username", username);
     }
     
-    if (oldPassword) {
+    if (password && oldPassword) {
       formData.append("oldPassword", oldPassword);
-    }
-    
-    if (password) {
       formData.append("password", password);
     }
     

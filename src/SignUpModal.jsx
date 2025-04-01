@@ -143,26 +143,33 @@ function SignUpModal({ onClose, setIsLoggedIn, setUser }) {
       console.log("🔍 Server Response JSON:", data);
 
       if (response.ok) {
-        // Handle successful sign-up with auto-login
         if (data.token && data.user) {
-          // Clear any existing user data first
-          localStorage.removeItem("token");
-          localStorage.removeItem("loggedInUser");
-          
-          // Set the new user data
-          localStorage.setItem("token", data.token);
-          localStorage.setItem("loggedInUser", JSON.stringify(data.user));
-          
+          // Store the full user object in memory for the current session
+      setUser(data.user);
+  
+      const minimalUser = {
+        _id: data.user._id,
+        username: data.user.username,
+        userType: data.user.userType,
+      };
+
+      try {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("loggedInUser", JSON.stringify(minimalUser));
+      } catch (storageError) {
+        console.error("Failed to store user data in localStorage", storageError);
+        // If localStorage fails, at least keep the user logged in for this session
+        setError("Warning: Unable to remember login between sessions due to storage limitations");
+        // Wait 3 seconds before closing so the user can see the warning
+        setTimeout(() => {
           setIsLoggedIn(true);
-          if (typeof setUser === 'function') {
-            setUser(data.user);
-          } else {
-            console.log('setUser is not a function, using localStorage only');
-          }
-          
-          // Close the modal
-          alert("Account created successfully! You are now logged in.");
           onClose();
+        }, 3000);
+        return;
+      }
+
+      setIsLoggedIn(true);
+      onClose();
         }
       } else {
         setError(data?.message || "Sign-up failed. Please try again.");

@@ -31,17 +31,30 @@ function LoginModal({ onClose, setIsLoggedIn, setUser }) {
       if (!data.token || !data.user) {
         throw new Error("Invalid response from server");
       }
-
-      // Store token and user data
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("loggedInUser", JSON.stringify(data.user));
-      
-      // Update application state
-      setIsLoggedIn(true);
       setUser(data.user);
       
-      // Close modal after successful login
+      const minimalUser = {
+        _id: data.user._id,
+        username: data.user.username,
+        userType: data.user.userType,
+      };
+
+      try {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("loggedInUser", JSON.stringify(minimalUser));
+      } catch (storageError) {
+        console.error("Failed to store user data in localStorage", storageError);
+        setError("Warning: Unable to remember login between sessions due to storage limitations");
+        setTimeout(() => {
+          setIsLoggedIn(true);
+          onClose();
+        }, 3000);
+        return;
+      }
+
+      setIsLoggedIn(true);
       onClose();
+
     } catch (err) {
       setError(err.message);
     } finally {

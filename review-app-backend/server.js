@@ -580,23 +580,31 @@ app.post("/api/edit-account", upload.single("avatar"), async (req, res) => {
       });
     }
 
-    if (oldPassword.trim() == "") {
-      return res.status(400).json({ 
-        status: "error", 
-        message: "Input your password to proceed" 
-      });
-    }
-    
-    // Verify old password
-    if (oldPassword !== user.password) {
-      return res.status(400).json({ 
-        status: "error", 
-        message: "Current password is incorrect" 
-      });
-    }
-    
     // Prepare update object
     const updateData = {};
+    
+    // Only validate password if attempting to change it or username
+    const isChangingSecurityInfo = (password && password.trim() !== "") || 
+                                  (username && username.trim() !== "");
+    
+    if (isChangingSecurityInfo) {
+      // Check if old password was provided
+      if (!oldPassword || oldPassword.trim() === "") {
+        return res.status(400).json({ 
+          status: "error", 
+          message: "Input your password to proceed with security changes" 
+        });
+      }
+      
+      // Use bcrypt to compare the plaintext oldPassword with the hashed password in the database
+      const isPasswordCorrect = await bcrypt.compare(oldPassword, user.password);
+      if (!isPasswordCorrect) {
+        return res.status(400).json({ 
+          status: "error", 
+          message: "Current password is incorrect" 
+        });
+      }
+    }
     
     if (username && username.trim() !== "") {
       // Check if username is already taken by another user
@@ -616,7 +624,8 @@ app.post("/api/edit-account", upload.single("avatar"), async (req, res) => {
     }
     
     if (password && password.trim() !== "") {
-      updateData.password = password;
+      // Hash the new password before storing
+      updateData.password = await bcrypt.hash(password, 10);
     }
     
     if (description !== undefined) {
@@ -755,21 +764,37 @@ app.get('/api/reviews', async (req, res) => {
 app.get('/api/images/review/:reviewId/photo/:index', async (req, res) => {
   try {
     console.log('Entered Photos!')
-    const review = await Review.findById(req.params.reviewId);
-    const index = parseInt(req.params.index, 10);
+    console.log('reviewId:', req.params.reviewId);
+    console.log('photoIndex:', req.params.index);
     
-    // Variable name mismatch: "photoIndex" vs "index"
-    if (!review || !review.photos || !review.photos[index]) {
+    const review = await Review.findById(req.params.reviewId);
+    console.log('Review found:', review ? 'yes' : 'no');
+    console.log('Photos array:', review ? review.photos : 'N/A');
+    
+    // Try both approaches: index-based and id-based
+    const index = parseInt(req.params.index, 10);
+    let photo;
+    
+    if (!isNaN(index) && review.photos && review.photos[index]) {
+      // If index is a number and that position exists in the array
+      photo = review.photos[index];
+      console.log('Found photo by index');
+    } else if (review.photos) {
+      // Try to find by ID
+      photo = review.photos.find(p => p._id.toString() === req.params.index);
+      console.log('Found photo by ID');
+    }
+
+    if (!review || !photo) {
+      console.log('Photo not found!');
       return res.status(404).send('Photo not found');
     }
     
     // Set the appropriate content type
-    res.set('Content-Type', review.photos[index].contentType);
-
-    console.log('Review photos in API:', review.photos);
-    console.log('Photos length in API:', review.photos ? review.photos.length : 'null');
+    res.set('Content-Type', photo.contentType);
+    
     // Send the binary data
-    res.send(review.photos[index].data);
+    res.send(photo.data);
   } catch (error) {
     console.error('Error fetching review photo:', error);
     res.status(500).send('Server error');
@@ -1420,6 +1445,31 @@ app.get('/api/reviews/:reviewId/votes', async (req, res) => {
   } catch (err) {
     console.error('Error retrieving review votes:', err);
     res.status(500).json({ message: 'Server error retrieving votes' });
+  }
+});
+
+app.get('/api/users/:id', async (req, res) => {
+  try {
+    console.log(
+      "Entered Description Fetching"
+    );
+    const user = await User.findById(req.params.id)
+      .lean()
+      .select('_id description');
+      
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    // Transform the response to include image URL instead of binary data if needed
+    const transformedUser = {
+      ...user,
+    };
+    
+    res.json(transformedUser);
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 

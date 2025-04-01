@@ -156,11 +156,12 @@ function MakeReview({ isEdit, reviewContent, setShowLogin, setShowSignUp, setSho
         }
         return;
       }
-      
+      const authHeader = token.startsWith('Bearer ') ? token : `Bearer ${token}`;
+
       const response = await fetch('http://localhost:5000/api/reviews', {
         method: 'POST',
         headers: {
-          'Authorization': token
+          'Authorization': authHeader
         },
         body: formData
       });
