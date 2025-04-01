@@ -229,6 +229,124 @@ function verifyToken(req, res, next) {
     return res.status(401).json({ message: "Invalid token" });
   }
 }
+app.post("/api/establishment/editaccount", async (req, res) => {
+  try {
+    console.log("Received Edit Establishment Request:", req.body);
+    console.log("Received File:", req.file);
+    
+    const { id, username, oldPassword, newPassword } = req.body;
+    
+    // Validate required fields
+    if (!id) {
+      return res.status(400).json({ 
+        status: "error", 
+        message: "Establishment ID is required" 
+      });
+    }
+    
+    // Find the establishment
+    const establishment = await Establishment.findById(id);
+    if (!establishment) {
+      return res.status(404).json({ 
+        status: "error", 
+        message: "Establishment not found" 
+      });
+    }
+
+    // Prepare update object
+    let updateData = {};
+    
+    // Only validate password if attempting to change it or username
+    const isChangingSecurityInfo = (newPassword && newPassword.trim() !== "") || 
+                                  (username && username !== establishment.username);
+    
+    if (isChangingSecurityInfo) {
+      // Check if old password was provided
+      if (!oldPassword || oldPassword.trim() === "") {
+        return res.status(400).json({ 
+          status: "error", 
+          message: "Input your current password to proceed with security changes" 
+        });
+      }
+      
+      // Use bcrypt to compare the plaintext oldPassword with the hashed password in the database
+      const isPasswordCorrect = await bcrypt.compare(oldPassword, establishment.password);
+      if (!isPasswordCorrect) {
+        return res.status(400).json({ 
+          status: "error", 
+          message: "Current password is incorrect" 
+        });
+      }
+    }
+    
+    if (username) {
+      // Only check for username uniqueness if it's actually changing
+      if (username !== establishment.username) {
+        // Check if username is already taken by another establishment
+        const existingEstablishment = await Establishment.findOne({ 
+          username, 
+          _id: { $ne: id } 
+        });
+        
+        if (existingEstablishment) {
+          return res.status(400).json({ 
+            status: "error", 
+            message: "Username is already taken" 
+          });
+        }
+        
+        updateData.username = username;
+      }
+    }
+    
+    // Handle password update
+    if (newPassword && newPassword.trim() !== "") {
+      // Hash the new password before storing
+      updateData.password = await bcrypt.hash(newPassword, 10);
+    }
+    
+    console.log("Update data:", updateData); // Debug log
+    
+    // Only proceed with update if there are changes to make
+    if (Object.keys(updateData).length > 0) {
+      // Update the establishment
+      const updateResult = await Establishment.updateOne({ _id: id }, { $set: updateData });
+      console.log("Update result:", updateResult); // Debug log
+      
+      if (updateResult.matchedCount === 0) {
+        return res.status(404).json({
+          status: "error",
+          message: "Establishment not found for update"
+        });
+      }
+    } else {
+      console.log("No changes to update");
+    }
+    
+    // Get the updated establishment data to return
+    const updatedEstablishment = await Establishment.findById(id);
+    
+    // Return the establishment with userType added to match the expected structure
+    return res.status(200).json({ 
+      status: "success", 
+      message: "Establishment account updated successfully",
+      user: {
+        _id: updatedEstablishment._id,
+        username: updatedEstablishment.username,
+        userType: "establishment",  // This is critical for the navbar
+        establishmentType: updatedEstablishment.establishmentType,
+        name: updatedEstablishment.name,
+        // Include any other necessary fields
+      }
+    });
+  } catch (error) {
+    console.error("Error updating establishment account:", error);
+    return res.status(500).json({ 
+      status: "error", 
+      message: "An error occurred while updating the establishment account" 
+    });
+  }
+});
 
 // Login Route
 app.post("/api/login", async (req, res) => {

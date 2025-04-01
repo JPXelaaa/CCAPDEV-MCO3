@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import "./EditEstablishmentAccount.css";
 import NavigationBar from "./NavigationBar.jsx";
 
@@ -11,56 +11,67 @@ function EditEstablishmentAccount({ setShowLogin, setShowSignUp, setShowEstablis
   const [oldPassword, setOldPassword] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const storedEstablishment = JSON.parse(localStorage.getItem("loggedInEstablishment"));
-    if (storedEstablishment && !user) {
-      setUser(storedEstablishment);
+    if (user) {
+      setUsername(user.username || "");
+      // Set other fields as needed
+      return;
+    }
+    
+    // First try to get from localStorage consistently
+    const storedUser = JSON.parse(localStorage.getItem("loggedInUser"));
+    if (storedUser) {
+      setUser(storedUser);
       setIsLoggedIn(true);
+      setUsername(storedUser.username || "");
     }
   }, [setUser, setIsLoggedIn, user]);
 
   const updateData = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError(null);
   
-    console.log("Updating data with the following values:");
-    console.log("Username:", username); 
-    console.log("Old Password:", oldPassword);
+    // Validate form
+    if (password && password !== confirmPassword) {
+      setError("New passwords do not match!");
+      setIsLoading(false);
+      return;
+    }
     
-    // Validate passwords if changing password
-    if (password) {
-      if (password !== confirmPassword) {
-        alert("New passwords do not match!");
-        return;
-      }
-      
-      if (!(await bcrypt.compare(password, user.password))) {
-        alert("Please enter your current password to change to a new password.");
-        return;
-      }
+    if (!oldPassword && (password || confirmPassword)) {
+      setError("Please enter your current password to change to a new password.");
+      setIsLoading(false);
+      return;
     }
   
-    const formData = new FormData();
-    formData.append("id", user._id);
-    
-    if (username) {
-      formData.append("username", username);
-    }
-    
-    if (oldPassword) {
-      formData.append("oldPassword", oldPassword);
-    }
-    
-    if (password) {
-      formData.append("password", password);
-    }
+    const userData = {
+      id: user?._id,
+      username: username || undefined,
+      oldPassword: oldPassword || undefined,
+      newPassword: password || undefined
+    };
     
     try {
-      const response = await fetch("http://localhost:5000/api/establishment/editaccount", { //NOT SURE KUNG TAMA TOH
+      const API_URL = "http://localhost:5000/api/establishment/editaccount";
+      console.log("Sending request to:", API_URL);
+      
+      const response = await fetch(API_URL, {
         method: "POST",
-        body: formData,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
       });
   
+      // Check if the response is OK before trying to parse JSON
+      if (!response.ok) {
+        throw new Error(`Server responded with status: ${response.status}`);
+      }
+      
       const data = await response.json();
       console.log("Server response:", data);
   
@@ -68,18 +79,23 @@ function EditEstablishmentAccount({ setShowLogin, setShowSignUp, setShowEstablis
         // Update the user state with the returned user data
         setUser(data.user);
         
-        // Update localStorage with the new user data
+        // IMPORTANT: Store in loggedInUser instead of loggedInEstablishment
+        // This is what NavigationBar looks for
         localStorage.setItem("loggedInUser", JSON.stringify(data.user));
-        
+
         alert("Account updated successfully!");
-        window.location.href = "/establishment";
+        setTimeout(() => {
+          window.location.href = `/establishment/manage/${establishmentId}`;
+        }, 100);
       } else {
-        // Handle error
-        alert(data.message || "Error updating account. Please try again.");
+        // Handle error from server
+        setError(data.message || "Error updating account. Please try again.");
       }
     } catch (error) {
       console.error("Error updating account:", error);
-      alert("Failed to connect to the server. Please try again.");
+      setError(`Failed to update account: ${error.message}. Please check your API endpoint and server.`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -98,8 +114,10 @@ function EditEstablishmentAccount({ setShowLogin, setShowSignUp, setShowEstablis
       <div>
         <div className="content-row">
           <div className="left-section">
-            <form action="/login" method="post">
-              <h2 id="sign-up-title"> Change Account Details</h2>
+            <form onSubmit={updateData}>
+              <h2 id="sign-up-title">Change Account Details</h2>
+              
+              {error && <div className="error-message" style={{color: 'red', marginBottom: '10px'}}>{error}</div>}
 
               <p>Username</p>
               <input
@@ -107,8 +125,8 @@ function EditEstablishmentAccount({ setShowLogin, setShowSignUp, setShowEstablis
                 type="text"
                 name="username"
                 placeholder="Username"
-                required
-                defaultValue={establishment?.username || ""}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               />
 
               <p>Old Password</p>
@@ -117,7 +135,8 @@ function EditEstablishmentAccount({ setShowLogin, setShowSignUp, setShowEstablis
                 type="password"
                 name="oldPassword"
                 placeholder="Old Password"
-                required
+                value={oldPassword}
+                onChange={(e) => setOldPassword(e.target.value)}
               />
 
               <p>New Password</p>
@@ -126,7 +145,8 @@ function EditEstablishmentAccount({ setShowLogin, setShowSignUp, setShowEstablis
                 type="password"
                 name="newPassword"
                 placeholder="New Password"
-                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
 
               <p>Confirm Password</p>
@@ -135,26 +155,31 @@ function EditEstablishmentAccount({ setShowLogin, setShowSignUp, setShowEstablis
                 type="password"
                 name="confirmPassword"
                 placeholder="Confirm Password"
-                required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
+              
+              <div className="button-section">
+                <Link to={user?._id ? `/establishment/${user._id}` : "/establishment"}>
+                  <button type="button" id="cancel">Cancel</button>
+                </Link>
+
+                <button 
+                  type="submit" 
+                  className="submit-btn" 
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Processing..." : "Confirm Changes"}
+                </button>
+
+                <Link to="/">
+                  <button type="button" className="delete-prompt">Delete</button>
+                </Link>
+              </div>
             </form>
           </div>
         </div>
       </div>
-
-      <div className = "button-section">
-            <Link to="/establishment">
-              <button type="button" id="cancel">Cancel</button>
-            </Link>
-
-            <Link to="/establishment">
-              <button type="submit" className="submit-btn">Confirm Changes</button>
-            </Link>
-
-            <Link to="/">
-              <button className="delete-prompt">Delete</button>
-            </Link>
-        </div>
     </>
   );
 }
