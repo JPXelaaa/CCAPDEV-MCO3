@@ -85,6 +85,10 @@ nav {
   right: 17%;
 }
 
+.dropdown-menu {
+  right: -180%;
+}
+
 @keyframes slideDown {
   from {
     opacity: 0;
