@@ -40,6 +40,9 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 
+  const [showProfileOptions, setShowProfileOptions] = useState(false);
+
+
   useEffect(() => {
     // Check if user is logged in and is the owner of this establishment
     if (!isLoggedIn || !user) {
@@ -105,6 +108,10 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
   if (token) {
     setIsLoggedIn(true); // Restore login state
   }
+
+  const toggleProfileOptions = () => {
+    setShowProfileOptions(!showProfileOptions);
+  };
 
   const handleLogoChange = (e) => {
     const file = e.target.files[0];
@@ -449,18 +456,17 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
                       <p id="num-review">{establishment?.rating || 0} stars ({establishment?.reviewCount || 0} reviews)</p>
                     </div>
                     <div className="edit-profile">
-                      <div className="dropdown">
+                        <div className="dropdown">
                         <button 
                           className="btn dropdown-toggle" 
                           type="button" 
-                          data-bs-toggle="dropdown" 
-                          data-bs-auto-close="true"
-                          aria-expanded="false"
+                          onClick={toggleProfileOptions}
                         >
                           Edit Profile
                         </button>
-                        <ul className="dropdown-menu">
-                          <li>
+                        {showProfileOptions && (
+                        <div className="dropdown-edit">
+                          <h2>
                             <button 
                               className="dropdown-item" 
                               onClick={() => {
@@ -470,16 +476,17 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
                             >
                               Edit Establishment Details
                             </button>
-                          </li>
-                          <li>
+                          </h2>
+                          <h2>
                             <button 
                               className="dropdown-item" 
                               onClick={() => navigate(`/establishments/editaccount/${establishmentId}`)}
                             >
                               Change Account Details
                             </button>
-                          </li>
-                        </ul>
+                          </h2>
+                        </div>
+                        )}
                       </div>
                     </div>
                   </div>

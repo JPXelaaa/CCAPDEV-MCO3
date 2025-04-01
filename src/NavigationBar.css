@@ -32,6 +32,10 @@ nav {
   background-color: #b16757;
 }
 
+.reg-option {
+  margin: 5px;
+}
+
 #page-logo {
   margin-left: 0;
 }
@@ -108,8 +112,12 @@ nav {
   cursor: pointer;
 }
 
+.option {
+  margin: 15px;
+}
+
 .nav-link:hover {
-  color: rgb(141, 141, 141);
+  color: rgb(233, 156, 156);
 }
 
 
