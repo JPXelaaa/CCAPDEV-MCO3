@@ -29,14 +29,12 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
   const [website, setWebsite] = useState("");
   const [categories, setCategories] = useState("");
   const [hours, setHours] = useState([]);
-  const [facilities, setFacilities] = useState([]);
   
   // Refs for file inputs
   const logoInputRef = useRef(null);
   
   // New state variables and handlers for hours and facilities
   const [newHour, setNewHour] = useState({ day: "", start: "", end: "" });
-  const [newFacility, setNewFacility] = useState("");
 
   const handleAddHours = () => {
     if (newHour.day && newHour.start && newHour.end) {
@@ -49,17 +47,6 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
     setHours(hours.filter((_, i) => i !== index));
   };
 
-  const handleAddFacility = () => {
-    if (newFacility.trim()) {
-      setFacilities([...facilities, newFacility.trim()]);
-      setNewFacility("");
-    }
-  };
-
-  const handleRemoveFacility = (index) => {
-    setFacilities(facilities.filter((_, i) => i !== index));
-  };
-  
   const handleLogoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -159,7 +146,6 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
       
       // Add hours and facilities as JSON strings
       formData.append("hours", JSON.stringify(hours));
-      formData.append("facilities", JSON.stringify(facilities));
       
       // Add files
       if (logoFile) {
