@@ -239,9 +239,11 @@ const EstablishmentView = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowSig
             <div className="review-count">
               {establishment?.reviewCount || 0} reviews
             </div>
-            <Link to={`/review/create/${establishmentId}`} className="write-review-button">
+            {user.userType === 'user' && (
+              <Link to={`/review/create/${establishmentId}`} className="write-review-button">
               Write a Review
             </Link>
+            )};
           </div>
 
           {/* Center column - Image carousel */}

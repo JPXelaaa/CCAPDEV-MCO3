@@ -115,7 +115,7 @@ function EditEstablishmentAccount({ setShowLogin, setShowSignUp, setShowEstablis
         <div className="content-row">
           <div className="left-section">
             <form onSubmit={updateData}>
-              <h2 id="sign-up-title">Change Account Details</h2>
+              <h2 id="change-account-title">Change Account Details</h2>
               
               {error && <div className="error-message" style={{color: 'red', marginBottom: '10px'}}>{error}</div>}
 
@@ -159,23 +159,27 @@ function EditEstablishmentAccount({ setShowLogin, setShowSignUp, setShowEstablis
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
               
-              <div className="button-section">
-                <Link to={user?._id ? `/establishment/${user._id}` : "/establishment"}>
-                  <button type="button" id="cancel">Cancel</button>
-                </Link>
-
+              <div className="confirm-and-cancel">
+                
                 <button 
                   type="submit" 
-                  className="submit-btn" 
+                  className="confirm-btn" 
                   disabled={isLoading}
                 >
                   {isLoading ? "Processing..." : "Confirm Changes"}
                 </button>
 
-                <Link to="/">
-                  <button type="button" className="delete-prompt">Delete</button>
+                <Link to={user?._id ? `/establishment/${user._id}` : "/establishment"}>
+                  <button type="button" id="cancel">Cancel</button>
                 </Link>
               </div>
+              
+              <div className="delete-prompt">  
+                <Link to="/">
+                  <button type="button" className="delete-btn">Delete Account</button>
+                </Link>
+              </div>
+
             </form>
           </div>
         </div>

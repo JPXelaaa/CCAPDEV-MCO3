@@ -28,6 +28,7 @@ function NavigationBar({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowEstabli
 
   const handleLogout = () => {
     // Clear user data from localStorage
+
     localStorage.removeItem('loggedInUser');
     localStorage.removeItem('token');
     
