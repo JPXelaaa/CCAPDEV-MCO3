@@ -397,54 +397,6 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
               />
             </div>
             
-            {/* Hours section */}
-            <div className="form-group">
-              <p>Hours</p>
-              <div className="hours-input">
-                <select
-                  className="form-select"
-                  value={newHour.day}
-                  onChange={(e) => setNewHour({ ...newHour, day: e.target.value })}
-                >
-                  <option value="">Select Day</option>
-                  <option value="Monday">Monday</option>
-                  <option value="Tuesday">Tuesday</option>
-                  <option value="Wednesday">Wednesday</option>
-                  <option value="Thursday">Thursday</option>
-                  <option value="Friday">Friday</option>
-                  <option value="Saturday">Saturday</option>
-                  <option value="Sunday">Sunday</option>
-                </select>
-                <input
-                  type="time"
-                  className="form-input"
-                  value={newHour.start}
-                  onChange={(e) => setNewHour({ ...newHour, start: e.target.value })}
-                />
-                <input
-                  type="time"
-                  className="form-input"
-                  value={newHour.end}
-                  onChange={(e) => setNewHour({ ...newHour, end: e.target.value })}
-                />
-                <button type="button" onClick={handleAddHours} className="add-btn">Add</button>
-              </div>
-              <div className="hours-display">
-                {hours.map((hour, index) => (
-                  <div key={index} className="hour-item">
-                    {hour.day}: {hour.start} - {hour.end}
-                    <button 
-                      type="button" 
-                      onClick={() => handleRemoveHours(index)}
-                      className="remove-btn"
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-            
             <div className="submit-container">
               <button 
                 type="button" 
