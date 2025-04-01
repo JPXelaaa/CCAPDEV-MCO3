@@ -641,7 +641,7 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseReplyModal}>
+          <Button id="cancel-reply" variant="secondary" onClick={handleCloseReplyModal}>
             Cancel
           </Button>
           <Button 

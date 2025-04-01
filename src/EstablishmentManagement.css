@@ -795,3 +795,13 @@ textarea.form-control {
   width: 100% !important;
   height: 400px !important;
 }
+
+#cancel-reply {
+  background-color: rgb(129, 129, 129);
+  border: none;
+  height: 37px;
+}
+
+#cancel-reply:hover {
+  background-color: rgb(160, 160, 160);
+}
