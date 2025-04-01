@@ -349,6 +349,7 @@ const EstablishmentView = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowSig
                 <h4>Reviews</h4>
               </div>
               
+              <div className="est-review">
               <EstablishmentReview 
                 establishmentId={establishmentId} 
                 isLoggedIn={isLoggedIn} 
@@ -356,6 +357,7 @@ const EstablishmentView = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowSig
                 user={user}
                 footer={true}
               />
+              </div>
             </div>
           </div>
 
