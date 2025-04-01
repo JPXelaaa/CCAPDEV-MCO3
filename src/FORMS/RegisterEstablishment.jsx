@@ -210,40 +210,40 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
           <div className="step-content">
             <h2 className="step-title">Account Information</h2>
             <div className="form-group">
-              <label>Email Address</label>
+              <p>Email Address</p>
               <input
                 className="form-input"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Input email address"
+                placeholder="Email address"
                 required
               />
             </div>
             <div className="form-group">
-              <label>Username</label>
+              <p>Username</p>
               <input
                 className="form-input"
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Input username"
+                placeholder="Username"
                 required
               />
             </div>
             <div className="form-group">
-              <label>Password</label>
+              <p>Password</p>
               <input
                 className="form-input"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Input password"
+                placeholder="Password"
                 required
               />
             </div>
             <div className="form-group">
-              <label>Confirm Password</label>
+              <p>Confirm Password</p>
               <input
                 className="form-input"
                 type="password"
@@ -274,7 +274,7 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
               
               <div className="input-container">
                 <div className="form-group">
-                  <label>Establishment Name</label>
+                  <p>Establishment Name</p>
                   <input
                     className="form-input"
                     type="text"
@@ -285,7 +285,7 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
                   />
                 </div>
                 <div className="form-group">
-                  <label>Overview of Business</label>
+                  <p>Overview of Business</p>
                   <textarea
                     className="form-description"
                     value={description}
@@ -304,7 +304,7 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
           <div className="step-content">
             <h2 className="step-title">Location Information</h2>
             <div className="form-group">
-              <label>Address 1</label>
+              <p>Address 1</p>
               <input
                 className="form-input"
                 type="text"
@@ -315,7 +315,7 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
               />
             </div>
             <div className="form-group">
-              <label>Address 2 (Optional)</label>
+              <p>Address 2 (Optional)</p>
               <input
                 className="form-input"
                 type="text"
@@ -325,7 +325,7 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
               />
             </div>
             <div className="form-group">
-              <label>City</label>
+              <p>City</p>
               <input
                 className="form-input"
                 type="text"
@@ -336,7 +336,7 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
               />
             </div>
             <div className="form-group">
-              <label>Postal Code</label>
+              <p>Postal Code</p>
               <input
                 className="form-input"
                 type="text"
@@ -349,22 +349,18 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
               />
             </div>
             <div className="form-group">
-              <label>Province</label>
-              <select
-                className="form-select"
+              <p>Province</p>
+              <input
+                className="form-input"
+                type="text"
                 value={province}
                 onChange={(e) => setProvince(e.target.value)}
+                placeholder="Province"
                 required
-              >
-                <option value="">None</option>
-                <option value="Manila">Manila</option>
-                <option value="Makati">Makati</option>
-                <option value="Quezon City">Quezon City</option>
-                <option value="Caloocan">Caloocan</option>
-              </select>
+              />
             </div>
             <div className="form-group">
-              <label>Phone Number</label>
+              <p>Phone Number</p>
               <input
                 className="form-input"
                 type="tel"
@@ -375,7 +371,7 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
               />
             </div>
             <div className="form-group">
-              <label>Website (Optional)</label>
+              <p>Website (Optional)</p>
               <input
                 className="form-input"
                 type="text"
@@ -385,7 +381,7 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
               />
             </div>
             <div className="form-group">
-              <label>Categories</label>
+              <p>Categories</p>
               <input
                 className="form-input"
                 type="text"
@@ -398,7 +394,7 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
             
             {/* Hours section */}
             <div className="form-group">
-              <label>Hours</label>
+              <p>Hours</p>
               <div className="hours-input">
                 <select
                   className="form-select"
@@ -446,7 +442,7 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
             
             {/* Facilities section */}
             <div className="form-group">
-              <label>Facilities & Services</label>
+              <p>Facilities & Services</p>
               <div className="facilities-input">
                 <input
                   type="text"

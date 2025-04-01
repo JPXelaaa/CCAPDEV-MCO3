@@ -118,11 +118,11 @@ body {
 
 .establishment-management .dropdown-item {
   padding: 1rem 1rem;
-  color: #ffffff;
+  color: #000000;
   font-size: 1.1rem ;
   display: block;
   cursor: pointer;
-  background:#444;
+  background:white;
   width: 100%;
   font-weight: 500;
   line-height: 1.4;
@@ -131,7 +131,7 @@ body {
 
 .establishment-management .dropdown-item:hover,
 .establishment-management .dropdown-item:focus {
-  background-color: #909090;
+  background-color: #dbdbdb;
   color: #1c1c1c;
   outline: none;
 }

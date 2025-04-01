@@ -9,6 +9,7 @@ import LoginModal from "./LoginModal";
 import RegisterEstablishment from "./FORMS/RegisterEstablishment";
 import EstablishmentView from "./EstablishmentView";
 import EstablishmentManagement from "./EstablishmentManagement";
+import EditEstablishmentAccount from "./EditEstablishmentAccount";
 import About from "./About";
 
 function App() {
@@ -98,6 +99,18 @@ function App() {
         <Route 
           path="/establishment/:id" 
           element={<EstablishmentView 
+            isLoggedIn={isLoggedIn} 
+            setIsLoggedIn={setIsLoggedIn} 
+            setShowLogin={setShowLogin}
+            setShowSignUp={setShowSignUp}
+            setShowEstablishmentSignUp={setShowEstablishmentSignUp}
+            user={user} 
+            setUser={updateUserState}
+          />} 
+        />
+        <Route 
+          path="/establishments/editaccount/:establishmentId" 
+          element={<EditEstablishmentAccount 
             isLoggedIn={isLoggedIn} 
             setIsLoggedIn={setIsLoggedIn} 
             setShowLogin={setShowLogin}
