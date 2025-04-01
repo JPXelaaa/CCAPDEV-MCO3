@@ -241,9 +241,11 @@ const EstablishmentView = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowSig
               {/* Fix: Use actual review count from establishment data */}
               {establishment?.reviewCount || 0} reviews
             </div>
-            <Link to={`/review/create/${establishmentId}`} className="write-review-button">
+            {user.userType === 'user' && (
+              <Link to={`/review/create/${establishmentId}`} className="write-review-button">
               Write a Review
             </Link>
+            )};
           </div>
 
           {/* Center column - Image carousel */}

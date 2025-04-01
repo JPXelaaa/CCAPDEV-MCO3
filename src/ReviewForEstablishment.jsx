@@ -40,6 +40,7 @@ function ReviewForEstablishment({
 
   // Fetch the current vote counts on component mount
   useEffect(() => {
+    console.log("user: ", currentUser);
     const fetchVoteCounts = async () => {
       try {
         // Only fetch if we have a valid reviewId
@@ -202,7 +203,7 @@ function ReviewForEstablishment({
       {/* Review Photos - Updated for binary data */}
       {photos && photos.length > 0 && (
         <div className="review-section-photo">
-          {photos.slice(0, type === "view" ? 2 : photos.length).map((photo, index) => (
+          {photos.slice(0, type === "view" ? 2 : photos.length).map((photoData, index) => (
             <div className="photo-entry" key={index} onClick={() => showSelectedPhoto(index)}>
               <img 
                 src={getPhotoUrl(index)} 
@@ -232,7 +233,7 @@ function ReviewForEstablishment({
       {/* Review Footer (Reply only) */}
       <div className="review-footer">
         <div className="footer-content">
-          {isLoggedIn && footer && (
+          {isLoggedIn && currentUser.userType == 'user' && (
             <>
               <button
                 id="helpful"
