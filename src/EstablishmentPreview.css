@@ -5,7 +5,7 @@ a {
 
 /* Establishment Preview */
 .establishment-preview {
-  border: 2px solid black;
+  border: 2px solid rgb(194, 192, 192);
   border-radius: 15px;
   display: flex;
   flex-direction: column;

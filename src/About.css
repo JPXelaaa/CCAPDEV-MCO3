@@ -1,0 +1,19 @@
+.center-content {
+  display: flex;
+  justify-content: center;
+  padding: 2%;
+  height: 100vh;
+}
+
+.about-header {
+  border: 2px solid rgb(231, 231, 231);
+  background-color: white;
+  padding: 30px;
+  border-radius: 50px;
+  width: 50%;
+}
+
+.about-label {
+  text-align: center;
+  margin-bottom: 25px;
+}

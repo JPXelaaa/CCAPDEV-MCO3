@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import ReviewForEstablishment from "./ReviewForEstablishment";
 import "./EstablishmentReview.css";
 
-function EstablishmentReview({ establishmentId: propEstablishmentId, isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, preview = false, onReplyClick }) {
+function EstablishmentReview({ establishmentId: propEstablishmentId, isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, preview = false, onReplyClick, footer = false }) {
   const { establishmentId: paramEstablishmentId } = useParams();
   const establishmentId = propEstablishmentId || paramEstablishmentId;
   
@@ -97,7 +97,7 @@ function EstablishmentReview({ establishmentId: propEstablishmentId, isLoggedIn,
   const filteredReviews = reviews
     .filter(review => {
       if (selectedKeywords === "With photos") return review.photos?.length > 0;
-      if (selectedKeywords === "Positive Rating") return review.rating >= 4;
+      if (selectedKeywords === "Rating >= 4") return review.rating >= 4;
       if (selectedKeywords === "Good Service") return review.body.toLowerCase().includes("service");
       return true;
     })
@@ -183,7 +183,7 @@ function EstablishmentReview({ establishmentId: propEstablishmentId, isLoggedIn,
           </div>
           {!preview && (
             <div className="tags-container">
-              {["With photos", "Positive Rating", "Good Service"].map((keyword) => (
+              {["With photos", "High Rating", "Good Service"].map((keyword) => (
                 <div 
                   className={`rectangle ${selectedKeywords === keyword ? 'active' : ''}`} 
                   key={keyword} 
@@ -232,6 +232,7 @@ function EstablishmentReview({ establishmentId: propEstablishmentId, isLoggedIn,
                       isLoggedIn={isLoggedIn}
                       userVote={reviewVotes[review._id] || null}
                       onVoteUpdate={handleVoteUpdate}
+                      footer={footer}
                     />
                     
                     {/* Display replies if they exist */}

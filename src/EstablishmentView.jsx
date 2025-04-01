@@ -389,6 +389,7 @@ const EstablishmentView = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowSig
                 isLoggedIn={isLoggedIn} 
                 setShowLogin={setShowLogin}
                 user={user}
+                footer={true}
               />
             </div>
           </div>

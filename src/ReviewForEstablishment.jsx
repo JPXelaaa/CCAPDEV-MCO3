@@ -19,7 +19,8 @@ function ReviewForEstablishment({
   helpful, 
   unhelpful, 
   userVote = null,
-  onVoteUpdate
+  onVoteUpdate,
+  footer = true
 }) { 
   // Initialize with the values from props
   const [voteData, setVoteData] = useState({
@@ -201,7 +202,7 @@ function ReviewForEstablishment({
 
       {/* Review Photos - Updated for binary data */}
       {photos && photos.length > 0 && (
-        <div className="review-photo">
+        <div className="review-section-photo">
           {photos.slice(0, type === "view" ? 2 : photos.length).map((photo, index) => (
             <div className="photo-entry" key={index} onClick={() => openPhotoModal(index)}>
               <img 
@@ -258,7 +259,7 @@ function ReviewForEstablishment({
       {/* Review Footer (Reply only) */}
       <div className="review-footer">
         <div className="footer-content">
-          {isLoggedIn && (
+          {isLoggedIn && footer && (
             <>
               <button
                 id="helpful"

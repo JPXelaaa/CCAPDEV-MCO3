@@ -75,11 +75,14 @@
     padding: 2%;;
   }
   
-  .review-photo {
+  .review-section-photo {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     padding: 3%;
     gap: 1%;
+    height: fit-content;
+    width: 95%;
+    margin: 0% 2%;
   }
   
   .review-footer {
@@ -218,6 +221,8 @@
     border-radius: 5%;
     overflow: hidden;
     aspect-ratio: 1 / 1;
+    width: 100%;
+    height: 100%
   }
   
   .actual-photo {

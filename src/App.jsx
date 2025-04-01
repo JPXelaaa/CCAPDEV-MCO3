@@ -9,6 +9,7 @@ import LoginModal from "./LoginModal";
 import RegisterEstablishment from "./FORMS/RegisterEstablishment";
 import EstablishmentView from "./EstablishmentView";
 import EstablishmentManagement from "./EstablishmentManagement";
+import About from "./About";
 
 function App() {
   const [showSignUp, setShowSignUp] = useState(false); 
@@ -145,6 +146,18 @@ function App() {
         <Route 
           path="/" 
           element={<HomePage 
+            isLoggedIn={isLoggedIn} 
+            setIsLoggedIn={setIsLoggedIn} 
+            setShowSignUp={setShowSignUp}
+            setShowEstablishmentSignUp={setShowEstablishmentSignUp}
+            setShowLogin={setShowLogin} 
+            user={user} 
+            setUser={updateUserState}
+          />} 
+        />
+        <Route 
+          path="/about" 
+          element={<About 
             isLoggedIn={isLoggedIn} 
             setIsLoggedIn={setIsLoggedIn} 
             setShowSignUp={setShowSignUp}

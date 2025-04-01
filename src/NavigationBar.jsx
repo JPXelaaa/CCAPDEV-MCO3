@@ -79,6 +79,7 @@ function NavigationBar({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowEstabli
           {isLoggedIn && user ? (
             <>
               <h2 className="nav-link"><Link to="/">Home</Link></h2>
+              <h2 className="nav-link"><Link to="/about">About</Link></h2>
               
               {/* Conditional rendering based on user type */}
               {user.userType === 'establishment' ? (
