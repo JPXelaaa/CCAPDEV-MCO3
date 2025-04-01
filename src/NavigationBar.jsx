@@ -131,9 +131,10 @@ function NavigationBar({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowEstabli
               <button id="log-in"><h2 className="nav-link" onClick={() => setShowLogin(true)}>LOG IN</h2></button>
               <button id="sign-up" onClick={toggleProfileOptions}><h2 className="nav-link">SIGN UP</h2>
               {showProfileOptions && (
-                  <div className="dropdown-edit">
-                    <h2 className="nav-link" onClick={handleSignUpClick}>Register User</h2>
-                    <h2 className="nav-link" onClick={() => setShowEstablishmentSignUp(true)}>Register Establishment</h2>
+                  <div className="dropdown-options">
+                    <h4 className="reg-option"><button className="nav-link" onClick={handleSignUpClick}>Register User</button></h4>
+                    <h4 className="reg-option"><button className="nav-link" onClick={() => setShowEstablishmentSignUp(true)}>Register Estabishment</button></h4>
+                    
                   </div>
                 )}
               </button>
