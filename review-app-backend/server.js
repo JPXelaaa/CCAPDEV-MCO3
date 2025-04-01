@@ -145,11 +145,12 @@ app.get('/api/establishments/:id', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
 // Search establishments
-app.get('/api/establishments/:search', async (req, res) => {
+app.get('/api/establishments/search/:query', async (req, res) => {
   try {
     const establishments = await Establishment.find({
-      name: { $regex: req.params.search, $options: "i" }
+      name: { $regex: req.params.query, $options: "i" }
     })
       .lean()
       .select('name description rating reviewCount logo photos')
@@ -166,6 +167,8 @@ app.get('/api/establishments/:search', async (req, res) => {
       };
     });
     
+    console.log("establishments:", transformedEstablishments);
+
     res.json(transformedEstablishments);
   } catch (error) {
     console.error('Error fetching establishments:', error);
