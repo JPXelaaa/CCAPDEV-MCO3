@@ -441,7 +441,7 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
                     <button 
                       type="button" 
                       className="remove-photo" 
-                      onClick={() => removePhoto(index)}
+                      onClick={() => removeElement(editFormData.photos, index)}
                     >
                       ×
                     </button>
@@ -547,7 +547,7 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
             ) : error ? (
               <p>{error}</p>
             ) : allPhotos.length > 0 ? (
-              allPhotos.slice(0, 5).map((photoObj, index) => (
+              allPhotos.slice(0, 6).map((photoObj, index) => (
                 <div className="photo-preview" key={index} onClick={() => openPhotoModal(index)}>
                   <img 
                     src={getPhotoUrl(photoObj.photo)} 
@@ -555,7 +555,7 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
                     alt={`Review photo ${index + 1}`}
                     onError={(e) => { 
                       console.log("Image failed to load:", photoObj.photo);
-                      e.target.src = "https://via.placeholder.com/150"; // Fallback image
+                      e.target.src = "https://static.vecteezy.com/system/resources/previews/022/014/063/original/missing-picture-page-for-website-design-or-mobile-app-design-no-image-available-icon-vector.jpg"; // Fallback image
                     }}
                   />
                 </div>

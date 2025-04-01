@@ -65,6 +65,7 @@
   
   .review-establishment, .review-text {
     padding: 0% 5% 0% 5%;
+    width: 100%;
   }
   
   .review-section {

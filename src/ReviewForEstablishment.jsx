@@ -209,7 +209,7 @@ function ReviewForEstablishment({
                 className="actual-photo" 
                 alt={`Review Photo ${index + 1}`} 
                 onError={(e) => { 
-                  e.target.src = "https://via.placeholder.com/150"; // Fallback image
+                  e.target.src = "https://static.vecteezy.com/system/resources/previews/022/014/063/original/missing-picture-page-for-website-design-or-mobile-app-design-no-image-available-icon-vector.jpg"; // Fallback image
                 }}
               />
             </div>

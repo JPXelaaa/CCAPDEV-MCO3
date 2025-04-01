@@ -7,7 +7,7 @@
   
   .center-profile-body {
     align-items: center;
-    padding: 15px;
+    padding: 5px;
     background-color: transparent;
   }
 
@@ -28,12 +28,12 @@
     font-family: 'Montserrat';
   }
 
-  .review-header {
+  .filter-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
-    width: 100%;
-    margin-bottom: 15px;
+    width: 62%;
+    margin-bottom: 20px;
   }
 
   .title-section {
@@ -58,7 +58,6 @@
     display: flex;
     gap: 15px;
     align-items: center;
-    margin-top: -240px;
   }
 
   .filter-icons, .sort-icons {

@@ -144,10 +144,7 @@ function EstablishmentReview({ establishmentId: propEstablishmentId, isLoggedIn,
       <div className="center-profile-body">
         {/* Review Section Title */}
         <div className="tags">
-          <div className="review-header">
-            <div className="title-section"> </div>
-            
-            {!preview && (
+          <div className="filter-container">
               <div className="filter-controls">
                 <div className="filter-icons">
                   <img id="filter-picture" src="https://www.svgrepo.com/show/532165/filter-list.svg" alt="Filter" />
@@ -179,32 +176,7 @@ function EstablishmentReview({ establishmentId: propEstablishmentId, isLoggedIn,
                   </select>
                 </div>
               </div>
-            )}
           </div>
-          {!preview && (
-            <div className="tags-container">
-              {["With photos", "High Rating", "Good Service"].map((keyword) => (
-                <div 
-                  className={`rectangle ${selectedKeywords === keyword ? 'active' : ''}`} 
-                  key={keyword} 
-                  onClick={() => setSelectedKeywords(prev => prev === keyword ? "" : keyword)}
-                >
-                  <p id="tag-text">{keyword}</p>
-                  {selectedKeywords === keyword && (
-                    <img 
-                      id="x-btn" 
-                      src="https://www.svgrepo.com/show/522388/close.svg" 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedKeywords("");
-                      }} 
-                      alt="Clear filter"
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
           {!preview && (
             <div className="reviews-container">
               {loading ? (

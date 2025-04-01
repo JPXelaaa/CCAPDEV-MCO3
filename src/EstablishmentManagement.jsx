@@ -15,7 +15,6 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('profile');
   const [showEditForm, setShowEditForm] = useState(false);
-  const [activeFilters, setActiveFilters] = useState(['With photos', 'Positive Rating', 'Good Service']);
   const [sortBy, setSortBy] = useState('Recent');
   const [filterRating, setFilterRating] = useState('All');
   
@@ -327,14 +326,6 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
   const toggleEditForm = () => {
     setShowEditForm(!showEditForm);
     setActiveTab('profile');
-  };
-
-  const toggleFilter = (filter) => {
-    if (activeFilters.includes(filter)) {
-      setActiveFilters(activeFilters.filter(f => f !== filter));
-    } else {
-      setActiveFilters([...activeFilters, filter]);
-    }
   };
 
   // Handle opening the reply modal
