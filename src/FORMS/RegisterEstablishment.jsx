@@ -440,35 +440,6 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
               </div>
             </div>
             
-            {/* Facilities section */}
-            <div className="form-group">
-              <p>Facilities & Services</p>
-              <div className="facilities-input">
-                <input
-                  type="text"
-                  className="form-input"
-                  value={newFacility}
-                  onChange={(e) => setNewFacility(e.target.value)}
-                  placeholder="Enter a facility or service"
-                />
-                <button type="button" onClick={handleAddFacility} className="add-btn">Add</button>
-              </div>
-              <div className="facilities-display">
-                {facilities.map((facility, index) => (
-                  <div key={index} className="facility-item">
-                    {facility}
-                    <button 
-                      type="button" 
-                      onClick={() => handleRemoveFacility(index)}
-                      className="remove-btn"
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-            
             <div className="submit-container">
               <button 
                 type="button" 
