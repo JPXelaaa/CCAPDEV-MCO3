@@ -127,7 +127,6 @@ const EstablishmentView = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowSig
   // Function to render stars based on rating
   const renderStars = (rating) => {
     const stars = [];
-    // Fix: Use actual rating or 0 if not available, ensure it's a number
     const numericRating = establishment?.rating ? Number(establishment.rating) : 0;
     
     for (let i = 1; i <= 5; i++) {
@@ -238,7 +237,6 @@ const EstablishmentView = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowSig
               </div>
             </div>
             <div className="review-count">
-              {/* Fix: Use actual review count from establishment data */}
               {establishment?.reviewCount || 0} reviews
             </div>
             {user.userType === 'user' && (

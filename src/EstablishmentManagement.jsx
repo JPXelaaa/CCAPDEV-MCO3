@@ -41,6 +41,12 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
   const [successMessage, setSuccessMessage] = useState('');
 
   const [showProfileOptions, setShowProfileOptions] = useState(false);
+  
+  // Business Hours states
+  const [showHoursEditor, setShowHoursEditor] = useState(false);
+  const [hours, setHours] = useState([]);
+  const [newHour, setNewHour] = useState({ day: '', open: '09:00', close: '17:00' });
+  const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 
   useEffect(() => {
@@ -93,6 +99,7 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
         setPhoneNumber(data.phoneNumber || '');
         setWebsite(data.website || '');
         setPhotos(data.photos || []);
+        setHours(data.hours || []);
       } catch (err) {
         console.error('Error fetching establishment:', err);
         setError(err.message);
@@ -179,19 +186,31 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
     }
   };
 
+  // Business Hours functions
+  const handleUpdateHours = (index, field, value) => {
+    const updatedHours = [...hours];
+    updatedHours[index][field] = value;
+    setHours(updatedHours);
+  };
+
+  const handleRemoveHours = (index) => {
+    setHours(hours.filter((_, i) => i !== index));
+  };
+
+  const handleAddHours = () => {
+    if (newHour.day && newHour.open && newHour.close) {
+      setHours([...hours, { ...newHour }]);
+      setNewHour({ day: '', open: '09:00', close: '17:00' });
+    }
+  };
+
   const handleProfileSubmit = async (event) => {
     event.preventDefault();
     
-    const updatedData = {
-        name,
-        description,
-        address,
-        phoneNumber,
-        website,
-    };
-
     try {
         setIsSubmitting(true);
+        setError(null);
+        
         const token = localStorage.getItem('token');
         
         if (!token) {
@@ -201,51 +220,90 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
             return;
         }
 
-        const response = await fetch(`http://localhost:5000/api/establishments/${establishmentId}`, {
+        const profileData = {
+            name,
+            description,
+            address,
+            phoneNumber,
+            website,
+            hours
+        };
+                    
+        const authHeader = token.startsWith('Bearer ') ? token : `Bearer ${token}`;
+
+        const profileResponse = await fetch(`http://localhost:5000/api/establishments/${establishmentId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': token
+                'Authorization': authHeader
             },
-            body: JSON.stringify(updatedData),
+            body: JSON.stringify(profileData),
         });
 
-        // Debug response
-        console.log("Response status:", response.status);
-        const responseText = await response.text();
-        console.log("Raw response:", responseText);
+        if (!profileResponse.ok) {
+            const errorData = await profileResponse.json();
+            throw new Error(errorData?.message || `Failed to update profile: ${profileResponse.status}`);
+        }
         
-        let data;
-        if (responseText) {
-            try {
-                data = JSON.parse(responseText);
-                console.log("Parsed response data:", data);
-            } catch (parseError) {
-                console.error("Error parsing response as JSON:", parseError);
-                throw new Error(`Response is not valid JSON: ${responseText}`);
+        // Handle logo upload if there's a new logo
+        if (logoFile) {
+            const logoFormData = new FormData();
+            logoFormData.append('logo', logoFile);
+            
+            const logoResponse = await fetch(`http://localhost:5000/api/establishments/${establishmentId}/logo`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': authHeader
+                },
+                body: logoFormData
+            });
+            
+            if (!logoResponse.ok) {
+                console.warn("Error uploading logo:", logoResponse.status);
+                // Continue with other updates even if logo update fails
             }
-        } else {
-            console.warn("Empty response received");
-            data = {};
         }
-
-        if (!response.ok) {
-            throw new Error(data?.message || `HTTP error! Status: ${response.status}`);
-        }
-
-        setEstablishment(prevState => ({
-            ...prevState,
-            ...updatedData
-        }));
         
-        setName(updatedData.name || '');
-        setDescription(updatedData.description || '');
-        setAddress(updatedData.address || '');
-        setPhoneNumber(updatedData.phoneNumber || '');
-        setWebsite(updatedData.website || '');
+        // Handle photo uploads if there are new photos
+        if (photoFiles.length > 0) {
+            const photoFormData = new FormData();
+            photoFiles.forEach(file => {
+                photoFormData.append('photos', file);
+            });
+
+            const photoResponse = await fetch(`http://localhost:5000/api/establishments/${establishmentId}/photos`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': authHeader
+                },
+                body: photoFormData
+            });
+            
+            if (!photoResponse.ok) {
+                console.warn("Error uploading photos:", photoResponse.status);
+                // Continue even if photo upload fails
+            }
+        }
+        
+        // Refresh establishment data to get the updated information
+        const refreshResponse = await fetch(`http://localhost:5000/api/establishments/${establishmentId}`, {
+            headers: {
+                'Authorization': authHeader
+            }
+        });
+        
+        if (refreshResponse.ok) {
+            const refreshData = await refreshResponse.json();
+            setEstablishment(refreshData);
+            setPhotos(refreshData.photos || []);
+            setHours(refreshData.hours || []);
+        }
+
         setLogoFile(null);
         setLogoPreview('');
-
+        setPhotoFiles([]);
+        setPhotoPreviewUrls([]);
+        
         toggleEditForm();
         setSuccessMessage('Establishment profile updated successfully');
         setTimeout(() => setSuccessMessage(''), 3000);
@@ -254,79 +312,6 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
         setError(err.message || "Failed to update establishment. Please try again later.");
     } finally {
         setIsSubmitting(false);
-    }
-  };
-
-  const handlePhotosSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (photoFiles.length === 0) {
-      setError('Please select at least one photo to upload');
-      return;
-    }
-    
-    try {
-      setIsSubmitting(true);
-      setError(null);
-      
-      const token = localStorage.getItem('token');
-      if (!token) {
-        setError('Authentication required');
-        setIsLoggedIn(false);
-        navigate('/');
-        return;
-      }
-
-      const formData = new FormData();
-      photoFiles.forEach(file => {
-        formData.append('photos', file);
-      });
-
-      const response = await fetch(`http://localhost:5000/api/establishments/${establishmentId}/photos`, {
-        method: 'POST',
-        headers: {
-          'Authorization': token
-        },
-        body: formData
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to upload photos');
-      }
-
-      const data = await response.json();
-      
-      // Refresh the establishment data to get updated photos
-      const refreshResponse = await fetch(`http://localhost:5000/api/establishments/${establishmentId}`, {
-        headers: {
-          'Authorization': token
-        }
-      });
-      
-      if (refreshResponse.ok) {
-        const refreshData = await refreshResponse.json();
-        setEstablishment(refreshData);
-        
-        // Update photos array
-        if (refreshData && refreshData.photos && Array.isArray(refreshData.photos)) {
-          const photoUrls = Array.from({ length: refreshData.photos.length }, (_, i) => 
-            `http://localhost:5000/api/images/establishment/${establishmentId}/photo${i}`
-          );
-          setPhotos(photoUrls);
-        }
-      }
-
-      setPhotoFiles([]);
-      setPhotoPreviewUrls([]);
-      
-      setSuccessMessage('Photos uploaded successfully');
-      setTimeout(() => setSuccessMessage(''), 3000);
-    } catch (err) {
-      console.error("Error uploading photos:", err);
-      setError(err.message || "Failed to upload photos. Please try again later.");
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -581,12 +566,164 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
                       />
                     </div>
                     
+                    {/* Business Hours Section */}
+                    <div className="form-group">
+                      <p>Business Hours</p>
+                      <button
+                        type="button"
+                        className="toggle-hours-btn"
+                        onClick={() => setShowHoursEditor(!showHoursEditor)}
+                      >
+                        {showHoursEditor ? "Hide Hours Editor" : "Edit Business Hours"}
+                      </button>
+                     
+                      {showHoursEditor && (
+                        <div className="hours-editor">
+                          <div className="hours-table">
+                            <div className="hours-header">
+                              <span>Day</span>
+                              <span>Opening Time</span>
+                              <span>Closing Time</span>
+                              <span>Actions</span>
+                            </div>
+                           
+                            {hours.map((hour, index) => (
+                              <div key={index} className="hours-row">
+                                <span>{hour.day}</span>
+                                <input
+                                  type="time"
+                                  value={hour.open}
+                                  onChange={(e) => handleUpdateHours(index, 'open', e.target.value)}
+                                />
+                                <input
+                                  type="time"
+                                  value={hour.close}
+                                  onChange={(e) => handleUpdateHours(index, 'close', e.target.value)}
+                                />
+                                <button
+                                  type="button"
+                                  className="remove-hours-btn"
+                                  onClick={() => handleRemoveHours(index)}
+                                >
+                                  Remove
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                         
+                          <div className="add-hours">
+                            <select
+                              value={newHour.day}
+                              onChange={(e) => setNewHour({...newHour, day: e.target.value})}
+                            >
+                              <option value="">Select Day</option>
+                              {daysOfWeek.filter(day => !hours.some(h => h.day === day)).map(day => (
+                                <option key={day} value={day}>{day}</option>
+                              ))}
+                            </select>
+                            <input
+                              type="time"
+                              value={newHour.open}
+                              onChange={(e) => setNewHour({...newHour, open: e.target.value})}
+                            />
+                            <input
+                              type="time"
+                              value={newHour.close}
+                              onChange={(e) => setNewHour({...newHour, close: e.target.value})}
+                            />
+                            <button
+                              type="button"
+                              className="add-hours-btn"
+                              onClick={handleAddHours}
+                              disabled={!newHour.day}
+                            >
+                              Add Hours
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Photos Management Section (Integrated) */}
+                    <div className="photos-management-section">
+                      <h3>Establishment Photos</h3>
+                      
+                      {/* Current Photos Display */}
+                      <div className="current-photos">
+                        <h4>Current Photos ({photos.length} of 10)</h4>
+                        {photos.length > 0 ? (
+                          <div className="photos-grid">
+                            {photos.map((photo, index) => (
+                              <div key={index} className="photo-item">
+                                <img 
+                                  src={`http://localhost:5000/api/images/establishment/${establishmentId}/photo${index}`}
+                                  alt={`Establishment photo ${index + 1}`}
+                                  onError={(e) => {
+                                    e.target.src = "https://via.placeholder.com/150?text=Error";
+                                  }}
+                                />
+                                <button 
+                                  type="button"
+                                  className="delete-photo-btn"
+                                  onClick={() => handleDeletePhoto(index)}
+                                  disabled={isSubmitting}
+                                >
+                                  ×
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="no-photos-message">No photos uploaded yet.</span>
+                        )}
+                      </div>
+                      
+                      {/* Upload New Photos Section (Integrated) */}
+                      <div className="upload-photos-section">
+                        <h4>Add New Photos ({photos.length}/10)</h4>
+                        <div className="photos-upload-form">
+                          <input 
+                            type="file" 
+                            id="photos" 
+                            accept="image/*" 
+                            onChange={handlePhotoUpload} 
+                            className="file-input"
+                            multiple
+                            disabled={photos.length >= 10}
+                          />
+                          <label htmlFor="photos" className="file-label">
+                            Choose Photos
+                          </label>
+                          <span className="help-text">
+                            You can add up to {10 - photos.length} more photos
+                          </span>
+                          
+                          {/* Photo Previews */}
+                          {photoPreviewUrls.length > 0 && (
+                            <div className="preview-photos-grid">
+                              {photoPreviewUrls.map((url, index) => (
+                                <div key={index} className="photo-preview-item">
+                                  <img src={url} alt={`Preview ${index + 1}`} />
+                                  <button 
+                                    type="button"
+                                    className="remove-preview-btn"
+                                    onClick={() => removePhotoPreview(index)}
+                                  >
+                                    ×
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                     <button 
                       type="submit" 
                       className="submit-btn" 
                       disabled={isSubmitting}
                     >
-                      {isSubmitting ? 'Updating...' : 'Update Profile'}
+                      {isSubmitting ? 'Updating...' : 'Update Profile & Photos'}
                     </button>
                   </form>
                 </div>
