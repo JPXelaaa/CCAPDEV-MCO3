@@ -72,7 +72,8 @@ function NavigationBar({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowEstabli
     <>
       <nav>
         <div className="nav-left">
-          <img src="/resources/BiteRate.png" id="page-logo" alt="BiteRate Logo" />
+          <Link to="/"><img src="/resources/BiteRate.png" id="page-logo" alt="BiteRate Logo" /></Link>
+          
         </div>
 
         <div className="nav-right">
@@ -119,7 +120,7 @@ function NavigationBar({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowEstabli
                   )}
                   {showProfileOptions && (
                     <div className="dropdown-menu">
-                      <h2 className="nav-link" onClick={handleLogout}>Logout</h2>
+                      <h2 className="nav-link option" onClick={handleLogout}>Logout</h2>
                     </div>
                   )}
                 </div>
@@ -132,8 +133,8 @@ function NavigationBar({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowEstabli
               <button id="sign-up" onClick={toggleProfileOptions}><h2 className="nav-link">SIGN UP</h2>
               {showProfileOptions && (
                   <div className="dropdown-options">
-                    <h4 className="reg-option"><button className="nav-link" onClick={handleSignUpClick}>Register User</button></h4>
-                    <h4 className="reg-option"><button className="nav-link" onClick={() => setShowEstablishmentSignUp(true)}>Register Estabishment</button></h4>
+                    <h4 className="reg-option"><button className="nav-link option" onClick={handleSignUpClick}>Register User</button></h4>
+                    <h4 className="reg-option"><button className="nav-link option" onClick={() => setShowEstablishmentSignUp(true)}>Register Estabishment</button></h4>
                     
                   </div>
                 )}

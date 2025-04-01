@@ -110,6 +110,9 @@ nav {
 .nav-link {
   color: black;
   cursor: pointer;
+}
+
+.option {
   margin: 15px;
 }
 
