@@ -274,7 +274,7 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
               
               <div className="input-container">
                 <div className="form-group">
-                  <label>Establishment Name</label>
+                  <p>Establishment Name</p>
                   <input
                     className="form-input"
                     type="text"
@@ -285,7 +285,7 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
                   />
                 </div>
                 <div className="form-group">
-                  <label>Overview of Business</label>
+                  <p>Overview of Business</p>
                   <textarea
                     className="form-description"
                     value={description}
@@ -304,7 +304,7 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
           <div className="step-content">
             <h2 className="step-title">Location Information</h2>
             <div className="form-group">
-              <label>Address 1</label>
+              <p>Address 1</p>
               <input
                 className="form-input"
                 type="text"
@@ -315,7 +315,7 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
               />
             </div>
             <div className="form-group">
-              <label>Address 2 (Optional)</label>
+              <p>Address 2 (Optional)</p>
               <input
                 className="form-input"
                 type="text"
@@ -325,7 +325,7 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
               />
             </div>
             <div className="form-group">
-              <label>City</label>
+              <p>City</p>
               <input
                 className="form-input"
                 type="text"
@@ -350,18 +350,14 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
             </div>
             <div className="form-group">
               <label>Province</label>
-              <select
-                className="form-select"
+              <input
+                className="form-input"
+                type="text"
                 value={province}
                 onChange={(e) => setProvince(e.target.value)}
+                placeholder="Province"
                 required
-              >
-                <option value="">None</option>
-                <option value="Manila">Manila</option>
-                <option value="Makati">Makati</option>
-                <option value="Quezon City">Quezon City</option>
-                <option value="Caloocan">Caloocan</option>
-              </select>
+              />
             </div>
             <div className="form-group">
               <label>Phone Number</label>

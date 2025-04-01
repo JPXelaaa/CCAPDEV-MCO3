@@ -63,6 +63,9 @@
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 20px;
+  margin-left: 50px;
+  padding: 30px;
+  width: 85%;
 }
 
 .logo-container {
@@ -95,6 +98,7 @@
   font-size: 14px;
   color: #555;
   cursor: pointer;
+  margin-left: -15px;
 }
 
 .input-container {
@@ -267,22 +271,8 @@
 
 .submit-container {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   margin-top: 20px;
-}
-
-.submit-btn {
-  padding: 10px 20px;
-  background-color: black;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.submit-btn:hover {
-  background-color: #333;
 }
 
 .error-message {
