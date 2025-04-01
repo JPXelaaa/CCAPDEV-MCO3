@@ -347,35 +347,6 @@ const EstablishmentView = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowSig
                 </button>
               )}
             </div>
-            <div className="facilities-services">
-              <h4>Facilities & Services</h4>
-              <div className="facility-icons">
-                {/* Display facilities if available, or defaults */}
-                {establishment?.facilities && establishment.facilities.length > 0 ? (
-                  establishment.facilities.map((facility, index) => (
-                    <div key={index} className="facility-icon">
-                      <img src={facility.icon || "https://www.svgrepo.com/show/532893/wifi.svg"} alt={facility.name} />
-                      <p>{facility.name}</p>
-                    </div>
-                  ))
-                ) : (
-                  <>
-                    <div className="facility-icon">
-                      <img src="https://www.svgrepo.com/show/532893/wifi.svg" alt="Wi-Fi" />
-                      <p>Free Wi-Fi</p>
-                    </div>
-                    <div className="facility-icon">
-                      <img src="https://www.svgrepo.com/show/480999/delivery.svg" alt="Delivery" />
-                      <p>Offers Delivery</p>
-                    </div>
-                    <div className="facility-icon">
-                      <img src="https://www.svgrepo.com/show/133518/pet-friendly.svg" alt="Pet-friendly" />
-                      <p>Pet-friendly</p>
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
           </div>
 
           <div className="center-lower-section">

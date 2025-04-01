@@ -82,7 +82,8 @@ nav {
 }
 
 .dropdown-options {
-  right: 85px;
+  top: 60px;
+  right: 300px;
 }
 
 @keyframes slideDown {
