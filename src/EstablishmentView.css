@@ -63,8 +63,9 @@ h4 {
   overflow: hidden;
   margin-bottom: 10px;
   position: relative;
+  align-self: flex-start;
   margin-top: 75px;
-  margin-left: -40px;
+  margin-left: 20px;
 }
 
 .establishment-logo img {
@@ -80,7 +81,7 @@ h4 {
   align-items: center;
   font-family: "Montserrat";
   margin-left: 20px;
-  margin-top: -60px;
+  margin-top: -50px;
 }
 
 .establishment-rating {
@@ -121,20 +122,18 @@ h4 {
 .establishment-image-container {
   position: relative;
   display: flex;
-  justify-content: center; 
   align-items: center;
-  width: 750px; 
-  height: 450px; 
+  width: 800px; 
+  height: 500px; 
   overflow: hidden; 
   border: 2px solid #ddd; 
-  border-radius: 10px; 
-  align-self: center;
-  margin-left: 60px;
-  margin-top: 20px; 
+  border-radius: 10px;
+  margin-left: 50px;
+  margin-top: 20px;
 }
 
 .establishment-image {
-  margin-top: -420px;
+  margin-top: -450px;
   width: 100%;
   height: fit-content;
   object-fit: cover;
@@ -206,9 +205,9 @@ h4 {
   padding: 10px;
   background-color: #8F8983;
   border-radius: 10px;
-  width: 90%; 
+  width: 94%; 
   justify-content: left;
-  margin-left: 25px;
+  margin-left: 5px;
 }
 
 .establishment-view .rectangle {
@@ -242,11 +241,14 @@ h4 {
 
 .info-block {
   margin-bottom: 30px;
+  margin-left: -20px;
   border-style: solid;
   border-width: 1px;
   padding: 5px;
   border-radius: 10px;
-  width: 300px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
 }
 
 .info-block h4 {
@@ -322,41 +324,6 @@ h4 {
   color: grey;
 }
 
-.facilities-services {
-  margin-bottom: 20px;
-  margin-left: 15px;
-}
-
-.facilities-services h4 {
-  margin-bottom: 10px;
-  font-family: "Montserrat";
-  font-size: 25px;
-}
-
-.facility-icons {
-  display: flex;
-  gap: 15px;
-}
-
-.facility-icon {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 60px;
-}
-
-.facility-icon img {
-  width: 40px;
-  height: 40px;
-  margin-bottom: 5px;
-}
-
-.facility-icon p {
-  font-size: 13px;
-  text-align: center;
-  margin: 0;
-}
-
 /** CENTER LOWER SECTION - REVIEWS **/
 .center-lower-section {
   padding: 15px;
@@ -367,16 +334,22 @@ h4 {
   width: 100%;
 }
 
+.est-review {
+  margin-top: -55px;
+}
+
 .reviews-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
+  margin-top: -60px;
 }
 
 .reviews-header h4 {
-  margin: 0;
-  font-size: 16px;
+  margin-bottom: -100px;
+  font-family: "Montserrat";
+  font-size: 25px;
 }
 
 .review-link {

@@ -16,8 +16,10 @@ const HomeGrid = ({searchQuery, sortOption}) => {
   
       let url = "http://localhost:5000/api/establishments";
       if (query) {
-        url = `http://localhost:5000/api/establishments/${query}`;
+        url = `http://localhost:5000/api/establishments/search/${query}`;
       }
+
+      console.log("Query: ", query);
   
       const response = await fetch(url);
   

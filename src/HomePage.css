@@ -118,7 +118,7 @@ body, html {
 }
 
 .dropdown-item:hover {
-  background-color: #f8f9fa;
+  color: rgb(233, 156, 156);
 }
 
 .search-dropdown {
