@@ -210,40 +210,40 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
           <div className="step-content">
             <h2 className="step-title">Account Information</h2>
             <div className="form-group">
-              <label>Email Address</label>
+              <p>Email Address</p>
               <input
                 className="form-input"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Input email address"
+                placeholder="Email address"
                 required
               />
             </div>
             <div className="form-group">
-              <label>Username</label>
+              <p>Username</p>
               <input
                 className="form-input"
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Input username"
+                placeholder="Username"
                 required
               />
             </div>
             <div className="form-group">
-              <label>Password</label>
+              <p>Password</p>
               <input
                 className="form-input"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Input password"
+                placeholder="Password"
                 required
               />
             </div>
             <div className="form-group">
-              <label>Confirm Password</label>
+              <p>Confirm Password</p>
               <input
                 className="form-input"
                 type="password"

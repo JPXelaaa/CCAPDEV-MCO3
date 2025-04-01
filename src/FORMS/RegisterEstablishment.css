@@ -33,10 +33,10 @@
   margin-bottom: 15px;
 }
 
-.form-group label {
+.form-group p {
   display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
+  margin-bottom: 0px;
+  font-weight: normal;
 }
 
 .form-group textarea {
@@ -289,6 +289,7 @@
   color: red;
   text-align: center;
   margin-top: 15px;
+  align-self: center;
 }
 
 .close-button {
