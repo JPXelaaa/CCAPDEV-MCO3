@@ -459,6 +459,17 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
                     </div>
                     <div className="edit-profile">
                       <div className="dropdown">
+                        <button 
+                          className="btn dropdown-toggle" 
+                          type="button" 
+                          data-bs-toggle="dropdown" 
+                          data-bs-auto-close="true"
+                          aria-expanded="false"
+                        >
+                          Edit Profile
+                        </button>
+                        <ul className="dropdown-menu">
+                          <li>
                             <button 
                               className="dropdown-item" 
                               onClick={() => {
@@ -466,8 +477,18 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
                                 setActiveTab('profile');
                               }}
                             >
-                              Edit Establishment Profile
+                              Edit Establishment Details
                             </button>
+                          </li>
+                          <li>
+                            <button 
+                              className="dropdown-item" 
+                              onClick={() => navigate(`/establishments/editaccount/${establishmentId}`)}
+                            >
+                              Change Account Details
+                            </button>
+                          </li>
+                        </ul>
                       </div>
                     </div>
                   </div>
