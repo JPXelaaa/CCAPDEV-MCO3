@@ -15,6 +15,8 @@ const Establishment = require("./models/Establishment");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const storage = multer.memoryStorage();
+const upload = multer({storage});
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -26,8 +28,6 @@ mongoose.connect(process.env.MONGO_URI || "mongodb://localhost:27017/review-app"
   .catch(err => console.error("MongoDB connection error:", err));
 
 // Configure multer for memory storage instead of disk storage
-const storage = multer.memoryStorage();
-const upload = multer({storage});
 
 // Create API endpoint to serve images from MongoDB
 app.get('/api/images/:type/:id/:field', async (req, res) => {
@@ -1285,44 +1285,37 @@ app.put('/api/reviews/:id', verifyToken, async (req, res) => {
   }
 });
 
-// Upload establishment photos
 app.post('/api/establishments/:id/photos', verifyToken, upload.array('photos', 10), async (req, res) => {
   try {
-    const { id } = req.params;
+    const establishmentId = req.params.id;
     
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!mongoose.Types.ObjectId.isValid(establishmentId)) {
       return res.status(400).json({ message: 'Invalid establishment ID' });
     }
     
-    // Find the establishment
-    const establishment = await Establishment.findById(id);
-    
+    const establishment = await Establishment.findById(establishmentId);
     if (!establishment) {
       return res.status(404).json({ message: 'Establishment not found' });
     }
-    
-    // Check if the user is the owner
-    if (req.userId !== establishment.owner.toString()) {
-      return res.status(403).json({ message: 'You are not authorized to update this establishment' });
-    }
-    
-    // Process uploaded photos
+
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ message: 'No photos uploaded' });
     }
-    
+
+    // Process uploaded files
     const photos = req.files.map(file => ({
       data: file.buffer,
       contentType: file.mimetype
     }));
-    
-    // Add new photos to the establishment
-    establishment.photos = establishment.photos || [];
+
+    // Add new photos to establishment's photo array
     establishment.photos.push(...photos);
-    
     await establishment.save();
-    
-    res.json({ message: 'Photos uploaded successfully', photoCount: establishment.photos.length });
+
+    res.status(201).json({ 
+      message: 'Photos uploaded successfully',
+      photoUrls: establishment.photos.map((_, index) => `/api/images/establishment/${establishmentId}/photo/${index}`)
+    });
   } catch (error) {
     console.error('Error uploading establishment photos:', error);
     res.status(500).json({ message: 'Server error', error: error.message });

@@ -795,3 +795,142 @@ textarea.form-control {
   width: 100% !important;
   height: 400px !important;
 }
+
+/* Photos Management Section Styles */
+.photos-management-section {
+  margin-top: 30px;
+  border-top: 1px solid #eaeaea;
+  padding-top: 20px;
+  width: 100%;
+}
+
+.photos-management-section h3 {
+  margin-bottom: 15px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.photos-management-section h4 {
+  margin: 12px 0;
+  font-size: 16px;
+  color: #555;
+  font-weight: 500;
+}
+
+.no-photos-message {
+  color: #777;
+  font-style: italic;
+  margin: 10px 0;
+  display: block;
+}
+
+/* Photo Upload Controls */
+.file-input {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.file-label {
+  display: block;
+  width: 100%;
+  background-color: #f2f2f2;
+  color: #555;
+  padding: 10px;
+  text-align: center;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
+}
+
+.file-label:hover {
+  background-color: #e9e9e9;
+}
+
+.help-text {
+  display: block;
+  margin: 8px 0 15px;
+  color: #777;
+  font-size: 13px;
+}
+
+/* Photo Grids */
+.photos-grid, 
+.preview-photos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.photo-item, 
+.photo-preview-item {
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+  height: 180px;
+  background-color: #f9f9f9;
+}
+
+.photo-item img, 
+.photo-preview-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Delete Buttons */
+.delete-photo-btn, 
+.remove-preview-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #333;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.delete-photo-btn:hover, 
+.remove-preview-btn:hover {
+  background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* Upload Button */
+.upload-photos-btn {
+  background-color: #e74c3c; /* Use the same red color as other buttons */
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: fit-content;
+  margin-top: 10px;
+}
+
+.upload-photos-btn:hover {
+  background-color: #c0392b;
+}
+
+.upload-photos-btn:disabled {
+  background-color: #bbb;
+  cursor: not-allowed;
+}

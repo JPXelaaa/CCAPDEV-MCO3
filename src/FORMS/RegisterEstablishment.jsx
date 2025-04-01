@@ -28,19 +28,56 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [website, setWebsite] = useState("");
   const [categories, setCategories] = useState("");
-  const [hours, setHours] = useState([]);
+  
+  // Default hours for Monday to Sunday (including open and close times)
+  const defaultHours = [
+    { day: "Monday", open: "09:00", close: "17:00" },
+    { day: "Tuesday", open: "09:00", close: "17:00" },
+    { day: "Wednesday", open: "09:00", close: "17:00" },
+    { day: "Thursday", open: "09:00", close: "17:00" },
+    { day: "Friday", open: "09:00", close: "17:00" },
+    { day: "Saturday", open: "09:00", close: "17:00" },
+    { day: "Sunday", open: "09:00", close: "17:00" }
+  ];
+  
+  const [hours, setHours] = useState(defaultHours);
   
   // Refs for file inputs
   const logoInputRef = useRef(null);
   
-  // New state variables and handlers for hours and facilities
-  const [newHour, setNewHour] = useState({ day: "", start: "", end: "" });
+  // New state variable for adding new business hours
+  const [newHour, setNewHour] = useState({ day: "", open: "09:00", close: "17:00" });
+  const [showHoursEditor, setShowHoursEditor] = useState(false);
+
+  // Days of the week for dropdown
+  const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
   const handleAddHours = () => {
-    if (newHour.day && newHour.start && newHour.end) {
-      setHours([...hours, { ...newHour }]);
-      setNewHour({ day: "", start: "", end: "" });
+    if (newHour.day) {
+      // Check if day already exists
+      const existingIndex = hours.findIndex(h => h.day === newHour.day);
+      
+      if (existingIndex >= 0) {
+        // Update existing day
+        const updatedHours = [...hours];
+        updatedHours[existingIndex] = { ...newHour };
+        setHours(updatedHours);
+      } else {
+        // Add new day
+        setHours([...hours, { ...newHour }]);
+      }
+      
+      setNewHour({ day: "", open: "09:00", close: "17:00" });
     }
+  };
+
+  const handleUpdateHours = (index, field, value) => {
+    const updatedHours = [...hours];
+    updatedHours[index] = { 
+      ...updatedHours[index], 
+      [field]: value 
+    };
+    setHours(updatedHours);
   };
 
   const handleRemoveHours = (index) => {
@@ -144,7 +181,7 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
       formData.append("website", website || "");
       formData.append("categories", categories || "");
       
-      // Add hours and facilities as JSON strings
+      // Add hours as JSON string (including day, open, and close properties)
       formData.append("hours", JSON.stringify(hours));
       
       // Add files
@@ -175,31 +212,31 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
       console.log("✅ Server Response:", data);
       
       if (data.token && data.user) {
-      setUser(data.user);
-            
-      const minimalUser = {
-        _id: data.user._id,
-        username: data.user.username,
-        userType: data.user.userType,
-      };
+        setUser(data.user);
+              
+        const minimalUser = {
+          _id: data.user._id,
+          username: data.user.username,
+          userType: data.user.userType,
+        };
 
-      try {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("loggedInUser", JSON.stringify(minimalUser));
-      } catch (storageError) {
-        console.error("Failed to store user data in localStorage", storageError);
-        // If localStorage fails, at least keep the user logged in for this session
-        setError("Warning: Unable to remember login between sessions due to storage limitations");
-        // Wait 3 seconds before closing so the user can see the warning
-        setTimeout(() => {
-          setIsLoggedIn(true);
-          onClose();
-        }, 3000);
-        return;
-      }
+        try {
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("loggedInUser", JSON.stringify(minimalUser));
+        } catch (storageError) {
+          console.error("Failed to store user data in localStorage", storageError);
+          // If localStorage fails, at least keep the user logged in for this session
+          setError("Warning: Unable to remember login between sessions due to storage limitations");
+          // Wait 3 seconds before closing so the user can see the warning
+          setTimeout(() => {
+            setIsLoggedIn(true);
+            onClose();
+          }, 3000);
+          return;
+        }
 
-      setIsLoggedIn(true);
-      onClose();
+        setIsLoggedIn(true);
+        onClose();
       }
     } catch (error) {
       console.error("❌ Error submitting form:", error);
@@ -395,6 +432,84 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
                 placeholder="Add up to three inputs only (comma separated)"
                 required
               />
+            </div>
+            
+            {/* Business Hours Section */}
+            <div className="form-group">
+              <p>Business Hours</p>
+              <button 
+                type="button"
+                className="toggle-hours-btn"
+                onClick={() => setShowHoursEditor(!showHoursEditor)}
+              >
+                {showHoursEditor ? "Hide Hours Editor" : "Edit Business Hours"}
+              </button>
+              
+              {showHoursEditor && (
+                <div className="hours-editor">
+                  <div className="hours-table">
+                    <div className="hours-header">
+                      <span>Day</span>
+                      <span>Opening Time</span>
+                      <span>Closing Time</span>
+                      <span>Actions</span>
+                    </div>
+                    
+                    {hours.map((hour, index) => (
+                      <div key={index} className="hours-row">
+                        <span>{hour.day}</span>
+                        <input
+                          type="time"
+                          value={hour.open}
+                          onChange={(e) => handleUpdateHours(index, 'open', e.target.value)}
+                        />
+                        <input
+                          type="time"
+                          value={hour.close}
+                          onChange={(e) => handleUpdateHours(index, 'close', e.target.value)}
+                        />
+                        <button 
+                          type="button" 
+                          className="remove-hours-btn"
+                          onClick={() => handleRemoveHours(index)}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="add-hours">
+                    <select
+                      value={newHour.day}
+                      onChange={(e) => setNewHour({...newHour, day: e.target.value})}
+                    >
+                      <option value="">Select Day</option>
+                      {daysOfWeek.filter(day => !hours.some(h => h.day === day)).map(day => (
+                        <option key={day} value={day}>{day}</option>
+                      ))}
+                    </select>
+                    <input
+                      type="time"
+                      value={newHour.open}
+                      onChange={(e) => setNewHour({...newHour, open: e.target.value})}
+                    />
+                    <input
+                      type="time"
+                      value={newHour.close}
+                      onChange={(e) => setNewHour({...newHour, close: e.target.value})}
+                    />
+                    <button 
+                      type="button" 
+                      className="add-hours-btn"
+                      onClick={handleAddHours}
+                      disabled={!newHour.day}
+                    >
+                      Add Hours
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
             
             <div className="submit-container">
