@@ -1031,7 +1031,7 @@ app.get('/api/reviews/user/:userId', async (req, res) => {
 // Update a review
 app.put('/api/reviews/:reviewId', verifyToken, upload.array('photos', 5), async (req, res) => {
   try {
-    const { title, body, rating } = req.body;
+    const { title, body, rating, photos } = req.body;
     const reviewId = req.params.reviewId;
     
     // Find the review
@@ -1050,16 +1050,7 @@ app.put('/api/reviews/:reviewId', verifyToken, upload.array('photos', 5), async 
     review.title = title || review.title;
     review.body = body || review.body;
     review.rating = rating ? Number(rating) : review.rating;
-    
-    // Add new photos if any were uploaded
-    if (req.files && req.files.length > 0) {
-      for (let i = 0; i < req.files.length; i++) {
-        review.photos.push({
-          data: req.files[i].buffer,
-          contentType: req.files[i].mimetype
-        });
-      }
-    }
+    review.photos = photos || review.photos;
     
     await review.save();
     
@@ -1582,12 +1573,7 @@ app.get('/api/users/:id', async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
     
-    // Transform the response to include image URL instead of binary data if needed
-    const transformedUser = {
-      ...user,
-    };
-    
-    res.json(transformedUser);
+    res.json({ status: "success", user: { _id: user._id, description: user.description } });
   } catch (error) {
     console.error('Error fetching user:', error);
     res.status(500).json({ message: 'Server error' });
