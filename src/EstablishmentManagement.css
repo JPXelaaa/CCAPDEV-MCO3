@@ -112,8 +112,8 @@ body {
 
 .establishment-management .dropdown {
   position: relative;
-  display: block;
-  margin-left: 50px;
+  display: inline-block;
+  margin-left: 10px;
 }
 
 .establishment-management .dropdown-item {
@@ -155,7 +155,7 @@ body {
 
 .establishment-management .dropdown-item:hover,
 .establishment-management .dropdown-item:focus {
-  background-color: #dbdbdb;
+  background-color: #909090;
   color: #1c1c1c;
   outline: none;
 }

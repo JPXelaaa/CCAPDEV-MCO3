@@ -277,13 +277,7 @@ const EstablishmentView = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowSig
                   ) : (
                     <>
                       <div className="rectangle">
-                        <p className="tag-text">Pizza</p>
-                      </div>
-                      <div className="rectangle">
-                        <p className="tag-text">Hotdog</p>
-                      </div>
-                      <div className="rectangle">
-                        <p className="tag-text">Burger</p>
+                        <p className="tag-text">No Tags Available</p>
                       </div>
                     </>
                   )}
