@@ -153,10 +153,9 @@ function ReviewForEstablishment({
     return `http://localhost:5000/api/images/review/${reviewId}/photo/${index}`;
   };
 
-  // Handle opening photo modal
-  const openPhotoModal = (index) => {
+  const showSelectedPhoto = (index) => {
     setSelectedPhoto(index);
-  };
+  };  
 
   // Handle closing photo modal
   const closePhotoModal = () => {
@@ -204,7 +203,7 @@ function ReviewForEstablishment({
       {photos && photos.length > 0 && (
         <div className="review-section-photo">
           {photos.slice(0, type === "view" ? 2 : photos.length).map((photo, index) => (
-            <div className="photo-entry" key={index} onClick={() => openPhotoModal(index)}>
+            <div className="photo-entry" key={index} onClick={() => showSelectedPhoto(index)}>
               <img 
                 src={getPhotoUrl(index)} 
                 className="actual-photo" 
@@ -217,44 +216,18 @@ function ReviewForEstablishment({
           ))}
         </div>
       )}
-      
-      {/* Photo Modal */}
+
       {selectedPhoto !== null && (
-      <div className="photo-modal-overlay" onClick={closePhotoModal}>
-        <div className="photo-modal-content" onClick={(e) => e.stopPropagation()}>
-          <button className="close-modal" onClick={closePhotoModal}>×</button>
-          <img 
-            src={getPhotoUrl(selectedPhoto)} 
-            alt={`Review Photo ${selectedPhoto + 1}`}
-            className="modal-photo"
-          />
-          <div className="photo-navigation">
-            {selectedPhoto > 0 && (
-              <button 
-                className="nav-button prev" 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setSelectedPhoto(selectedPhoto - 1);
-                }}
-              >
-                ‹
-              </button>
-            )}
-            {selectedPhoto < photos.length - 1 && (
-              <button 
-                className="nav-button next" 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setSelectedPhoto(selectedPhoto + 1);
-                }}
-              >
-                ›
-              </button>
-            )}
-          </div>
+        <div className="delete-confirmation-modal pop-up-image" onClick={closePhotoModal}>
+            <img
+              src={getPhotoUrl(selectedPhoto)}
+              alt={`Review Photo ${selectedPhoto + 1}`}
+              className="modal-photo"
+            />
         </div>
-      </div>
-    )}
+      )}
+
+    
               
       {/* Review Footer (Reply only) */}
       <div className="review-footer">

@@ -320,3 +320,10 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
   }
+
+  .pop-up-image img {
+    width: 50%;
+    height: 90%;
+    object-fit: cover;
+  
+  }
