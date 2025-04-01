@@ -336,7 +336,7 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
               />
             </div>
             <div className="form-group">
-              <label>Postal Code</label>
+              <p>Postal Code</p>
               <input
                 className="form-input"
                 type="text"
@@ -349,7 +349,7 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
               />
             </div>
             <div className="form-group">
-              <label>Province</label>
+              <p>Province</p>
               <input
                 className="form-input"
                 type="text"
@@ -360,7 +360,7 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
               />
             </div>
             <div className="form-group">
-              <label>Phone Number</label>
+              <p>Phone Number</p>
               <input
                 className="form-input"
                 type="tel"
@@ -371,7 +371,7 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
               />
             </div>
             <div className="form-group">
-              <label>Website (Optional)</label>
+              <p>Website (Optional)</p>
               <input
                 className="form-input"
                 type="text"
@@ -381,7 +381,7 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
               />
             </div>
             <div className="form-group">
-              <label>Categories</label>
+              <p>Categories</p>
               <input
                 className="form-input"
                 type="text"
@@ -394,7 +394,7 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
             
             {/* Hours section */}
             <div className="form-group">
-              <label>Hours</label>
+              <p>Hours</p>
               <div className="hours-input">
                 <select
                   className="form-select"
@@ -442,7 +442,7 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
             
             {/* Facilities section */}
             <div className="form-group">
-              <label>Facilities & Services</label>
+              <p>Facilities & Services</p>
               <div className="facilities-input">
                 <input
                   type="text"
