@@ -7,6 +7,7 @@ const bcrypt = require("bcryptjs");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const tokenRefreshMiddleware = require('./middleware/tokenRefresh');
 
 // Import models
 const User = require("./models/User");
@@ -18,16 +19,14 @@ const PORT = process.env.PORT || 5000;
 const storage = multer.memoryStorage();
 const upload = multer({storage});
 // Middleware
+app.use(tokenRefreshMiddleware);
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI || "mongodb://localhost:27017/review-app")
   .then(() => console.log("MongoDB connected"))
   .catch(err => console.error("MongoDB connection error:", err));
-
-// Configure multer for memory storage instead of disk storage
 
 // Create API endpoint to serve images from MongoDB
 app.get('/api/images/:type/:id/:field', async (req, res) => {
@@ -351,13 +350,11 @@ app.post("/api/establishment/editaccount", async (req, res) => {
   }
 });
 
-// Login Route
 app.post("/api/login", async (req, res) => {
   try {
-    const { username, password, userType } = req.body;
+    const { username, password, userType, rememberMe } = req.body;
 
-    console.log("🔍 Login attempt received for:", { username, userType });
-    console.log("🔍 Password received:", password);
+    console.log("🔍 Login attempt received for:", { username, userType, rememberMe });
 
     if (!username || !password || !userType) {
       console.log("❌ Missing required fields");
@@ -379,7 +376,6 @@ app.post("/api/login", async (req, res) => {
     }
 
     console.log("✅ User found:", user.username);
-    console.log("🔍 Stored Hashed Password:", user.password);
 
     // Compare provided password with stored hashed password
     const isMatch = await bcrypt.compare(password, user.password);
@@ -403,11 +399,20 @@ app.post("/api/login", async (req, res) => {
       tokenPayload.establishmentId = user._id;
     }
 
+    // Set token expiration based on rememberMe option
+    const expiresIn = rememberMe ? "21d" : "24h"; // 3 weeks or 24 hours
+    
     const token = jwt.sign(
       tokenPayload,
       process.env.JWT_SECRET || "your-secret-key",
-      { expiresIn: "24h" }
+      { expiresIn }
     );
+
+    // Calculate expiry date to send to client
+    const now = new Date();
+    const expiryDate = rememberMe 
+      ? new Date(now.getTime() + 21 * 24 * 60 * 60 * 1000)  // 3 weeks in milliseconds
+      : new Date(now.getTime() + 24 * 60 * 60 * 1000);      // 24 hours in milliseconds
 
     // Prepare user data to return (excluding sensitive info)
     const userData = {
@@ -433,7 +438,8 @@ app.post("/api/login", async (req, res) => {
 
     res.json({
       token: `Bearer ${token}`,
-      user: userData
+      user: userData,
+      tokenExpiry: expiryDate.toISOString()
     });
 
   } catch (err) {
@@ -441,7 +447,6 @@ app.post("/api/login", async (req, res) => {
     res.status(500).json({ message: "Server error during login" });
   }
 });
-
 
 // Signup Route with file upload
 app.post("/api/signup", upload.single("avatar"), async (req, res) => {

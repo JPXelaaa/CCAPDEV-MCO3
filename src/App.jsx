@@ -30,6 +30,51 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    // Function to check and renew token if needed
+    const checkAndRenewToken = () => {
+      // Only proceed if user has chosen to be remembered
+      const tokenExpiry = localStorage.getItem('tokenExpiry');
+      if (!tokenExpiry) return;
+      
+      // Check if token exists
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      
+      // Process response headers after each fetch to look for token refresh
+      const processResponseHeaders = (response) => {
+        const newToken = response.headers.get('X-Refresh-Token');
+        const newExpiry = response.headers.get('X-Token-Expiry');
+        
+        if (newToken && newExpiry) {
+          // Update the stored token and expiry
+          localStorage.setItem('token', newToken);
+          localStorage.setItem('tokenExpiry', newExpiry);
+          console.log('Session extended for another 3 weeks');
+        }
+        
+        return response;
+      };
+      
+      // Override the global fetch to intercept all API calls
+      const originalFetch = window.fetch;
+      window.fetch = async (...args) => {
+        const response = await originalFetch(...args);
+        return processResponseHeaders(response);
+      };
+    };
+    
+    checkAndRenewToken();
+    
+    // Clean up function
+    return () => {
+      // Restore original fetch if needed
+      if (window.fetch !== originalFetch) {
+        window.fetch = originalFetch;
+      }
+    };
+  }, []);
+
   // Check for existing login session
   useEffect(() => {
     const token = localStorage.getItem("token");

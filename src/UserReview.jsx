@@ -36,6 +36,7 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
   const fetchUserDescription = async (userId) => {
     try {
       setLoadingDescription(true);
+      console.log("entering here:")
       const response = await fetch(`http://localhost:5000/api/users/${userId}`);
       
       if (!response.ok) {
@@ -43,7 +44,9 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
       }
       
       const userData = await response.json();
+      console.log('printing:', userData);
       setUserDescription(userData.description || "");
+      console.log('new user description: ',userDescription)
       setLoadingDescription(false);
     } catch (err) {
       console.error('Error fetching user description:', err);

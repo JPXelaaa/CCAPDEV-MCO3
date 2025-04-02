@@ -5,6 +5,7 @@ function LoginModal({ onClose, setIsLoggedIn, setUser }) {
   const [userType, setUserType] = useState("user");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -12,38 +13,52 @@ function LoginModal({ onClose, setIsLoggedIn, setUser }) {
     event.preventDefault();
     setError("");
     setIsLoading(true);
-
+    
     try {
       const response = await fetch("http://localhost:5000/api/login", {
         method: "POST",
-        headers: { 
+        headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ username, password, userType }),
+        body: JSON.stringify({ 
+          username, 
+          password, 
+          userType,
+          rememberMe 
+        }),
       });
-
+      
       const data = await response.json();
-
+      
       if (!response.ok) {
         throw new Error(data?.message || "Invalid login credentials.");
       }
-
+      
       if (!data.token || !data.user) {
         throw new Error("Invalid response from server");
       }
-      setUser(data.user);
       
+      setUser(data.user);
+     
       const minimalUser = {
         _id: data.user._id,
         username: data.user.username,
         userType: data.user.userType,
       };
-
+      
       try {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("loggedInUser", JSON.stringify(minimalUser));
+        if (rememberMe) {
+          // Store token and user data in localStorage for persistent sessions
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("loggedInUser", JSON.stringify(minimalUser));
+          localStorage.setItem("tokenExpiry", data.tokenExpiry);
+        } else {
+          // Use sessionStorage for session-only storage
+          sessionStorage.setItem("token", data.token);
+          sessionStorage.setItem("loggedInUser", JSON.stringify(minimalUser));
+        }
       } catch (storageError) {
-        console.error("Failed to store user data in localStorage", storageError);
+        console.error("Failed to store user data in storage", storageError);
         setError("Warning: Unable to remember login between sessions due to storage limitations");
         setTimeout(() => {
           setIsLoggedIn(true);
@@ -51,10 +66,9 @@ function LoginModal({ onClose, setIsLoggedIn, setUser }) {
         }, 3000);
         return;
       }
-
+      
       setIsLoggedIn(true);
       onClose();
-
     } catch (err) {
       setError(err.message);
     } finally {
@@ -79,7 +93,7 @@ function LoginModal({ onClose, setIsLoggedIn, setUser }) {
               />
             </div>
           </div>
-
+          
           <div className="login-input-group">
             <label>Password</label>
             <div className="login-input-box">
@@ -92,9 +106,19 @@ function LoginModal({ onClose, setIsLoggedIn, setUser }) {
               />
             </div>
           </div>
-
+          
+          <div className="login-remember-me">
+            <input
+              type="checkbox"
+              id="rememberMe"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+            />
+            <label htmlFor="rememberMe">Remember me for 3 weeks</label>
+          </div>
+          
           {error && <p className="login-error-message">{error}</p>}
-
+          
           <div className="login-button-container">
             <button
               type="button"
@@ -111,7 +135,7 @@ function LoginModal({ onClose, setIsLoggedIn, setUser }) {
               Establishment
             </button>
           </div>
-
+          
           <button type="submit" className="login-form-button" disabled={isLoading}>
             {isLoading ? "Logging in..." : "Log In"}
           </button>

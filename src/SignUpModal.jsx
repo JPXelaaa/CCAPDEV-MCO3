@@ -1,6 +1,7 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import "./SignUpModal.css";
 import bcrypt from "bcryptjs";
+import defaultImg from "./assets/default.png"; // Import the default image
 
 function SignUpModal({ onClose, setIsLoggedIn, setUser }) {
   const [userType, setUserType] = useState("user");
@@ -10,6 +11,7 @@ function SignUpModal({ onClose, setIsLoggedIn, setUser }) {
   const [description, setDescription] = useState("");
   const [avatarFile, setAvatarFile] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(null);
+  const [defaultImageBase64, setDefaultImageBase64] = useState(null);
   const [error, setError] = useState("");
   
   // Establishment-specific fields
@@ -20,6 +22,30 @@ function SignUpModal({ onClose, setIsLoggedIn, setUser }) {
   
   const fileInputRef = useRef(null);
   const logoInputRef = useRef(null);
+
+  // Load and convert default image to base64 on component mount
+  useEffect(() => {
+    const loadDefaultImage = async () => {
+      try {
+        // Create a FileReader to convert the image to base64
+        const reader = new FileReader();
+        
+        // Fetch the default image as a blob
+        const response = await fetch(defaultImg);
+        const blob = await response.blob();
+        
+        reader.onloadend = () => {
+          setDefaultImageBase64(reader.result);
+        };
+        
+        reader.readAsDataURL(blob);
+      } catch (err) {
+        console.error("Error loading default image:", err);
+      }
+    };
+    
+    loadDefaultImage();
+  }, []);
 
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
@@ -92,12 +118,6 @@ function SignUpModal({ onClose, setIsLoggedIn, setUser }) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const formData = new FormData();
-    formData.append("username", username);
-    formData.append("password", hashedPassword);
-    formData.append("userType", userType);
-    
-
     try {
       const formData = new FormData();
       formData.append("username", username);
@@ -109,6 +129,12 @@ function SignUpModal({ onClose, setIsLoggedIn, setUser }) {
         
         if (avatarFile) {
           formData.append("avatar", avatarFile);
+        } else if (defaultImageBase64) {
+          // Create a blob from base64 and append it as a file
+          const fetchResponse = await fetch(defaultImageBase64);
+          const blob = await fetchResponse.blob();
+          const defaultFile = new File([blob], "default.jpg", { type: "image/jpeg" });
+          formData.append("avatar", defaultFile);
         }
       } else {
         formData.append("name", name);
@@ -117,6 +143,12 @@ function SignUpModal({ onClose, setIsLoggedIn, setUser }) {
         
         if (logoFile) {
           formData.append("logo", logoFile);
+        } else if (defaultImageBase64) {
+          // Create a blob from base64 and append it as a file
+          const fetchResponse = await fetch(defaultImageBase64);
+          const blob = await fetchResponse.blob();
+          const defaultFile = new File([blob], "default.jpg", { type: "image/jpeg" });
+          formData.append("logo", defaultFile);
         }
       }
 
@@ -126,11 +158,11 @@ function SignUpModal({ onClose, setIsLoggedIn, setUser }) {
         hashedPassword,
         userType,
         description: description || "",
-        hasAvatar: userType === "user" ? !!avatarFile : false,
+        hasAvatar: userType === "user" ? (!!avatarFile || !!defaultImageBase64) : false,
         ...(userType === "establishment" && {
           name,
           address,
-          hasLogo: !!logoFile
+          hasLogo: !!logoFile || !!defaultImageBase64
         })
       });
 
@@ -145,31 +177,31 @@ function SignUpModal({ onClose, setIsLoggedIn, setUser }) {
       if (response.ok) {
         if (data.token && data.user) {
           // Store the full user object in memory for the current session
-      setUser(data.user);
-  
-      const minimalUser = {
-        _id: data.user._id,
-        username: data.user.username,
-        userType: data.user.userType,
-      };
+          setUser(data.user);
+      
+          const minimalUser = {
+            _id: data.user._id,
+            username: data.user.username,
+            userType: data.user.userType,
+          };
 
-      try {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("loggedInUser", JSON.stringify(minimalUser));
-      } catch (storageError) {
-        console.error("Failed to store user data in localStorage", storageError);
-        // If localStorage fails, at least keep the user logged in for this session
-        setError("Warning: Unable to remember login between sessions due to storage limitations");
-        // Wait 3 seconds before closing so the user can see the warning
-        setTimeout(() => {
+          try {
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("loggedInUser", JSON.stringify(minimalUser));
+          } catch (storageError) {
+            console.error("Failed to store user data in localStorage", storageError);
+            // If localStorage fails, at least keep the user logged in for this session
+            setError("Warning: Unable to remember login between sessions due to storage limitations");
+            // Wait 3 seconds before closing so the user can see the warning
+            setTimeout(() => {
+              setIsLoggedIn(true);
+              onClose();
+            }, 3000);
+            return;
+          }
+
           setIsLoggedIn(true);
           onClose();
-        }, 3000);
-        return;
-      }
-
-      setIsLoggedIn(true);
-      onClose();
         }
       } else {
         setError(data?.message || "Sign-up failed. Please try again.");
@@ -258,9 +290,9 @@ function SignUpModal({ onClose, setIsLoggedIn, setUser }) {
                     <div 
                       className="avatar-preview" 
                       onClick={handleLogoClick}
-                      style={logoPreview ? { backgroundImage: `url(${logoPreview})` } : {}}
+                      style={logoPreview ? { backgroundImage: `url(${logoPreview})` } : defaultImageBase64 ? { backgroundImage: `url(${defaultImageBase64})` } : {}}
                     >
-                      {!logoPreview && <span>+</span>}
+                      {!logoPreview && !defaultImageBase64 && <span>+</span>}
                     </div>
                     <small>Click to add establishment logo</small>
                   </div>
@@ -281,9 +313,9 @@ function SignUpModal({ onClose, setIsLoggedIn, setUser }) {
                     <div 
                       className="avatar-preview" 
                       onClick={handleAvatarClick}
-                      style={avatarPreview ? { backgroundImage: `url(${avatarPreview})` } : {}}
+                      style={avatarPreview ? { backgroundImage: `url(${avatarPreview})` } : defaultImageBase64 ? { backgroundImage: `url(${defaultImageBase64})` } : {}}
                     >
-                      {!avatarPreview && <span>+</span>}
+                      {!avatarPreview && !defaultImageBase64 && <span>+</span>}
                     </div>
                     <small>Click to add profile picture</small>
                   </div>
