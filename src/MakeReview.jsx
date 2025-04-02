@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from "react-router-dom";
 import "./MakeReview.css";
 import NavigationBar from "./NavigationBar.jsx";
-import Footer from "./footer";
+import Footer from "./footer.jsx";
 
 function MakeReview({ isEdit, reviewContent, setShowLogin, setShowSignUp, setShowEstablishmentSignUp, isLoggedIn, setIsLoggedIn, user, setUser }) {
   const { establishmentId } = useParams();

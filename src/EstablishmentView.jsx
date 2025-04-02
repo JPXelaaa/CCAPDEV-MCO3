@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import './EstablishmentView.css';
-import Footer from './footer';
+import Footer from './footer.jsx';
 import NavigationBar from "./NavigationBar.jsx";
 import EstablishmentReview from './EstablishmentReview';
 
