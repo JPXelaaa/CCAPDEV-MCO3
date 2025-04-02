@@ -103,17 +103,17 @@ function UserMedia({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, isR
       <div className="center-profile-body">
         <h3 style={{ fontSize: "22px", fontWeight: "600" }}>Media</h3>
         <div className="rec-review">
-        <div className="photos-section">
+        <div className="media-section">
             {loading ? (
               <p>Loading photos...</p>
             ) : error ? (
               <p>{error}</p>
             ) : photos.length > 0 ? (
               photos.map((photoData, index) => (
-                <div className="photo-preview" key={index}>
+                <div className="media-preview" key={index}>
                   <img 
                     src={`http://localhost:5000/api/images/review/${photoData.reviewId}/photo/${photoData.photoIndex}`}
-                    className="actual-photo"
+                    className="actual-img"
                     alt={`Photo from ${photoData.establishment}`}
                     onError={(e) => {
                       console.error("Image failed to load");
