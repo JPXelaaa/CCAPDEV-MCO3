@@ -1088,7 +1088,7 @@ app.get('/api/reviews/user/:userId', async (req, res) => {
 // Update a review
 app.put('/api/reviews/:reviewId', verifyToken, upload.array('photos', 5), async (req, res) => {
   try {
-    const { title, body, rating } = req.body;
+    const { title, body, rating, photos } = req.body;
     const reviewId = req.params.reviewId;
     
     console.log("Received existingPhotos:", req.body.existingPhotos);
@@ -1648,12 +1648,7 @@ app.get('/api/users/:id', async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
     
-    // Transform the response to include image URL instead of binary data if needed
-    const transformedUser = {
-      ...user,
-    };
-    
-    res.json(transformedUser);
+    res.json({ status: "success", user: { _id: user._id, description: user.description } });
   } catch (error) {
     console.error('Error fetching user:', error);
     res.status(500).json({ message: 'Server error' });

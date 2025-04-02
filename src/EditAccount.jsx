@@ -24,6 +24,12 @@ function EditAccount({ setShowLogin, setShowSignUp, setShowEstablishmentSignUp, 
     }
   }, [setUser, setIsLoggedIn, user]);
 
+  useEffect(() => {
+    if (user?._id) {
+      fetchDescription();
+    }
+  }, [user]);
+
   const getAvatarUrl = (userId) => {
     if (!userId) {
       return "https://i.pinimg.com/originals/6d/8b/9b/6d8b9b45c14da6fbfd09a7ede56b4a83.jpg";
@@ -76,12 +82,28 @@ function EditAccount({ setShowLogin, setShowSignUp, setShowEstablishmentSignUp, 
     }
   };
 
+  const fetchDescription = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/users/${user._id}`);
+      const data = await response.json();
+      if (data.status === "success") {
+        setDescription(data.user.description || "");
+        console.log("Fetched description:", data.user.description);
+      } else {
+        console.error("Error fetching user description:", data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching user description:", error);
+    }
+  }
+
   const updateData = async (e) => {
     e.preventDefault();
   
     console.log("Updating data with the following values:");
     console.log("Username:", username); 
     console.log("Old Password:", oldPassword);
+    console.log("User: ", user);
     
 
     // Validate passwords if changing password
@@ -157,7 +179,7 @@ function EditAccount({ setShowLogin, setShowSignUp, setShowEstablishmentSignUp, 
         setUser={setUser}
       />
 
-      <div class="edit-account-container">
+      <div className="edit-account-container">
         <div className="content-row">
           <div className="left-section">
             <form>
