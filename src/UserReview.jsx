@@ -695,7 +695,7 @@ const handleDeletePhoto = async (photoIndex) => {
             {loadingDescription ? (
               <p>Loading description...</p>
             ) : (
-              userDescription || "No description available."
+              user?.description || "No description available."
             )}
           </div>
         </div>
