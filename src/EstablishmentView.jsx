@@ -129,7 +129,7 @@ const EstablishmentView = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowSig
     const stars = [];
     const numericRating = establishment?.rating ? Number(establishment.rating) : 0;
     
-    for (let i = 5; i > 0; i--) {
+    for (let i = 1; i <= 5; i++) {
       stars.push(
         <span key={i} className={i <= Math.round(numericRating) ? "filled-star" : "empty-star"}>
           {i <= Math.round(numericRating) ? "★" : "☆"}
@@ -237,7 +237,7 @@ const EstablishmentView = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowSig
               </div>
             </div>
             <div className="review-count">
-              {establishment?.reviewCount || 0} review(s)
+              {establishment?.reviewCount || 0} reviews
             </div>
             {user.userType === 'user' && (
               <Link to={`/review/create/${establishmentId}`} className="write-review-button">
