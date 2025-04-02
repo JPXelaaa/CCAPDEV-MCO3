@@ -328,3 +328,19 @@
     object-fit: cover;
   
   }
+
+.profile-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.profile-link:hover {
+  opacity: 0.9;
+}
+
+.profile-link .username {
+  margin-left: 10px;
+}
