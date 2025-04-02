@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./index.css";
 import NavigationBar from "./NavigationBar";
-import Footer from "./Footer"; 
+import Footer from "./footer"; 
 import ViewUserHeader from "./ViewUserHeader";
 import ViewUserMedia from "./ViewUserMedia";
 import ViewUserReview from "./ViewUserReview";

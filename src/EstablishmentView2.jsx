@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import "./EstablishmentView.css";
 import NavigationBar from "./NavigationBar.jsx";
-import Footer from "./Footer.jsx";
+import Footer from "./footer.jsx";
 import ReviewForEstablishment from "./ReviewForEstablishment.jsx";
 import Rating from "./Rating.jsx";
 
