@@ -47,9 +47,8 @@ function LoginModal({ onClose, setIsLoggedIn, setUser }) {
       };
       
       try {
-          // Use sessionStorage for session-only storage
-          sessionStorage.setItem("token", data.token);
-          sessionStorage.setItem("loggedInUser", JSON.stringify(minimalUser));
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("loggedInUser", JSON.stringify(minimalUser));
       } catch (storageError) {
         console.error("Failed to store user data in storage", storageError);
         setError("Warning: Unable to remember login between sessions due to storage limitations");
