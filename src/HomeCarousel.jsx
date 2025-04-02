@@ -18,7 +18,7 @@ function HomeCarousel({searchQuery, sortOption}) {
   
       let url = "http://localhost:5000/api/establishments";
       if (query) {
-        url = `http://localhost:5000/api/establishments/${query}`;
+        url = `http://localhost:5000/api/establishments/${query}`; 
       }
   
       const response = await fetch(url);

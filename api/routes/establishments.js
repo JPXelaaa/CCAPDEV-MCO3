@@ -1,5 +1,5 @@
 const express = require('express');
-const Establishment = require('../models/Establishment');
+const Establishment = require('../models/Establishment.cjs');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');

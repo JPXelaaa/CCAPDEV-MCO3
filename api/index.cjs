@@ -8,15 +8,15 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 // Import models
-const User = require("./models/User");
-const Review = require("./models/Review");
-const Establishment = require("./models/Establishment");
+const User = require("./models/User.cjs");
+const Review = require("./models/Review.cjs");
+const Establishment = require("./models/Establishment.cjs");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 const storage = multer.memoryStorage();
 const upload = multer({storage});
-// Middleware
+// Middleware 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -25,6 +25,11 @@ mongoose.connect(process.env.MONGO_URI || "mongodb://localhost:27017/review-app"
   .then(() => console.log("MongoDB connected"))
   .catch(err => console.error("MongoDB connection error:", err));
 
+
+app.get('/api/test', async (req, res) => {
+  res.json({ message: 'Hello from server!' });
+});
+
 // Create API endpoint to serve images from MongoDB
 app.get('/api/images/:type/:id/:field', async (req, res) => {
   try {
@@ -32,7 +37,7 @@ app.get('/api/images/:type/:id/:field', async (req, res) => {
     
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).send('Invalid ID');
-    }
+    } 
     
     let item;
     
@@ -1738,8 +1743,10 @@ app.post('/api/reviews/:reviewId/replies', verifyToken, async (req, res) => {
   }
 });
 
+
+module.exports = app;
+
 // Set the port for the server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-

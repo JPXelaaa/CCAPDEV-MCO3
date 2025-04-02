@@ -75,6 +75,7 @@ function HomePage({ setShowLogin, setShowSignUp, setShowEstablishmentSignUp, isL
               <li><span className="package-name">bootstrap</span> (v5.3.3) - CSS framework for responsive design</li>
               <li><span className="package-name">react-bootstrap</span> (v2.10.9) - React components built on Bootstrap</li>
               <li><span className="package-name">mongodb</span> (v6.13.1) - MongoDB driver for database connectivity</li>
+              <li><span className="package-name">mongoose</span> (v8.10.1) - MongoDB object modeling for Node.js</li>
               <li><span className="package-name">bcryptjs</span> (v3.0.2) - Password hashing library for security</li>
             </ul>
           </div>
@@ -85,6 +86,18 @@ function HomePage({ setShowLogin, setShowSignUp, setShowEstablishmentSignUp, isL
               <li><span className="package-name">@jjunyjjuny/react-carousel</span> (v1.1.2) - Carousel component for image slideshows</li>
               <li><span className="package-name">react-slick</span> (v0.30.3) - Carousel and slider component</li>
               <li><span className="package-name">slick-carousel</span> (v1.8.1) - Dependency for react-slick with additional styling</li>
+            </ul>
+          </div>
+
+          <div className="dependency-category">
+            <h4>Server & API Dependencies</h4>
+            <ul className="dependency-list">
+              <li><span className="package-name">express</span> (v4.21.2) - Web framework for Node.js</li>
+              <li><span className="package-name">cors</span> (v2.8.5) - Middleware for enabling CORS</li>
+              <li><span className="package-name">dotenv</span> (v16.4.7) - Loads environment variables from .env file</li>
+              <li><span className="package-name">jsonwebtoken</span> (v9.0.2) - Implementation of JSON Web Tokens</li>
+              <li><span className="package-name">cookie-parser</span> (v1.4.7) - Middleware for parsing cookies</li>
+              <li><span className="package-name">multer</span> (v1.4.5-lts.1) - Middleware for handling multipart/form-data</li>
             </ul>
           </div>
 
@@ -100,7 +113,7 @@ function HomePage({ setShowLogin, setShowSignUp, setShowEstablishmentSignUp, isL
           <div className="dependency-category">
             <h4>Development Dependencies</h4>
             <ul className="dependency-list">
-              <li><span className="package-name">vite</span> (v6.1.0) - Fast build tool and development server</li>
+              <li><span className="package-name">vite</span> (v4.2.0) - Fast build tool and development server</li>
               <li><span className="package-name">@vitejs/plugin-react</span> (v4.3.4) - Vite plugin for React support</li>
               <li><span className="package-name">eslint</span> (v9.19.0) - JavaScript linting utility</li>
               <li><span className="package-name">@eslint/js</span> (v9.19.0) - JavaScript configurations for ESLint</li>
