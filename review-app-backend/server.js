@@ -7,8 +7,6 @@ const bcrypt = require("bcryptjs");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-const tokenRefreshMiddleware = require('./middleware/tokenRefresh');
-
 // Import models
 const User = require("./models/User");
 const Review = require("./models/Review");
@@ -19,7 +17,6 @@ const PORT = process.env.PORT || 5000;
 const storage = multer.memoryStorage();
 const upload = multer({storage});
 // Middleware
-app.use(tokenRefreshMiddleware);
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -346,6 +343,48 @@ app.post("/api/establishment/editaccount", async (req, res) => {
     return res.status(500).json({ 
       status: "error", 
       message: "An error occurred while updating the establishment account" 
+    });
+  }
+});
+// User profile endpoint
+app.get('/api/users/:id/profile', async (req, res) => {
+  try {
+    console.log("ENTEREDUSERPROFENDPOINT");
+    
+    // Validate ID format to avoid MongoDB errors
+    if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ 
+        status: "error", 
+        message: 'Invalid user ID format' 
+      });
+    }
+
+    const user = await User.findById(req.params.id)
+      .lean()
+      .select('_id username description avatar createdAt');
+      
+    if (!user) {
+      return res.status(404).json({ 
+        status: "error", 
+        message: 'User not found' 
+      });
+    }
+    
+    // Return only safe user information
+    const safeUser = {
+      _id: user._id,
+      username: user.username,
+      description: user.description,
+      avatarUrl: user.avatar ? `/api/images/user/${user._id}/avatar` : null,
+      createdAt: user.createdAt
+    };
+    
+    return res.json({ status: "success", user: safeUser });
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    return res.status(500).json({ 
+      status: "error", 
+      message: 'Server error occurred while fetching user profile' 
     });
   }
 });
@@ -1640,25 +1679,6 @@ app.get('/api/reviews/:reviewId/votes', async (req, res) => {
   }
 });
 
-app.get('/api/users/:id', async (req, res) => {
-  try {
-    console.log(
-      "Entered Description Fetching"
-    );
-    const user = await User.findById(req.params.id)
-      .lean()
-      .select('_id description');
-      
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-    
-    res.json({ status: "success", user: { _id: user._id, description: user.description } });
-  } catch (error) {
-    console.error('Error fetching user:', error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
 
 // Get all establishments
 app.get('/api/establishments', async (req, res) => {

@@ -20,7 +20,8 @@ function ReviewForEstablishment({
   unhelpful, 
   userVote = null,
   onVoteUpdate,
-  footer = true
+  footer = true,
+  viewOnly = false // Added the viewOnly prop with default value
 }) { 
   // Initialize with the values from props
   const [voteData, setVoteData] = useState({
@@ -228,35 +229,35 @@ function ReviewForEstablishment({
         </div>
       )}
 
-    
-              
       {/* Review Footer (Reply only) */}
-      <div className="review-footer">
-        <div className="footer-content">
-          {isLoggedIn && currentUser.userType == 'user' && (
-            <>
-              <button
-                id="helpful"
-                className={userVoteStatus === 'helpful' ? "selected" : ""}
-                onClick={() => handleVote('helpful')}
-                disabled={!isLoggedIn}
-              >
-                <img src="https://www.svgrepo.com/show/522577/like.svg" alt="Helpful Icon" />
-                Helpful ({helpfulCount})  
-              </button>
-              <button
-                id="unhelpful"
-                className={userVoteStatus === 'unhelpful' ? "selected" : ""}
-                onClick={() => handleVote('unhelpful')}
-                disabled={!isLoggedIn}
-              >
-                <img src="https://www.svgrepo.com/show/522518/dislike.svg" alt="Unhelpful Icon" />
-                Unhelpful ({unhelpfulCount}) 
-              </button>
-            </>
-          )}
+      {footer && (
+        <div className="review-footer">
+          <div className="footer-content">
+            {isLoggedIn && !viewOnly && currentUser && currentUser.userType === 'user' && (
+              <>
+                <button
+                  id="helpful"
+                  className={userVoteStatus === 'helpful' ? "selected" : ""}
+                  onClick={() => handleVote('helpful')}
+                  disabled={!isLoggedIn}
+                >
+                  <img src="https://www.svgrepo.com/show/522577/like.svg" alt="Helpful Icon" />
+                  Helpful ({helpfulCount})  
+                </button>
+                <button
+                  id="unhelpful"
+                  className={userVoteStatus === 'unhelpful' ? "selected" : ""}
+                  onClick={() => handleVote('unhelpful')}
+                  disabled={!isLoggedIn}
+                >
+                  <img src="https://www.svgrepo.com/show/522518/dislike.svg" alt="Unhelpful Icon" />
+                  Unhelpful ({unhelpfulCount}) 
+                </button>
+              </>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

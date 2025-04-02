@@ -239,11 +239,21 @@ const EstablishmentView = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowSig
             <div className="review-count">
               {establishment?.reviewCount || 0} reviews
             </div>
-            {user.userType === 'user' && (
+            {/* Fix: Check if user exists and is the correct type before accessing userType */}
+            {user && user.userType === 'user' && (
               <Link to={`/review/create/${establishmentId}`} className="write-review-button">
-              Write a Review
-            </Link>
-            )};
+                Write a Review
+              </Link>
+            )}
+            {/* Show login prompt for non-logged in users */}
+            {!isLoggedIn && (
+              <button 
+                className="write-review-button"
+                onClick={() => setShowLogin(true)}
+              >
+                Login to Write a Review
+              </button>
+            )}
           </div>
 
           {/* Center column - Image carousel */}
