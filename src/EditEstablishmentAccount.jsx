@@ -99,6 +99,39 @@ function EditEstablishmentAccount({ setShowLogin, setShowSignUp, setShowEstablis
     }
   };
 
+  const deleteEstablishmentAccount = async () => {
+    if (!window.confirm("Are you sure you want to delete this establishment account? This action cannot be undone.")) {
+      return;
+    }
+  
+    try {
+      const API_URL = "http://localhost:5000/api/delete-establishment-account";
+      
+      const response = await fetch(API_URL, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: user?._id }),
+      });
+  
+      const data = await response.json();
+      if (data.status === "success") {
+        alert("Establishment account deleted successfully!");
+        localStorage.removeItem("loggedInUser");
+        setUser(null);
+        setIsLoggedIn(false);
+        window.location.href = "/";
+      } else {
+        alert(data.message || "Failed to delete account.");
+      }
+    } catch (error) {
+      console.error("Error deleting establishment account:", error);
+      alert("An error occurred while deleting the account. Please try again.");
+    }
+  };
+
+  
   return (
     <>
       <NavigationBar
@@ -175,9 +208,9 @@ function EditEstablishmentAccount({ setShowLogin, setShowSignUp, setShowEstablis
               </div>
               
               <div className="delete-prompt">  
-                <Link to="/">
-                  <button type="button" className="delete-btn">Delete Account</button>
-                </Link>
+              <button type="button" className="delete-btn" onClick={deleteEstablishmentAccount}>
+                Delete Account
+              </button>
               </div>
 
             </form>

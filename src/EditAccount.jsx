@@ -31,6 +31,38 @@ function EditAccount({ setShowLogin, setShowSignUp, setShowEstablishmentSignUp, 
     return `http://localhost:5000/api/images/user/${userId}/avatar`;
   };
 
+  const handleDeleteAccount = async () => {
+    if (!user || !user._id) {
+      alert("User not found");
+      return;
+    }
+    
+    const confirmDelete = window.confirm("Are you sure you want to delete your account? This action cannot be undone.");
+    if (!confirmDelete) return;
+
+    try {
+      const response = await fetch("http://localhost:5000/api/delete-account", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: user._id }),
+      });
+      
+      const data = await response.json();
+      alert(data.message);
+      
+      if (data.status === "success") {
+        localStorage.removeItem("loggedInUser");
+        setUser(null);
+        setIsLoggedIn(false);
+        window.location.href = "/";
+      }
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      alert("Failed to delete account. Please try again.");
+    }
+  };
+
+
   const handleAvatarClick = () => {
     fileInputRef.current.click();
   };
@@ -172,9 +204,7 @@ function EditAccount({ setShowLogin, setShowSignUp, setShowEstablishmentSignUp, 
               </Link>
             </div>
             <div className="delete-prompt">
-              <Link to="/">
-                <button className="delete-btn">Delete Account</button>
-              </Link>
+              <button className="delete-btn" onClick={handleDeleteAccount}>Delete Account</button>
             </div>
           </div>
 

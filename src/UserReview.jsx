@@ -13,6 +13,7 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [allPhotos, setAllPhotos] = useState([]);
   const [photoPreviewUrls, setPhotoPreviewUrls] = useState([]);
+  const [photoFiles, setPhotoFiles] = useState([]); 
   const [editFormData, setEditFormData] = useState({
     title: "",
     body: "",
@@ -63,10 +64,11 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
       const extractedPhotos = [];
       reviews.forEach(review => {
         if (review.photos && review.photos.length > 0) {
-          review.photos.forEach(photo => {
+          review.photos.forEach((photo, photoIndex) => {
             extractedPhotos.push({
               photo: photo,
-              reviewId: review._id
+              reviewId: review._id,
+              photoIndex: photoIndex // Store the original index
             });
           });
         }
@@ -131,12 +133,22 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
 
   const editReview = (review) => {
     setEditingReview(review);
+    console.log("Starting edit for review:", review);
+    console.log("Review photos:", review.photos);
+    
+    // Make sure we have a valid photos array
+    const photoArray = Array.isArray(review.photos) ? review.photos : [];
+    console.log("Initialized photo array:", photoArray);
+    
     setEditFormData({
       title: review.title,
       body: review.body,
       rating: review.rating,
-      photos: review.photos || []
+      photos: photoArray
     });
+    
+    setPhotoFiles([]);
+    setPhotoPreviewUrls([]);
   };
 
   // Handle form input changes
@@ -161,58 +173,89 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
     e.preventDefault();
     
     try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            setError("Authentication required");
-            setShowLogin(true);
-            return;
+      console.log("Starting to save edited review with photos:", editFormData.photos);
+      
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setError("Authentication required");
+        setShowLogin(true);
+        return;
+      }
+  
+      // Create FormData object to handle file uploads
+      const formData = new FormData();
+      formData.append("title", editFormData.title);
+      formData.append("body", editFormData.body);
+      formData.append("rating", editFormData.rating);
+
+        // In saveEditedReview function
+        if (editFormData.photos && editFormData.photos.length > 0) {
+          // Create a string representation of each photo ID/path
+          const photoValues = editFormData.photos.map(photo => {
+            if (typeof photo === 'string') return photo;
+            if (photo && photo._id) return photo._id;
+            return JSON.stringify(photo);
+          }).filter(val => val && val !== '{}' && val !== 'null');
+          
+          // Add each photo value as a separate item
+          photoValues.forEach(photoValue => {
+            formData.append("existingPhotos", photoValue);
+          });
+          
+          console.log("Photo values being sent:", photoValues);
         }
-
-        const { logo, ...updatedData } = editFormData;
-
-        const response = await fetch(`http://localhost:5000/api/reviews/${editingReview._id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: token
-            },
-            body: JSON.stringify(updatedData),
+            
+      // Add new photo files
+      if (photoFiles && photoFiles.length > 0) {
+        console.log("Adding new photo files to form data:", photoFiles.length, "files");
+        photoFiles.forEach((file, idx) => {
+          console.log(`Adding new photo file ${idx}:`, file.name);
+          formData.append("photos", file);
         });
-
-        console.log("Response status:", response.status);
-
-        const responseText = await response.text();
-        let responseData;
-        try {
-            responseData = JSON.parse(responseText);
-        } catch (error) {
-            console.error("Invalid JSON response from server:", responseText);
-            throw new Error("Invalid response format");
-        }
-
-        console.log("Server response:", responseData);
-
-        if (!response.ok) {
-            throw new Error(responseData?.message || "Failed to update review");
-        }
-
-        setReviews((prev) =>
-            prev.map((review) =>
-                review._id === editingReview._id ? { ...review, ...updatedData } : review
-            )
-        );
-
-        cancelEdit();
+      }
+  
+      console.log("Sending request to update review ID:", editingReview._id);
+      
+      const response = await fetch(`http://localhost:5000/api/reviews/${editingReview._id}`, {
+        method: "PUT",
+        headers: {
+          Authorization: token
+        },
+        body: formData,
+      });
+  
+      // Log response status
+      console.log("Update response status:", response.status);
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error response from server:", errorData);
+        throw new Error(errorData?.message || "Failed to update review");
+      }
+  
+      const updatedReview = await response.json();
+      console.log("Review updated successfully:", updatedReview);
+      
+      // Update the reviews state with the updated review
+      setReviews((prev) =>
+        prev.map((review) =>
+          review._id === editingReview._id ? updatedReview : review
+        )
+      );
+  
+      cancelEdit();
     } catch (err) {
-        console.error("Error updating review:", err);
-        setError(`Failed to update review: ${err.message}`);
+      console.error("Error updating review:", err);
+      setError(`Failed to update review: ${err.message}`);
     }
   };
 
   // function to cancel editing
   const cancelEdit = () => {
     setEditingReview(null);
-    setEditFormData({ title: "", body: "", rating: 0 });
+    setEditFormData({ title: "", body: "", rating: 0, photos: [] });
+    setPhotoFiles([]);
+    setPhotoPreviewUrls([]);
   };
 
   // function to delete a review
@@ -313,11 +356,102 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
     setSelectedPhoto(null);
   };
 
-  // Function to get photo URL - directly copying approach from ReviewForEstablishment
-  const getPhotoUrl = (photo) => {
+  const getPhotoUrl = (photo, index) => {
+    if (editingReview && editingReview._id) {
+      return `http://localhost:5000/api/images/review/${editingReview._id}/photo/${index}`;
+    }
+    
+    // Fallback to direct object ID if available
+    if (photo && typeof photo === 'object' && photo._id) {
+      return `http://localhost:5000/api/reviews/photo/${photo._id}`;
+    }
+    
+    // Last resort: direct path
     return `http://localhost:5000/uploads/${photo}`;
   };
+  // Photo management functions
 
+  // Handle photo upload for editing a review
+  const handlePhotoUpload = (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+    
+    // Calculate how many more photos we can add (max 5 total)
+    const currentPhotoCount = editFormData.photos.length;
+    const maxNewPhotos = 5 - currentPhotoCount;
+    
+    if (maxNewPhotos <= 0) {
+      alert("You can only upload a maximum of 5 photos total.");
+      return;
+    }
+    
+    // Limit to max allowed new photos
+    const newFiles = files.slice(0, maxNewPhotos);
+    
+    // Create preview URLs for the selected photos
+    const newPreviewUrls = newFiles.map(file => URL.createObjectURL(file));
+    
+    setPhotoFiles(prev => [...prev, ...newFiles]);
+    setPhotoPreviewUrls(prev => [...prev, ...newPreviewUrls]);
+  };
+
+  // Remove a photo preview
+  const removePhotoPreview = (index) => {
+    // Release the object URL to avoid memory leaks
+    URL.revokeObjectURL(photoPreviewUrls[index]);
+    
+    setPhotoFiles(prev => prev.filter((_, i) => i !== index));
+    setPhotoPreviewUrls(prev => prev.filter((_, i) => i !== index));
+  };
+
+// First, make sure you're properly debugging what's in the photos array
+useEffect(() => {
+  console.log("EditFormData photos changed:", editFormData.photos);
+}, [editFormData.photos]);
+
+// Replace your handleDeletePhoto function with this:
+const handleDeletePhoto = async (photoIndex) => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setError("Authentication required");
+      setShowLogin(true);
+      return;
+    }
+    
+    console.log("Deleting photo at index:", photoIndex);
+    
+    // Call the dedicated API endpoint for photo deletion
+    const response = await fetch(
+      `http://localhost:5000/api/reviews/${editingReview._id}/photos/${photoIndex}`,
+      {
+        method: 'DELETE',
+        headers: {
+          'Authorization': token
+        }
+      }
+    );
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to delete photo');
+    }
+    
+    const result = await response.json();
+    
+    // Update the form data with the new photos array from the server
+    setEditFormData(prevState => ({
+      ...prevState,
+      photos: result.photos
+    }));
+    
+    console.log("Photo deleted successfully");
+  } catch (err) {
+    console.error("Error deleting photo:", err);
+    setError(`Failed to delete photo: ${err.message}`);
+  }
+};
+  
   // Render photo modal
   const renderPhotoModal = () => {
     if (selectedPhoto === null || allPhotos.length === 0) return null;
@@ -365,24 +499,6 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
     );
   };
 
-  const handlePhotoUpload = (e) => {
-    const files = Array.from(e.target.files);
-    if (files.length === 0) return;
-    
-    // Limit to 5 photos
-    const newFiles = files.slice(0, 5 - photoFiles.length);
-    if (newFiles.length === 0) {
-      alert("You can only upload a maximum of 5 photos.");
-      return;
-    }
-    
-    // Create preview URLs for the selected photos
-    const newPreviewUrls = newFiles.map(file => URL.createObjectURL(file));
-    
-    setPhotoFiles(prev => [...prev, ...newFiles]);
-    setPhotoPreviewUrls(prev => [...prev, ...newPreviewUrls]);
-  };
-
   // render the edit form
   const renderEditForm = () => {
     if (!editingReview) return null;
@@ -407,22 +523,57 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
             </div>
             
             <div className="col-md-6">
-            <label>Rating:</label>
+              <label>Rating:</label>
               <div className="rating-card p-4">
-                  <div className="star-rating animated-stars">
-                      <input type="radio" id="star5" name="rating" value="5" onClick={() => handleRatingChange(5)}/>
-                      <label htmlFor="star5" className="bi bi-star-fill"></label>
-                      <input type="radio" id="star4" name="rating" value="4" onClick={() => handleRatingChange(4)}/>
-                      <label htmlFor="star4" className="bi bi-star-fill"></label>
-                      <input type="radio" id="star3" name="rating" value="3" onClick={() => handleRatingChange(3)}/>
-                      <label htmlFor="star3" className="bi bi-star-fill"></label>
-                      <input type="radio" id="star2" name="rating" value="2" onClick={() => handleRatingChange(2)}/>
-                      <label htmlFor="star2" className="bi bi-star-fill"></label>
-                      <input type="radio" id="star1" name="rating" value="1" onClick={() => handleRatingChange(1)}/>
-                      <label htmlFor="star1" className="bi bi-star-fill"></label>
-                  </div>
+                <div className="star-rating animated-stars">
+                  <input 
+                    type="radio" 
+                    id="star5" 
+                    name="rating" 
+                    value="5" 
+                    checked={editFormData.rating === 5}
+                    onChange={() => handleRatingChange(5)}
+                  />
+                  <label htmlFor="star5" className="bi bi-star-fill"></label>
+                  <input 
+                    type="radio" 
+                    id="star4" 
+                    name="rating" 
+                    value="4" 
+                    checked={editFormData.rating === 4}
+                    onChange={() => handleRatingChange(4)}
+                  />
+                  <label htmlFor="star4" className="bi bi-star-fill"></label>
+                  <input 
+                    type="radio" 
+                    id="star3" 
+                    name="rating" 
+                    value="3" 
+                    checked={editFormData.rating === 3}
+                    onChange={() => handleRatingChange(3)}
+                  />
+                  <label htmlFor="star3" className="bi bi-star-fill"></label>
+                  <input 
+                    type="radio" 
+                    id="star2" 
+                    name="rating" 
+                    value="2" 
+                    checked={editFormData.rating === 2}
+                    onChange={() => handleRatingChange(2)}
+                  />
+                  <label htmlFor="star2" className="bi bi-star-fill"></label>
+                  <input 
+                    type="radio" 
+                    id="star1" 
+                    name="rating" 
+                    value="1" 
+                    checked={editFormData.rating === 1}
+                    onChange={() => handleRatingChange(1)}
+                  />
+                  <label htmlFor="star1" className="bi bi-star-fill"></label>
+                </div>
               </div>
-          </div>
+            </div>
             
             <div className="form-group">
               <label>Review:</label>
@@ -435,42 +586,88 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
               />
             </div>
 
-            <div className="form-group">
-              <label>Photos (optional):</label>
-              <div className="photo-upload">
+          {/* Photos Management Section - FIXED IMAGE DISPLAY */}
+            <div className="photos-management-section">
+            <h3>Review Photos</h3>
+            {/* Current Photos Display */}
+            <div className="current-photos">
+              <h4>Current Photos ({editFormData.photos.length} of 5)</h4>
+              {editFormData.photos.length > 0 ? (
+                <div className="photos-grid">
+                  {editFormData.photos.map((photo, index) => (
+                    <div key={`photo-${index}`} className="photo-item">
+                      <img 
+                        src={getPhotoUrl(photo, index)}
+                        alt={`Review photo ${index + 1}`}
+                        onError={(e) => {
+                          console.log("Image failed to load:", photo);
+                          e.target.src = "https://static.vecteezy.com/system/resources/previews/022/014/063/original/missing-picture-page-for-website-design-or-mobile-app-design-no-image-available-icon-vector.jpg";
+                        }}
+                      />
+                      <button 
+                        type="button" 
+                        className="delete-photo-btn" 
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          console.log("Delete button clicked for photo at DOM index:", index);
+                          console.log("Photo object at this index:", photo);
+                          handleDeletePhoto(index);
+                        }}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <span className="no-photos-message">No photos uploaded yet.</span>
+              )}
+            </div>
+
+            {/* Upload New Photos Section */}
+            <div className="upload-photos-section">
+              <h4>Add New Photos ({editFormData.photos.length + photoFiles.length}/5)</h4>
+              <div className="photos-upload-form">
                 <input 
                   type="file" 
                   id="photos" 
-                  onChange={handlePhotoUpload} 
-                  multiple 
                   accept="image/*" 
-                  style={{ display: 'none' }}
+                  onChange={handlePhotoUpload} 
+                  className="file-input" 
+                  multiple 
+                  disabled={editFormData.photos.length + photoFiles.length >= 5}
                 />
-                <label htmlFor="photos" className="upload-button" id="upload-btn">
-                  Add Photos
+                <label htmlFor="photos" className="file-label">
+                  Choose Photos
                 </label>
-                <span className="photo-limit">
-                  {editFormData.photos.length}/5 photos
+                <span className="help-text">
+                  You can add up to {5 - editFormData.photos.length - photoFiles.length} more photos
                 </span>
-              </div>
 
-              {editFormData.photos.length > 0 && (
-              <div className="photo-previews">
-                {editFormData.photos.map((url, index) => (
-                  <div key={index} className="photo-preview">
-                    <img src={url} alt={`Preview ${index + 1}`} />
-                    <button 
-                      type="button" 
-                      className="remove-photo" 
-                      onClick={() => removeElement(editFormData.photos, index)}
-                    >
-                      ×
-                    </button>
+                {/* New Photo Previews */}
+                {photoPreviewUrls.length > 0 && (
+                  <div className="preview-photos-grid">
+                    {photoPreviewUrls.map((url, index) => (
+                      <div key={`preview-${index}`} className="photo-preview-item">
+                        <img src={url} alt={`Preview ${index + 1}`} />
+                        <button 
+                          type="button" 
+                          className="remove-preview-btn" 
+                          onClick={(e) => {
+                            e.preventDefault(); // Prevent form submission
+                            removePhotoPreview(index);
+                          }}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                )}
               </div>
-            )}
-          </div>
+            </div>
+            </div>
             
             <div className="form-actions">
               <button type="submit" className="save-btn">Save Changes</button>
@@ -527,7 +724,6 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
                     </button>
                   </div>
                 </div>
-                {/* Force photos array to be an array even if null/undefined */}
                 <ReviewForEstablishment 
                       reviewId={review._id}
                       user={review.user}  
@@ -575,12 +771,12 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
               allPhotos.slice(0, 6).map((photoObj, index) => (
                 <div className="photo-preview" key={index} onClick={() => openPhotoModal(index)}>
                   <img 
-                    src={`http://localhost:5000/api/images/review/${photoObj.reviewId}/photo/${photoObj.photoIndex || index}`}
+                    src={`http://localhost:5000/uploads/${photoObj.photo}`}
                     className="actual-photo"
                     alt={`Review photo ${index + 1}`}
                     onError={(e) => { 
                       console.log("Image failed to load:", photoObj);
-                      e.target.src = "https://static.vecteezy.com/system/resources/previews/022/014/063/original/missing-picture-page-for-website-design-or-mobile-app-design-no-image-available-icon-vector.jpg"; // Fallback image
+                      e.target.src = "https://static.vecteezy.com/system/resources/previews/022/014/063/original/missing-picture-page-for-website-design-or-mobile-app-design-no-image-available-icon-vector.jpg"; 
                     }}
                   />
                 </div>

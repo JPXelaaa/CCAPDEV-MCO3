@@ -974,6 +974,63 @@ app.get('/api/reviews/establishment/:establishmentId', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+app.delete("/api/delete-account", async (req, res) => {
+  try {
+    const { id } = req.body;
+    
+    // Find the user
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ 
+        status: "error", 
+        message: "User not found" 
+      });
+    }
+
+    // Delete the user
+    await User.deleteOne({ _id: id });
+    
+    return res.json({ 
+      status: "success", 
+      message: "Account deleted successfully" 
+    });
+  } catch (error) {
+    console.error("Error deleting account:", error);
+    return res.status(500).json({ 
+      status: "error", 
+      message: "An error occurred while deleting the account" 
+    });
+  }
+});
+
+app.delete("/api/delete-establishment-account", async (req, res) => {
+  try {
+    const { id } = req.body;
+    
+    // Find the establishment
+    const establishment = await Establishment.findById(id);
+    if (!establishment) {
+      return res.status(404).json({ 
+        status: "error", 
+        message: "Establishment not found" 
+      });
+    }
+
+    // Delete the establishment
+    await Establishment.deleteOne({ _id: id });
+    
+    return res.json({ 
+      status: "success", 
+      message: "Establishment account deleted successfully" 
+    });
+  } catch (error) {
+    console.error("Error deleting establishment account:", error);
+    return res.status(500).json({ 
+      status: "error", 
+      message: "An error occurred while deleting the establishment account" 
+    });
+  }
+});
 
 // Get reviews by user ID
 app.get('/api/reviews/user/:userId', async (req, res) => {
@@ -1034,6 +1091,8 @@ app.put('/api/reviews/:reviewId', verifyToken, upload.array('photos', 5), async 
     const { title, body, rating } = req.body;
     const reviewId = req.params.reviewId;
     
+    console.log("Received existingPhotos:", req.body.existingPhotos);
+    
     // Find the review
     const review = await Review.findById(reviewId);
     
@@ -1051,15 +1110,19 @@ app.put('/api/reviews/:reviewId', verifyToken, upload.array('photos', 5), async 
     review.body = body || review.body;
     review.rating = rating ? Number(rating) : review.rating;
     
+    // Handle photo updates
+    
     // Add new photos if any were uploaded
     if (req.files && req.files.length > 0) {
-      for (let i = 0; i < req.files.length; i++) {
+      for (const file of req.files) {
         review.photos.push({
-          data: req.files[i].buffer,
-          contentType: req.files[i].mimetype
+          data: file.buffer,
+          contentType: file.mimetype
         });
       }
     }
+    
+    console.log("Final photos array length:", review.photos.length);
     
     await review.save();
     
@@ -1080,52 +1143,44 @@ app.put('/api/reviews/:reviewId', verifyToken, upload.array('photos', 5), async 
     res.json(populatedReview);
   } catch (err) {
     console.error('Error updating review:', err);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: err.message || 'Server error' });
   }
 });
 
-// Get establishments owned by a specific user
-app.get('/api/establishments/owner/:userId', verifyToken, async (req, res) => {
+// Add a new DELETE endpoint specifically for photo deletion
+app.delete('/api/reviews/:reviewId/photos/:photoIndex', verifyToken, async (req, res) => {
   try {
-    const { userId } = req.params;
+    const { reviewId, photoIndex } = req.params;
+    const index = parseInt(photoIndex);
     
-    // Verify that the requesting user is the same as the userId in the request
-    if (req.userId !== userId) {
-      return res.status(403).json({ message: 'Unauthorized access' });
-    }
-
-    console.log(`Fetching establishments for user: ${userId}`);
+    // Find the review
+    const review = await Review.findById(reviewId);
     
-    // Find establishments where the owner field matches the userId
-    // OR where the _id matches the userId (for backward compatibility)
-    const establishments = await Establishment.find({ 
-      $or: [
-        { owner: userId },
-        { _id: userId } // For backward compatibility with old data structure
-      ]
-    })
-      .populate('owner', '_id username')
-      .lean();
-
-    if (!establishments || establishments.length === 0) {
-      return res.status(404).json({ message: 'No establishments found for this user' });
+    if (!review) {
+      return res.status(404).json({ message: 'Review not found' });
     }
-
-    // Transform establishments to include image URLs
-    const transformedEstablishments = establishments.map(est => ({
-      ...est,
-      logoUrl: est._id ? `/api/images/establishment/${est._id}/logo` : null,
-      photoUrls: est.photos && est.photos.length > 0 
-        ? Array.from({ length: est.photos.length }, (_, i) => `/api/images/establishment/${est._id}/photo${i}`) 
-        : []
-    }));
-
-    res.json(transformedEstablishments);
-  } catch (error) {
-    console.error('Error fetching owner establishments:', error);
-    res.status(500).json({ message: 'Server error' });
+    
+    // Check if the user owns the review
+    if (review.user.toString() !== req.userId) {
+      return res.status(403).json({ message: 'Not authorized to delete this photo' });
+    }
+    
+    // Check if the photo index is valid
+    if (isNaN(index) || index < 0 || index >= review.photos.length) {
+      return res.status(400).json({ message: 'Invalid photo index' });
+    }
+    
+    // Remove the photo at the specified index
+    review.photos.splice(index, 1);
+    await review.save();
+    
+    res.json({ success: true, photos: review.photos });
+  } catch (err) {
+    console.error('Error deleting photo:', err);
+    res.status(500).json({ message: err.message || 'Server error' });
   }
 });
+
 
 // Delete a review
 app.delete('/api/reviews/:id', verifyToken, async (req, res) => {
