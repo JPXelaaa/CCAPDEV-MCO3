@@ -1,6 +1,7 @@
 import "./ReviewForEstablishment.css";
 import Rating from './Rating';
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 function ReviewForEstablishment({ 
   reviewId,
@@ -172,16 +173,35 @@ function ReviewForEstablishment({
       {/* Review Header */}
       <div className="review-header">
         <div className="user-info">
-          <div className="profile-picture">
-            <img
-              src={getAvatarUrl()}
-              alt="User Profile"
-              onError={(e) => { 
-                e.target.src = "https://i.pinimg.com/originals/6d/8b/9b/6d8b9b45c14da6fbfd09a7ede56b4a83.jpg"; 
-              }}
-            />
-          </div>
-          <p className="username">{username}</p>
+        {user && user._id ? (
+             // Link to user profile if we have a user id
+             <Link to={`/user/${user._id}`} className="profile-link">
+               <div className="profile-picture">
+                 <img
+                   src={getAvatarUrl()}
+                   alt="User Profile"
+                   onError={(e) => { 
+                     e.target.src = "https://i.pinimg.com/originals/6d/8b/9b/6d8b9b45c14da6fbfd09a7ede56b4a83.jpg"; 
+                   }}
+                 />
+               </div>
+               <p className="username">{username}</p>
+             </Link>
+           ) : (
+             // No link if we don't have a user id
+             <>
+               <div className="profile-picture">
+                 <img
+                   src={getAvatarUrl()}
+                   alt="User Profile"
+                   onError={(e) => { 
+                     e.target.src = "https://i.pinimg.com/originals/6d/8b/9b/6d8b9b45c14da6fbfd09a7ede56b4a83.jpg"; 
+                   }}
+                 />
+               </div>
+               <p className="username">{username}</p>
+             </>
+           )}
         </div>
         <p className="date-time">{date}</p>
       </div>
