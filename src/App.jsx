@@ -12,6 +12,7 @@ import EstablishmentManagement from "./EstablishmentManagement";
 import EditEstablishmentAccount from "./EditEstablishmentAccount";
 import About from "./About";
 
+
 function App() {
   const [showSignUp, setShowSignUp] = useState(false); 
   const [showEstablishmentSignUp, setShowEstablishmentSignUp] = useState(false);
@@ -31,6 +32,9 @@ function App() {
   };
 
   useEffect(() => {
+    // Store the original fetch function
+    const originalFetch = window.fetch;
+    
     // Function to check and renew token if needed
     const checkAndRenewToken = () => {
       // Only proceed if user has chosen to be remembered
@@ -57,7 +61,6 @@ function App() {
       };
       
       // Override the global fetch to intercept all API calls
-      const originalFetch = window.fetch;
       window.fetch = async (...args) => {
         const response = await originalFetch(...args);
         return processResponseHeaders(response);
@@ -113,6 +116,7 @@ function App() {
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
+
 
   return (
     <Router>
