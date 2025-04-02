@@ -771,31 +771,19 @@ const handleDeletePhoto = async (photoIndex) => {
             ) : error ? (
               <p>{error}</p>
             ) : allPhotos.length > 0 ? (
-              allPhotos.slice(0, 6).map((photoObj, index) => {
-                // Get the correct photo URL using the same logic as in getPhotoUrl function
-                let photoUrl;
-                if (typeof photoObj.photo === 'object' && photoObj.photo._id) {
-                  photoUrl = `http://localhost:5000/api/reviews/photo/${photoObj.photo._id}`;
-                } else if (photoObj.reviewId) {
-                  photoUrl = `http://localhost:5000/api/images/review/${photoObj.reviewId}/photo/${photoObj.photoIndex}`;
-                } else {
-                  photoUrl = `http://localhost:5000/uploads/${photoObj.photo}`;
-                }
-                
-                return (
-                  <div className="photo-preview" key={index} onClick={() => openPhotoModal(index)}>
-                    <img
-                      src={photoUrl}
-                      className="actual-photo"
-                      alt={`Review photo ${index + 1}`}
-                      onError={(e) => { 
-                        console.log("Image failed to load:", photoObj);
-                        e.target.src = "https://static.vecteezy.com/system/resources/previews/022/014/063/original/missing-picture-page-for-website-design-or-mobile-app-design-no-image-available-icon-vector.jpg"; 
-                      }}
-                    />
-                  </div>
-                );
-              })
+              allPhotos.slice(0, 6).map((photoObj, index) => (
+                <div className="photo-preview" key={index} onClick={() => openPhotoModal(index)}>
+                  <img 
+                    src={`http://localhost:5000/uploads/${photoObj.photo}`}
+                    className="actual-photo"
+                    alt={`Review photo ${index + 1}`}
+                    onError={(e) => { 
+                      console.log("Image failed to load:", photoObj);
+                      e.target.src = "https://static.vecteezy.com/system/resources/previews/022/014/063/original/missing-picture-page-for-website-design-or-mobile-app-design-no-image-available-icon-vector.jpg"; 
+                    }}
+                  />
+                </div>
+              ))
             ) : (
               <p>No photos available.</p>
             )}
