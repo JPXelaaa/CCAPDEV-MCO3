@@ -1,6 +1,7 @@
 .developers-section {
   max-width: 900px;
   margin: 0 auto 3rem;
+  margin-top: 30px;
   padding: 1.5rem;
   background-color: #f8f9fa;
   border-radius: 8px;
@@ -41,12 +42,13 @@
   font-weight: 600;
   margin-bottom: 0.5rem;
   color: #b16757;
+  font-family: 'Montserrat';
 }
 
 .dev-email {
   font-size: 0.9rem;
   color: #666;
-  font-family: monospace;
+  font-family: 'lato';
 }
 
 .libraries-section {
@@ -65,10 +67,12 @@
 
 .dependency-category h4 {
   font-size: 1.3rem;
+  margin-top: -5px;
   margin-bottom: 1rem;
   color: #333;
   padding-bottom: 0.5rem;
   border-bottom: 2px solid #e9ecef;
+  font-family: 'Montserrat';
 }
 
 .dependency-list {
@@ -101,13 +105,16 @@
   margin: 2rem 0 1rem;
   color: #333;
   text-align: center;
+  font-family: 'Montserrat';
+  margin-top: 0px;
 }
 
 .additional-info {
   max-width: 900px;
   margin: 2rem auto 3rem;
+  margin-bottom: 0px;
   padding: 1.5rem;
-  background-color: #f0f7ff;
+  background-color: #f8f9fa;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
