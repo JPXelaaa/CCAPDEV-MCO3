@@ -19,13 +19,13 @@ function ViewUserHeader({ profileUser }) {
     if (!profileUser || !profileUser._id) {
       return "https://i.pinimg.com/originals/6d/8b/9b/6d8b9b45c14da6fbfd09a7ede56b4a83.jpg"; // Default profile picture
     }
-    return `http://localhost:5000/api/images/user/${profileUser._id}/avatar`;
+    return `https://ccapdevmco3.vercel.app/api/images/user/${profileUser._id}/avatar`;
   };
   
   const fetchUserReviews = async (userId) => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:5000/api/reviews/user/${userId}`);
+      const response = await fetch(`https://ccapdevmco3.vercel.app/api/reviews/user/${userId}`);
       
       if (!response.ok) {
         throw new Error('Failed to fetch reviews');

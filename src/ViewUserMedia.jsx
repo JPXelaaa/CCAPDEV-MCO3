@@ -23,7 +23,7 @@ function ViewUserMedia({ profileUser, isReview, setIsReview }) {
   const fetchUserDescription = async (userId) => {
     try {
       setLoadingDescription(true);
-      const response = await fetch(`http://localhost:5000/api/users/${userId}`);
+      const response = await fetch(`https://ccapdevmco3.vercel.app/api/users/${userId}`);
       
       if (!response.ok) {
         throw new Error('Failed to fetch user details');
@@ -41,7 +41,7 @@ function ViewUserMedia({ profileUser, isReview, setIsReview }) {
   const fetchUserReviews = async (userId) => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:5000/api/reviews/user/${userId}`);
+      const response = await fetch(`https://ccapdevmco3.vercel.app/api/reviews/user/${userId}`);
       
       if (!response.ok) {
         throw new Error('Failed to fetch reviews');
@@ -101,7 +101,7 @@ function ViewUserMedia({ profileUser, isReview, setIsReview }) {
               photos.map((photoData, index) => (
                 <div className="media-preview" key={index}>
                   <img 
-                    src={`http://localhost:5000/api/images/review/${photoData.reviewId}/photo/${photoData.photoIndex}`}
+                    src={`https://ccapdevmco3.vercel.app/api/images/review/${photoData.reviewId}/photo/${photoData.photoIndex}`}
                     className="actual-img"
                     alt={`Photo from ${photoData.establishment}`}
                     onError={(e) => {

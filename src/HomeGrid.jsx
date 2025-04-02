@@ -14,9 +14,9 @@ const HomeGrid = ({searchQuery, sortOption}) => {
     try {
       setLoading(true);
   
-      let url = "http://localhost:5000/api/establishments";
+      let url = "https://ccapdevmco3.vercel.app/api/establishments";
       if (query) {
-        url = `http://localhost:5000/api/establishments/search/${query}`;
+        url = `https://ccapdevmco3.vercel.app/api/establishments/search/${query}`;
       }
 
       console.log("Query: ", query);

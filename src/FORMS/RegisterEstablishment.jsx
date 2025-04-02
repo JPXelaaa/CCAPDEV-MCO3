@@ -195,7 +195,7 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
       
       console.log("🔍 Sending establishment registration request");
       
-      const response = await fetch("http://localhost:5000/api/register-establishment", {
+      const response = await fetch("https://ccapdevmco3.vercel.app/api/register-establishment", {
         method: "POST",
         body: formData,
       });

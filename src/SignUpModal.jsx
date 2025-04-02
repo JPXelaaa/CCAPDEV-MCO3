@@ -166,7 +166,7 @@ function SignUpModal({ onClose, setIsLoggedIn, setUser }) {
         })
       });
 
-      const response = await fetch("http://localhost:5000/api/signup", {
+      const response = await fetch("https://ccapdevmco3.vercel.app/api/signup", {
         method: "POST",
         body: formData,
       });

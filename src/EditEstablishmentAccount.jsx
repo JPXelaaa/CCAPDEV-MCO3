@@ -56,7 +56,7 @@ function EditEstablishmentAccount({ setShowLogin, setShowSignUp, setShowEstablis
     };
     
     try {
-      const API_URL = "http://localhost:5000/api/establishment/editaccount";
+      const API_URL = "https://ccapdevmco3.vercel.app/api/establishment/editaccount";
       console.log("Sending request to:", API_URL);
       
       const response = await fetch(API_URL, {
@@ -105,7 +105,7 @@ function EditEstablishmentAccount({ setShowLogin, setShowSignUp, setShowEstablis
     }
   
     try {
-      const API_URL = "http://localhost:5000/api/delete-establishment-account";
+      const API_URL = "https://ccapdevmco3.vercel.app/api/delete-establishment-account";
       
       const response = await fetch(API_URL, {
         method: "DELETE",

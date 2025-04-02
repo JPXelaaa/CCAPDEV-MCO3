@@ -48,7 +48,7 @@ const EstablishmentView = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowSig
     const fetchEstablishment = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`http://localhost:5000/api/establishments/${establishmentId}`);
+        const response = await fetch(`https://ccapdevmco3.vercel.app/api/establishments/${establishmentId}`);
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }  
@@ -58,7 +58,7 @@ const EstablishmentView = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowSig
         // Handle logo and photos properly
         const logoSrc = data.logo && data.logo.data ? 
           `data:${data.logo.contentType};base64,${data.logo.data}` : 
-          `http://localhost:5000/api/images/establishment/${establishmentId}/logo`;
+          `https://ccapdevmco3.vercel.app/api/images/establishment/${establishmentId}/logo`;
           
         // Set logo source to establishment object
         setEstablishment(prev => ({

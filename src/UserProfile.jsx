@@ -30,7 +30,7 @@ function UserProfile({ setShowLogin, setShowSignUp, setShowEstablishmentSignUp, 
     try {
       console.log("🔍 Sending login request with data:", { username, password, userType });
 
-      const response = await fetch("http://localhost:5000/api/editaccount", {
+      const response = await fetch("https://ccapdevmco3.vercel.app/api/editaccount", {
         method: "GET",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password, description, userType }),

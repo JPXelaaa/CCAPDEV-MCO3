@@ -64,7 +64,7 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
   const fetchUserReviews = async (userId) => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:5000/api/reviews/user/${userId}`);
+      const response = await fetch(`https://ccapdevmco3.vercel.app/api/reviews/user/${userId}`);
       
       if (!response.ok) {
         throw new Error('Failed to fetch reviews');
@@ -93,7 +93,7 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
       // for each review, fetch the user's vote
       for (const review of reviews) {
         try {
-          const response = await fetch(`http://localhost:5000/api/reviews/${review._id}/vote`, {
+          const response = await fetch(`https://ccapdevmco3.vercel.app/api/reviews/${review._id}/vote`, {
             headers: {
               'Authorization': token
             }
@@ -153,7 +153,7 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
 
   const fetchDescription = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/users/${user._id}/profile`);
+      const response = await fetch(`https://ccapdevmco3.vercel.app/api/users/${user._id}/profile`);
       const data = await response.json();
 
       if (data.status === "success") {
@@ -216,7 +216,7 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
   
       console.log("Sending request to update review ID:", editingReview._id);
       
-      const response = await fetch(`http://localhost:5000/api/reviews/${editingReview._id}`, {
+      const response = await fetch(`https://ccapdevmco3.vercel.app/api/reviews/${editingReview._id}`, {
         method: "PUT",
         headers: {
           Authorization: token
@@ -280,7 +280,7 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
         return;
       }
   
-      const response = await fetch(`http://localhost:5000/api/reviews/${reviewToDelete}`, {
+      const response = await fetch(`https://ccapdevmco3.vercel.app/api/reviews/${reviewToDelete}`, {
         method: 'DELETE',
         headers: {
           'Authorization': token
@@ -358,16 +358,16 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
 
   const getPhotoUrl = (photo, index) => {
     if (editingReview && editingReview._id) {
-      return `http://localhost:5000/api/images/review/${editingReview._id}/photo/${index}`;
+      return `https://ccapdevmco3.vercel.app/api/images/review/${editingReview._id}/photo/${index}`;
     }
     
     // Fallback to direct object ID if available
     if (photo && typeof photo === 'object' && photo._id) {
-      return `http://localhost:5000/api/reviews/photo/${photo._id}`;
+      return `https://ccapdevmco3.vercel.app/api/reviews/photo/${photo._id}`;
     }
     
     // Last resort: direct path
-    return `http://localhost:5000/uploads/${photo}`;
+    return `https://ccapdevmco3.vercel.app/uploads/${photo}`;
   };
   // Photo management functions
 
@@ -423,7 +423,7 @@ const handleDeletePhoto = async (photoIndex) => {
     
     // Call the dedicated API endpoint for photo deletion
     const response = await fetch(
-      `http://localhost:5000/api/reviews/${editingReview._id}/photos/${photoIndex}`,
+      `https://ccapdevmco3.vercel.app/api/reviews/${editingReview._id}/photos/${photoIndex}`,
       {
         method: 'DELETE',
         headers: {
@@ -772,11 +772,11 @@ const handleDeletePhoto = async (photoIndex) => {
                 // Get the correct photo URL using the same logic as in getPhotoUrl function
                 let photoUrl;
                 if (typeof photoObj.photo === 'object' && photoObj.photo._id) {
-                  photoUrl = `http://localhost:5000/api/reviews/photo/${photoObj.photo._id}`;
+                  photoUrl = `https://ccapdevmco3.vercel.app/api/reviews/photo/${photoObj.photo._id}`;
                 } else if (photoObj.reviewId) {
-                  photoUrl = `http://localhost:5000/api/images/review/${photoObj.reviewId}/photo/${photoObj.photoIndex}`;
+                  photoUrl = `https://ccapdevmco3.vercel.app/api/images/review/${photoObj.reviewId}/photo/${photoObj.photoIndex}`;
                 } else {
-                  photoUrl = `http://localhost:5000/uploads/${photoObj.photo}`;
+                  photoUrl = `https://ccapdevmco3.vercel.app/uploads/${photoObj.photo}`;
                 }
                 
                 return (

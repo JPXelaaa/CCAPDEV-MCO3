@@ -20,7 +20,7 @@ function ViewUserProfile({ setShowLogin, setShowSignUp, setShowEstablishmentSign
       try {
         setLoading(true);
         console.log('We enterin here: ', userId);
-        const response = await fetch(`http://localhost:5000/api/users/${userId}/profile`, { 
+        const response = await fetch(`https://ccapdevmco3.vercel.app/api/users/${userId}/profile`, { 
             headers: { 'Accept': 'application/json' } 
           });
         if (!response.ok) {

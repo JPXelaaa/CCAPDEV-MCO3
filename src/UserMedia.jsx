@@ -20,7 +20,7 @@ function UserMedia({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, isR
   const fetchUserReviews = async (userId) => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:5000/api/reviews/user/${userId}`);
+      const response = await fetch(`https://ccapdevmco3.vercel.app/api/reviews/user/${userId}`);
       
       if (!response.ok) {
         throw new Error('Failed to fetch reviews');
@@ -62,7 +62,7 @@ function UserMedia({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, isR
         return;
       }
 
-      const response = await fetch(`http://localhost:5000/api/reviews/${id}`, {
+      const response = await fetch(`https://ccapdevmco3.vercel.app/api/reviews/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -112,7 +112,7 @@ function UserMedia({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, isR
               photos.map((photoData, index) => (
                 <div className="media-preview" key={index}>
                   <img 
-                    src={`http://localhost:5000/api/images/review/${photoData.reviewId}/photo/${photoData.photoIndex}`}
+                    src={`https://ccapdevmco3.vercel.app/api/images/review/${photoData.reviewId}/photo/${photoData.photoIndex}`}
                     className="actual-img"
                     alt={`Photo from ${photoData.establishment}`}
                     onError={(e) => {

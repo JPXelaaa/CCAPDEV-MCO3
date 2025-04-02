@@ -59,14 +59,14 @@ function NavigationBar({ isLoggedIn, setIsLoggedIn, setShowLogin, setShowEstabli
     if (!user || !user._id) {
       return "https://i.pinimg.com/originals/6d/8b/9b/6d8b9b45c14da6fbfd09a7ede56b4a83.jpg";
     }
-    return `http://localhost:5000/api/images/user/${user._id}/avatar`;
+    return `https://ccapdevmco3.vercel.app/api/images/user/${user._id}/avatar`;
   };
 
   const getLogoUrl = () => {
     if (!user || !user._id) {
       return "https://via.placeholder.com/150";
     }
-    return `http://localhost:5000/api/images/establishment/${user._id}/logo`;
+    return `https://ccapdevmco3.vercel.app/api/images/establishment/${user._id}/logo`;
   };
 
   return (

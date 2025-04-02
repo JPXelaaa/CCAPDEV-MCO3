@@ -20,7 +20,7 @@ function EstablishmentView2({ isLoggedIn, setIsLoggedIn, setShowLogin, user, set
   const fetchEstablishment = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:5000/api/establishments/${id}`);
+      const response = await fetch(`https://ccapdevmco3.vercel.app/api/establishments/${id}`);
       if (!response.ok) throw new Error("Failed to fetch establishment");
 
       const data = await response.json();
@@ -55,7 +55,7 @@ function EstablishmentView2({ isLoggedIn, setIsLoggedIn, setShowLogin, user, set
         <div className="top-half">
           {/* ✅ Left Section: Establishment Info */}
           <div className="left-top-half">
-            <img id="logo" src={`http://localhost:5000/uploads/${establishment.logo}`} alt="Establishment Logo" />
+            <img id="logo" src={`https://ccapdevmco3.vercel.app/uploads/${establishment.logo}`} alt="Establishment Logo" />
             <p id="resto-name">{establishment.name}</p>
             <div className="stars">
               <Rating rating={establishment.rating} />
@@ -70,7 +70,7 @@ function EstablishmentView2({ isLoggedIn, setIsLoggedIn, setShowLogin, user, set
           <div className="center-top-half">
             <div className="carousel">
               <button className="arrow left-arrow">&lt;</button>
-              <img id="carousel-img" src={`http://localhost:5000/uploads/${establishment.photos?.[0] || "default-image.jpg"}`} alt="Carousel Image" />
+              <img id="carousel-img" src={`https://ccapdevmco3.vercel.app/uploads/${establishment.photos?.[0] || "default-image.jpg"}`} alt="Carousel Image" />
               <button className="arrow right-arrow">&gt;</button>
 
               <div className="photo-container">

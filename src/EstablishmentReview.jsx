@@ -33,8 +33,8 @@ function EstablishmentReview({ establishmentId: propEstablishmentId, isLoggedIn,
       setLoading(true);
       // If we have an establishmentId from the URL params, use it to fetch specific reviews
       const url = establishmentId 
-        ? `http://localhost:5000/api/reviews/establishment/${establishmentId}`
-        : `http://localhost:5000/api/reviews`;
+        ? `https://ccapdevmco3.vercel.app/api/reviews/establishment/${establishmentId}`
+        : `https://ccapdevmco3.vercel.app/api/reviews`;
       
       const response = await fetch(url);
       
@@ -65,7 +65,7 @@ function EstablishmentReview({ establishmentId: propEstablishmentId, isLoggedIn,
       // For each review, fetch the user's vote
       for (const review of reviews) {
         try {
-          const response = await fetch(`http://localhost:5000/api/reviews/${review._id}/vote`, {
+          const response = await fetch(`https://ccapdevmco3.vercel.app/api/reviews/${review._id}/vote`, {
             headers: {
               'Authorization': `Bearer ${token}`
             }

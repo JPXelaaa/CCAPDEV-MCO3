@@ -55,7 +55,7 @@ function ReviewForEstablishment({
         const token = localStorage.getItem('token');
         const headers = token ? { 'Authorization': token } : {};
         
-        const response = await fetch(`http://localhost:5000/api/reviews/${reviewId}/votes`, {
+        const response = await fetch(`https://ccapdevmco3.vercel.app/api/reviews/${reviewId}/votes`, {
           headers
         });
         
@@ -100,9 +100,9 @@ function ReviewForEstablishment({
       const token = localStorage.getItem('token');
       if (!token) return;
   
-      console.log('Sending request to:', `http://localhost:5000/api/reviews/${reviewId}/vote`);
+      console.log('Sending request to:', `https://ccapdevmco3.vercel.app/api/reviews/${reviewId}/vote`);
   
-      const response = await fetch(`http://localhost:5000/api/reviews/${reviewId}/vote`, {
+      const response = await fetch(`https://ccapdevmco3.vercel.app/api/reviews/${reviewId}/vote`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -146,14 +146,14 @@ function ReviewForEstablishment({
     if (!user || !user._id) {
       return "https://i.pinimg.com/originals/6d/8b/9b/6d8b9b45c14da6fbfd09a7ede56b4a83.jpg"; // Default profile picture
     }
-    return `http://localhost:5000/api/images/user/${user._id}/avatar`;
+    return `https://ccapdevmco3.vercel.app/api/images/user/${user._id}/avatar`;
   };
 
   const getPhotoUrl = (index) => {
     if (photoUrls && photoUrls[index]) {
-      return `http://localhost:5000${photoUrls[index]}`;
+      return `https://ccapdevmco3.vercel.app${photoUrls[index]}`;
     }
-    return `http://localhost:5000/api/images/review/${reviewId}/photo/${index}`;
+    return `https://ccapdevmco3.vercel.app/api/images/review/${reviewId}/photo/${index}`;
   };
 
   const showSelectedPhoto = (index) => {

@@ -41,7 +41,7 @@ function Review({
     if (!user || !user._id) {
       return "https://i.pinimg.com/originals/6d/8b/9b/6d8b9b45c14da6fbfd09a7ede56b4a83.jpg"; // Default profile picture
     }
-    return `http://localhost:5000/api/images/user/${user._id}/avatar`;
+    return `https://ccapdevmco3.vercel.app/api/images/user/${user._id}/avatar`;
   };
 
   const openModal = (photoUrl) => {

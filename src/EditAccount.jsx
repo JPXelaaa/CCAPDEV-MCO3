@@ -35,7 +35,7 @@ function EditAccount({ setShowLogin, setShowSignUp, setShowEstablishmentSignUp, 
     if (!userId) {
       return "https://i.pinimg.com/originals/6d/8b/9b/6d8b9b45c14da6fbfd09a7ede56b4a83.jpg";
     }
-    return `http://localhost:5000/api/images/user/${userId}/avatar`;
+    return `https://ccapdevmco3.vercel.app/api/images/user/${userId}/avatar`;
   };
 
   const handleDeleteAccount = async () => {
@@ -48,7 +48,7 @@ function EditAccount({ setShowLogin, setShowSignUp, setShowEstablishmentSignUp, 
     if (!confirmDelete) return;
 
     try {
-      const response = await fetch("http://localhost:5000/api/delete-account", {
+      const response = await fetch("https://ccapdevmco3.vercel.app/api/delete-account", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: user._id }),
@@ -85,7 +85,7 @@ function EditAccount({ setShowLogin, setShowSignUp, setShowEstablishmentSignUp, 
 
   const fetchDescription = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/users/${user._id}/profile`);
+      const response = await fetch(`https://ccapdevmco3.vercel.app/api/users/${user._id}/profile`);
       const data = await response.json();
 
       if (data.status === "success") {
@@ -143,7 +143,7 @@ function EditAccount({ setShowLogin, setShowSignUp, setShowEstablishmentSignUp, 
     }
   
     try {
-      const response = await fetch("http://localhost:5000/api/edit-account", {
+      const response = await fetch("https://ccapdevmco3.vercel.app/api/edit-account", {
         method: "POST",
         body: formData,
       });

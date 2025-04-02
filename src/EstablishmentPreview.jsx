@@ -42,14 +42,14 @@ function EstablishmentPreview({ establishment, className = ""}) {
     if (_id === "1") return defaultImage; // For default establishment
     
     // Use a fallback image handler with onerror attribute
-    return `http://localhost:5000/api/images/establishment/${_id}/logo`;
+    return `https://ccapdevmco3.vercel.app/api/images/establishment/${_id}/logo`;
   };
 
   // Get the photo URL
   const getPhotoUrl = () => {
     // If photos array exists and has items
     if (photos && photos.length > 0) {
-      return `http://localhost:5000/api/images/establishment/${_id}/photo0`;
+      return `https://ccapdevmco3.vercel.app/api/images/establishment/${_id}/photo0`;
     }
     
     // If no photos, use logo as fallback

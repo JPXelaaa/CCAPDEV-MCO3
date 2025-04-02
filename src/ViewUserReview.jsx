@@ -25,7 +25,7 @@ function ViewUserReview({ profileUser, isReview, setIsReview }) {
   const fetchUserDescription = async (userId) => {
     try {
       setLoadingDescription(true);
-      const response = await fetch(`http://localhost:5000/api/users/${userId}`);
+      const response = await fetch(`https://ccapdevmco3.vercel.app/api/users/${userId}`);
       
       if (!response.ok) {
         throw new Error('Failed to fetch user details');
@@ -62,7 +62,7 @@ function ViewUserReview({ profileUser, isReview, setIsReview }) {
   const fetchUserReviews = async (userId) => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:5000/api/reviews/user/${userId}`);
+      const response = await fetch(`https://ccapdevmco3.vercel.app/api/reviews/user/${userId}`);
       
       if (!response.ok) {
         throw new Error('Failed to fetch reviews');
@@ -112,16 +112,16 @@ function ViewUserReview({ profileUser, isReview, setIsReview }) {
 
   const getPhotoUrl = (photo, reviewId, index) => {
     if (reviewId) {
-      return `http://localhost:5000/api/images/review/${reviewId}/photo/${index}`;
+      return `https://ccapdevmco3.vercel.app/api/images/review/${reviewId}/photo/${index}`;
     }
     
     // Fallback to direct object ID if available
     if (photo && typeof photo === 'object' && photo._id) {
-      return `http://localhost:5000/api/reviews/photo/${photo._id}`;
+      return `https://ccapdevmco3.vercel.app/api/reviews/photo/${photo._id}`;
     }
     
     // Last resort: direct path
-    return `http://localhost:5000/uploads/${photo}`;
+    return `https://ccapdevmco3.vercel.app/uploads/${photo}`;
   };
   
   // Render photo modal

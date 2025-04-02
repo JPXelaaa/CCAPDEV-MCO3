@@ -62,7 +62,7 @@ function MakeReview({ isEdit, reviewContent, setShowLogin, setShowSignUp, setSho
   const fetchEstablishment = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:5000/api/establishments/${establishmentId}`);
+      const response = await fetch(`https://ccapdevmco3.vercel.app/api/establishments/${establishmentId}`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -158,7 +158,7 @@ function MakeReview({ isEdit, reviewContent, setShowLogin, setShowSignUp, setSho
       }
       const authHeader = token.startsWith('Bearer ') ? token : `Bearer ${token}`;
 
-      const response = await fetch('http://localhost:5000/api/reviews', {
+      const response = await fetch('https://ccapdevmco3.vercel.app/api/reviews', {
         method: 'POST',
         headers: {
           'Authorization': authHeader
@@ -207,7 +207,7 @@ function MakeReview({ isEdit, reviewContent, setShowLogin, setShowSignUp, setSho
 <div className="establishment-info">
             <div className="establishment-logo">
               <img 
-                src={`http://localhost:5000/api/images/establishment/${establishmentId}/logo`} 
+                src={`https://ccapdevmco3.vercel.app/api/images/establishment/${establishmentId}/logo`} 
                 alt={establishment?.name || "Establishment"} 
                 onError={(e) => {
                   e.target.src = "https://via.placeholder.com/150?text=No+Logo";

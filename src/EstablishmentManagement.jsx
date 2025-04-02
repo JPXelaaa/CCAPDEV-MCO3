@@ -79,7 +79,7 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
           return;
         }
 
-        const response = await fetch(`http://localhost:5000/api/establishments/${establishmentId}`, {
+        const response = await fetch(`https://ccapdevmco3.vercel.app/api/establishments/${establishmentId}`, {
           headers: {
             'Authorization': token
           }
@@ -157,7 +157,7 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
         return;
       }
 
-      const response = await fetch(`http://localhost:5000/api/establishments/${establishmentId}/photos/${index}`, {
+      const response = await fetch(`https://ccapdevmco3.vercel.app/api/establishments/${establishmentId}/photos/${index}`, {
         method: 'DELETE',
         headers: {
           'Authorization': token
@@ -210,7 +210,7 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
                     
         const authHeader = token.startsWith('Bearer ') ? token : `Bearer ${token}`;
 
-        const profileResponse = await fetch(`http://localhost:5000/api/establishments/${establishmentId}`, {
+        const profileResponse = await fetch(`https://ccapdevmco3.vercel.app/api/establishments/${establishmentId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -229,7 +229,7 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
             const logoFormData = new FormData();
             logoFormData.append('logo', logoFile);
             
-            const logoResponse = await fetch(`http://localhost:5000/api/establishments/${establishmentId}/logo`, {
+            const logoResponse = await fetch(`https://ccapdevmco3.vercel.app/api/establishments/${establishmentId}/logo`, {
                 method: 'POST',
                 headers: {
                     'Authorization': authHeader
@@ -250,7 +250,7 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
                 photoFormData.append('photos', file);
             });
 
-            const photoResponse = await fetch(`http://localhost:5000/api/establishments/${establishmentId}/photos`, {
+            const photoResponse = await fetch(`https://ccapdevmco3.vercel.app/api/establishments/${establishmentId}/photos`, {
                 method: 'POST',
                 headers: {
                     'Authorization': authHeader
@@ -265,7 +265,7 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
         }
         
         // Refresh establishment data to get the updated information
-        const refreshResponse = await fetch(`http://localhost:5000/api/establishments/${establishmentId}`, {
+        const refreshResponse = await fetch(`https://ccapdevmco3.vercel.app/api/establishments/${establishmentId}`, {
             headers: {
                 'Authorization': authHeader
             }
@@ -333,7 +333,7 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
         return;
       }
 
-      const response = await fetch(`http://localhost:5000/api/reviews/${selectedReviewId}/replies`, {
+      const response = await fetch(`https://ccapdevmco3.vercel.app/api/reviews/${selectedReviewId}/replies`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -395,7 +395,7 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
                   <div className="profile-content">
                     <div className="profile-header-picture">
                       <img 
-                        src={`http://localhost:5000/api/images/establishment/${establishmentId}/logo`} 
+                        src={`https://ccapdevmco3.vercel.app/api/images/establishment/${establishmentId}/logo`} 
                         alt={establishment?.name || "Establishment"}
                         onError={(e) => {
                           e.target.src = "https://via.placeholder.com/150?text=No+Logo";
@@ -470,7 +470,7 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
                       <div className="logo-upload">
                         <div className="logo-preview">
                           <img 
-                            src={logoPreview || `http://localhost:5000/api/images/establishment/${establishmentId}/logo`} 
+                            src={logoPreview || `https://ccapdevmco3.vercel.app/api/images/establishment/${establishmentId}/logo`} 
                             alt="Logo Preview"
                             onError={(e) => {
                               e.target.src = "https://via.placeholder.com/150?text=No+Logo";
@@ -556,7 +556,7 @@ const EstablishmentManagement = ({ isLoggedIn, setIsLoggedIn, setShowLogin, setS
                             {photos.map((photo, index) => (
                               <div key={index} className="photo-item">
                                 <img 
-                                  src={`http://localhost:5000/api/images/establishment/${establishmentId}/photo${index}`}
+                                  src={`https://ccapdevmco3.vercel.app/api/images/establishment/${establishmentId}/photo${index}`}
                                   alt={`Establishment photo ${index + 1}`}
                                   onError={(e) => {
                                     e.target.src = "https://via.placeholder.com/150?text=Error";
