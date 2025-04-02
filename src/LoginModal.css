@@ -145,6 +145,14 @@
     text-decoration: underline;
 }
 
+.login-remember-me {
+    margin-bottom: 20px;
+}
+
+.login-remember-me label {
+    padding-left: 5px;
+}
+
 .login-error-message {
     color: red;
     font-size: 14px;
