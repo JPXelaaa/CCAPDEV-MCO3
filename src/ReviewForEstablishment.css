@@ -71,9 +71,10 @@
   .review-section {
     border: 1px solid #ddd;
     margin: 0% 5%;
-    min-height: 150px;
+    max-height: 150px;
     width: 90%;
     padding: 2%;;
+    margin-bottom: 5%;
   }
   
   .review-section-photo {
