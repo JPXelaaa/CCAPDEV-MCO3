@@ -11,6 +11,7 @@ import EstablishmentView from "./EstablishmentView";
 import EstablishmentManagement from "./EstablishmentManagement";
 import EditEstablishmentAccount from "./EditEstablishmentAccount";
 import About from "./About";
+import ViewUserProfile from './ViewUserProfile';
 
 
 function App() {
@@ -34,40 +35,6 @@ function App() {
   useEffect(() => {
     // Store the original fetch function
     const originalFetch = window.fetch;
-    
-    // Function to check and renew token if needed
-    const checkAndRenewToken = () => {
-      // Only proceed if user has chosen to be remembered
-      const tokenExpiry = localStorage.getItem('tokenExpiry');
-      if (!tokenExpiry) return;
-      
-      // Check if token exists
-      const token = localStorage.getItem('token');
-      if (!token) return;
-      
-      // Process response headers after each fetch to look for token refresh
-      const processResponseHeaders = (response) => {
-        const newToken = response.headers.get('X-Refresh-Token');
-        const newExpiry = response.headers.get('X-Token-Expiry');
-        
-        if (newToken && newExpiry) {
-          // Update the stored token and expiry
-          localStorage.setItem('token', newToken);
-          localStorage.setItem('tokenExpiry', newExpiry);
-          console.log('Session extended for another 3 weeks');
-        }
-        
-        return response;
-      };
-      
-      // Override the global fetch to intercept all API calls
-      window.fetch = async (...args) => {
-        const response = await originalFetch(...args);
-        return processResponseHeaders(response);
-      };
-    };
-    
-    checkAndRenewToken();
     
     // Clean up function
     return () => {
@@ -132,6 +99,20 @@ function App() {
             user={user} 
             setUser={updateUserState}
           />} 
+        />
+        <Route 
+          path="/user/:userId" 
+          element={
+            <ViewUserProfile 
+              setShowLogin={setShowLogin}
+              setShowSignUp={setShowSignUp}
+              setShowEstablishmentSignUp={setShowEstablishmentSignUp}
+              isLoggedIn={isLoggedIn}
+              setIsLoggedIn={setIsLoggedIn}
+              user={user}
+              setUser={setUser}
+            />
+          } 
         />
         <Route 
           path="/establishment/manage/:id" 

@@ -19,7 +19,8 @@ function Review({
   rating = 5, 
   photoUrls = [], // Use only photoUrls from the server
   onDelete, 
-  preview 
+  preview,
+  viewOnly = false // New prop with default value
 }) {
   const [helpful, setHelpful] = useState(false);
   const [unhelpful, setUnhelpful] = useState(false);
@@ -105,7 +106,7 @@ function Review({
       {/* Review Footer */}
       {!preview && (
         <div className="review-footer">
-          {isLoggedIn && user ? (
+          {isLoggedIn && user && !viewOnly ? (
             <>
               <Link to="/review" state={{ isEdit: true, reviewId: id, reviewContent: { title, review, rating, establishment } }}>
                 <div className="edit-post">

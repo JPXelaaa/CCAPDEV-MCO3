@@ -5,7 +5,7 @@ function LoginModal({ onClose, setIsLoggedIn, setUser }) {
   const [userType, setUserType] = useState("user");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
+  //const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -24,7 +24,7 @@ function LoginModal({ onClose, setIsLoggedIn, setUser }) {
           username, 
           password, 
           userType,
-          rememberMe 
+         // rememberMe 
         }),
       });
       
@@ -47,16 +47,9 @@ function LoginModal({ onClose, setIsLoggedIn, setUser }) {
       };
       
       try {
-        if (rememberMe) {
-          // Store token and user data in localStorage for persistent sessions
-          localStorage.setItem("token", data.token);
-          localStorage.setItem("loggedInUser", JSON.stringify(minimalUser));
-          localStorage.setItem("tokenExpiry", data.tokenExpiry);
-        } else {
           // Use sessionStorage for session-only storage
           sessionStorage.setItem("token", data.token);
           sessionStorage.setItem("loggedInUser", JSON.stringify(minimalUser));
-        }
       } catch (storageError) {
         console.error("Failed to store user data in storage", storageError);
         setError("Warning: Unable to remember login between sessions due to storage limitations");
@@ -110,9 +103,9 @@ function LoginModal({ onClose, setIsLoggedIn, setUser }) {
           <div className="login-remember-me">
             <input
               type="checkbox"
-              id="rememberMe"
-              checked={rememberMe}
-              onChange={(e) => setRememberMe(e.target.checked)}
+              //id="rememberMe"
+              //checked={rememberMe}
+              //onChange={(e) => setRememberMe(e.target.checked)}
             />
             <label htmlFor="rememberMe">Remember me for 3 weeks</label>
           </div>
