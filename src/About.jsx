@@ -36,7 +36,6 @@ function HomePage({ setShowLogin, setShowSignUp, setShowEstablishmentSignUp, isL
       />
 
 <div className="main-content center-content">
-
         <div className="developers-section">
           <h3 className="section-title">DEVELOPERS</h3>
           <div className="dev-team-info">

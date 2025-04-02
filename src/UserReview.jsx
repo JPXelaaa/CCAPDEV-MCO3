@@ -20,39 +20,19 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
     rating: 0,
     photos: []
   });
-  const [userDescription, setUserDescription] = useState("");
+  const [description, setDescription] = useState("");
   const [loadingDescription, setLoadingDescription] = useState(true);
 
   useEffect(() => {
     if (user && user._id) {
       fetchUserReviews(user._id);
-      fetchUserDescription(user._id);
+      fetchDescription();
     } else {
       setLoading(false);
       setLoadingDescription(false);
     }
+    console.log(user);
   }, [user]);
-
-  const fetchUserDescription = async (userId) => {
-    try {
-      setLoadingDescription(true);
-      console.log("entering here:")
-      const response = await fetch(`http://localhost:5000/api/users/${userId}`);
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch user details');
-      }
-      
-      const userData = await response.json();
-      console.log('printing:', userData);
-      setUserDescription(userData.description || "");
-      console.log('new user description: ',userDescription)
-      setLoadingDescription(false);
-    } catch (err) {
-      console.error('Error fetching user description:', err);
-      setLoadingDescription(false);
-    }
-  };
 
   useEffect(() => {
     // fetch user's votes for each review if user is logged in
@@ -170,6 +150,23 @@ function UserReview({ isLoggedIn, setIsLoggedIn, setShowLogin, user, setUser, is
       rating: newRating
     });
   };
+
+  const fetchDescription = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/users/${user._id}/profile`);
+      const data = await response.json();
+
+      if (data.status === "success") {
+        setDescription(data.user.description || "");
+        console.log("Fetched description:", data.user.description);
+        console.log("Description: ", description);
+      } else {
+        console.error("Error fetching user description:", data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching user description:", error);
+    }
+  }
 
   // Save edited review
   const saveEditedReview = async (e) => {
@@ -695,7 +692,7 @@ const handleDeletePhoto = async (photoIndex) => {
             {loadingDescription ? (
               <p>Loading description...</p>
             ) : (
-              user?.description || "No description available."
+              description || "No description available."
             )}
           </div>
         </div>
@@ -771,19 +768,31 @@ const handleDeletePhoto = async (photoIndex) => {
             ) : error ? (
               <p>{error}</p>
             ) : allPhotos.length > 0 ? (
-              allPhotos.slice(0, 6).map((photoObj, index) => (
-                <div className="photo-preview" key={index} onClick={() => openPhotoModal(index)}>
-                  <img 
-                    src={`http://localhost:5000/uploads/${photoObj.photo}`}
-                    className="actual-photo"
-                    alt={`Review photo ${index + 1}`}
-                    onError={(e) => { 
-                      console.log("Image failed to load:", photoObj);
-                      e.target.src = "https://static.vecteezy.com/system/resources/previews/022/014/063/original/missing-picture-page-for-website-design-or-mobile-app-design-no-image-available-icon-vector.jpg"; 
-                    }}
-                  />
-                </div>
-              ))
+              allPhotos.slice(0, 6).map((photoObj, index) => {
+                // Get the correct photo URL using the same logic as in getPhotoUrl function
+                let photoUrl;
+                if (typeof photoObj.photo === 'object' && photoObj.photo._id) {
+                  photoUrl = `http://localhost:5000/api/reviews/photo/${photoObj.photo._id}`;
+                } else if (photoObj.reviewId) {
+                  photoUrl = `http://localhost:5000/api/images/review/${photoObj.reviewId}/photo/${photoObj.photoIndex}`;
+                } else {
+                  photoUrl = `http://localhost:5000/uploads/${photoObj.photo}`;
+                }
+                
+                return (
+                  <div className="photo-preview" key={index} onClick={() => openPhotoModal(index)}>
+                    <img
+                      src={photoUrl}
+                      className="actual-photo"
+                      alt={`Review photo ${index + 1}`}
+                      onError={(e) => { 
+                        console.log("Image failed to load:", photoObj);
+                        e.target.src = "https://static.vecteezy.com/system/resources/previews/022/014/063/original/missing-picture-page-for-website-design-or-mobile-app-design-no-image-available-icon-vector.jpg"; 
+                      }}
+                    />
+                  </div>
+                );
+              })
             ) : (
               <p>No photos available.</p>
             )}

@@ -27,6 +27,7 @@ function EditAccount({ setShowLogin, setShowSignUp, setShowEstablishmentSignUp, 
   useEffect(() => {
     if (user?._id) {
       fetchDescription();
+      console.log("Description: ", description);
     }
   }, [user]);
 
@@ -84,11 +85,13 @@ function EditAccount({ setShowLogin, setShowSignUp, setShowEstablishmentSignUp, 
 
   const fetchDescription = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/users/${user._id}`);
+      const response = await fetch(`http://localhost:5000/api/users/${user._id}/profile`);
       const data = await response.json();
+
       if (data.status === "success") {
         setDescription(data.user.description || "");
         console.log("Fetched description:", data.user.description);
+        console.log("Description: ", description);
       } else {
         console.error("Error fetching user description:", data.message);
       }

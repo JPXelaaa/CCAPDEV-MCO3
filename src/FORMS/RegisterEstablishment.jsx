@@ -110,6 +110,10 @@ function RegisterEstablishment({ onClose, setIsLoggedIn, setUser }) {
         setError("Email is required");
         return;
       }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        setError("Invalid email format");
+        return;
+      }
       if (!password.trim()) {
         setError("Password is required");
         return;
